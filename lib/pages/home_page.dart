@@ -1,0 +1,60 @@
+/* My Music'Scool - Copyright (C) 2020  Music'Scool DK
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>. */
+
+import 'package:flutter/material.dart';
+import 'package:my_musicscool_app/models/lesson.dart';
+import 'package:my_musicscool_app/services/api_test_service.dart';
+import 'package:my_musicscool_app/widgets/lesson_widget.dart';
+
+
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  ApiTestService _api = ApiTestService();
+  List<Lesson> _lessons = List<Lesson>();
+
+  final _scrollController = ScrollController();
+
+  _HomePageState() {
+    _api.allLessons().then((lessons) => setState(() => _lessons = lessons));
+  }
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(100.0),
+        child: AppBar(
+          title: Image.asset('assets/images/musicscool_logo.png', height: 50),
+          centerTitle: true,
+        ),
+      ),
+      body: ListView.separated(
+        padding: const EdgeInsets.all(8),
+        itemCount: _lessons != null ? _lessons.length : 0,
+        itemBuilder: (BuildContext context, int index) => LessonWidget(lesson: _lessons[index]),
+          separatorBuilder: (BuildContext context, int index) => const Divider()
+      )
+    );
+  }
+}

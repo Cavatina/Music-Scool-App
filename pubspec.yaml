@@ -1,0 +1,28 @@
+name: my_musicscool_app
+description: Mobile app for Music'Scool students.
+
+publish_to: 'none' # Do not publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  shared_preferences: '>=0.5.0 <2.0.0'  # Temporary
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.0
+
+dev_dependencies:
+  test: any
+  flutter_test:
+    sdk: flutter
+
+# The following section is specific to Flutter.
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/

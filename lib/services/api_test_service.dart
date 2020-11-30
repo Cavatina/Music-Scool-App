@@ -14,11 +14,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
 import 'dart:async';
-import 'dart:io' show File;
 import 'dart:convert' show json;
 import 'dart:math';
-import "package:path/path.dart" show dirname, join;
-import 'dart:io' show Platform;
 import 'package:my_musicscool_app/services/api.dart';
 import 'package:my_musicscool_app/models/student.dart';
 import 'package:my_musicscool_app/models/lesson.dart';
@@ -28,8 +25,8 @@ class ApiTestService implements Api {
   @override
   Future<String> login({String username, String password}) async {
     Student s = await student;
-    if (username == s.email && password == "password") return "dummy-token";
-    throw Exception("Illegal login");
+    if (username == s.email && password == 'password') return 'dummy-token';
+    throw Exception('Illegal login');
   }
 
   @override
@@ -59,11 +56,11 @@ class ApiTestService implements Api {
       });
   }
 
-  Future _readFixture(String baseName) {
-    String path = join(dirname(Platform.script.toFilePath()), 'test', 'fixtures',
-        baseName);
-    return File(path).readAsString().then((String value) => json.decode(value));
-  }
+  // Future _readFixture(String baseName) {
+  //   String path = join(dirname(Platform.script.toFilePath()), 'test', 'fixtures',
+  //       baseName);
+  //   return File(path).readAsString().then<String>((String value) => json.decode(value));
+  // }
 
   Future<List<Lesson>> _cachedLessons() async {
     if (_lessonIndex == -1) {

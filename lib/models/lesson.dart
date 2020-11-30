@@ -13,7 +13,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
-import 'dart:convert';
 import 'package:my_musicscool_app/models/homework.dart';
 
 class Lesson {
@@ -29,14 +28,18 @@ class Lesson {
       status = json['status'],
       catchUp = json['catchUp'].toString().isNotEmpty
           ? DateTime.parse(json['catchUp']) : null,
-      homework = json.containsKey('homework') ? json['homework'].map<Homework>(
-              (obj) => Homework.fromJson(obj)).toList() : List<Homework>();
+      homework = (json['homework'] as List)
+          ?.map((e) =>
+                  e == null ? null : Homework.fromJson(e as Map<String, dynamic>))
+                ?.toList();
+//      json.containsKey('homework') ? json['homework'].map<Homework>(
+//              (Map<String, dynamic> obj) => Homework.fromJson(obj)).toList() : <Homework>[];
 
   Map<String, dynamic> toJson() =>
-      {
-        "start": start?.toIso8601String(),
-        "status": status,
-        "catchUp": catchUp?.toIso8601String(),
-        "homework": homework.map((o) => o.toJson()).toList()
+      <String, dynamic> {
+        'start': start?.toIso8601String(),
+        'status': status,
+        'catchUp': catchUp?.toIso8601String(),
+        'homework': homework?.map((o) => o.toJson())?.toList()
       };
 }

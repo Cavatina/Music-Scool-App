@@ -17,6 +17,7 @@ dependencies:
 
 dev_dependencies:
   test: any
+  pedantic: ^1.9.2
   flutter_test:
     sdk: flutter
 

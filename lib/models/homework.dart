@@ -13,21 +13,18 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
+import 'package:json_annotation/json_annotation.dart';
+
+part 'homework.g.dart';
+
+@JsonSerializable()
 class Homework {
   final String description;
   final String download;
   final String link;
 
   Homework(this.description, this.download, this.link);
-  Homework.fromJson(Map<String, dynamic> json) :
-      description = json['description'],
-      download = json['download'],
-      link = json['link'];
+  factory Homework.fromJson(Map<String, dynamic> json) => _$HomeworkFromJson(json);
 
-  Map<String, dynamic> toJson() =>
-      <String, dynamic> {
-        'description': description,
-        'download': download,
-        'link': link
-      };
+  Map<String, dynamic> toJson() => _$HomeworkToJson(this);
 }

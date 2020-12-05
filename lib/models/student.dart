@@ -13,6 +13,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
+import 'package:json_annotation/json_annotation.dart';
+
+part 'student.g.dart';
+
+@JsonSerializable()
 class Student {
   final String name;
   final String email;
@@ -21,26 +26,10 @@ class Student {
   final int lessonsPresent;
   final DateTime nextInvoice;
 
-  // @todo - Teachers?
-
   Student(this.name, this.email, this.nextLesson, this.lessonsOwed,
       this.lessonsPresent, this.nextInvoice);
 
-  Student.fromJson(Map<String, dynamic> json)
-      : name = json['name'],
-        email = json['email'],
-        nextLesson = DateTime.parse(json['nextLesson']),
-        lessonsOwed = json['lessonsOwed'],
-        lessonsPresent = json['lessonsPresent'],
-        nextInvoice = DateTime.parse(json['nextInvoice']);
+  factory Student.fromJson(Map<String, dynamic> json) => _$StudentFromJson(json);
 
-  Map<String, dynamic> toJson() =>
-      <String, dynamic> {
-        'name': name,
-        'email': email,
-        'nextLesson': nextLesson?.toIso8601String(),
-        'lessonsOwed': lessonsOwed,
-        'lessonsPresent': lessonsPresent,
-        'nextInvoice': nextInvoice?.toIso8601String()
-      };
+  Map<String, dynamic> toJson() => _$StudentToJson(this);
 }

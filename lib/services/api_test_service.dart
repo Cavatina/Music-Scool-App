@@ -99,13 +99,13 @@ String testStudent = '''
 String testLessons = '''
 [
 {
-  "start": "2020-08-29T15:00:00", "status": "Student cancelled too late", "catchUp": ""
+  "start": "2020-08-29T15:00:00", "status": "Student cancelled too late", "catchUp": null
 },
 {
-"start": "2020-09-05T12:30:00", "status": "Student present", "catchUp": ""
+"start": "2020-09-05T12:30:00", "status": "Student present", "catchUp": null
 },
 {
-"start": "2020-09-12T15:00:00", "status": "Student present", "catchUp": "",
+"start": "2020-09-12T15:00:00", "status": "Student present", "catchUp": null,
 "homework": [
 {"description": "16th kick grooves",
 "downloadTitle": "Grooves 16th Kick.pdf",
@@ -113,10 +113,10 @@ String testLessons = '''
 ]
 },
 {
-"start": "2020-09-19T15:00:00", "status": "Student present", "catchUp": ""
+"start": "2020-09-19T15:00:00", "status": "Student present", "catchUp": null
 },
 {
-"start": "2020-09-26T13:00:00", "status": "Student present", "catchUp": "",
+"start": "2020-09-26T13:00:00", "status": "Student present", "catchUp": null,
 "homework": [
 {"description": "Øvelse til fills. Spil mønstrene med snare og ride bækken samtidligt henover stortromme på takt (hihat off beat)",
 "downloadTitle": "LATI-050.pdf",
@@ -128,13 +128,13 @@ String testLessons = '''
 "start": "2020-10-03T15:00:00", "status": "Student cancelled", "catchUp": "2020-10-24T14:00:00"
 },
 {
-"start": "2020-10-10T08:30:00", "status": "Student present", "catchUp": ""
+"start": "2020-10-10T08:30:00", "status": "Student present", "catchUp": null
 },
 {
 "start": "2020-10-24T14:00:00", "status": "Student present", "catchUp": "2020-10-03T15:00:00"
 },
 {
-"start": "2020-10-24T14:30:00", "status": "Student present", "catchUp": "",
+"start": "2020-10-24T14:30:00", "status": "Student present", "catchUp": null,
 "homework": [
 {"description": "Behind the Blood - Katatonia",
 "downloadTitle": "Behind The Blood.pdf",
@@ -154,10 +154,10 @@ String testLessons = '''
 ]
 },
 {
-"start": "2020-11-07T15:00:00", "status": "Student present", "catchUp": ""
+"start": "2020-11-07T15:00:00", "status": "Student present", "catchUp": null
 },
 {
-"start": "2020-11-14T15:00:00", "status": "Student present", "catchUp": "",
+"start": "2020-11-14T15:00:00", "status": "Student present", "catchUp": null,
 "homework": [
 {"description": "Update Behind the Blood",
 "downloadTitle": "Behind The Blood.pdf",
@@ -165,7 +165,7 @@ String testLessons = '''
 ]
 },
 {
-"start": "2020-11-21T15:00:00", "status": "Student present", "catchUp": "",
+"start": "2020-11-21T15:00:00", "status": "Student present", "catchUp": null,
 "homework": [
 {"description": "R L K grouping som fill in over 2 takter",
 "downloadTitle": "RLK grouping.pdf",
@@ -173,40 +173,40 @@ String testLessons = '''
 ]
 },
 {
-"start": "2020-11-28T15:00:00", "status": "Awaiting status", "catchUp": ""
+"start": "2020-11-28T15:00:00", "status": "Awaiting status", "catchUp": null
 },
 {
-"start": "2020-12-05T15:00:00", "status": "Awaiting status", "catchUp": ""
+"start": "2020-12-05T15:00:00", "status": "Awaiting status", "catchUp": null
 },
 {
-"start": "2020-12-12T15:00:00", "status": "Awaiting status", "catchUp": ""
+"start": "2020-12-12T15:00:00", "status": "Awaiting status", "catchUp": null
 },
 {
-"start": "2020-12-19T15:00:00", "status": "Awaiting status", "catchUp": ""
+"start": "2020-12-19T15:00:00", "status": "Awaiting status", "catchUp": null
 },
 {
-"start": "2021-01-09T15:00:00", "status": "Awaiting status", "catchUp": ""
+"start": "2021-01-09T15:00:00", "status": "Awaiting status", "catchUp": null
 },
 {
-"start": "2021-01-16T15:00:00", "status": "Awaiting status", "catchUp": ""
+"start": "2021-01-16T15:00:00", "status": "Awaiting status", "catchUp": null
 },
 {
-"start": "2021-01-23T15:00:00", "status": "Awaiting status", "catchUp": ""
+"start": "2021-01-23T15:00:00", "status": "Awaiting status", "catchUp": null
 },
 {
-"start": "2021-01-30T15:00:00", "status": "Awaiting status", "catchUp": ""
+"start": "2021-01-30T15:00:00", "status": "Awaiting status", "catchUp": null
 },
 {
-"start": "2021-02-06T15:00:00", "status": "Awaiting status", "catchUp": ""
+"start": "2021-02-06T15:00:00", "status": "Awaiting status", "catchUp": null
 },
 {
-"start": "2021-02-13T15:00:00", "status": "Awaiting status", "catchUp": ""
+"start": "2021-02-13T15:00:00", "status": "Awaiting status", "catchUp": null
 },
 {
-"start": "2021-02-20T15:00:00", "status": "Awaiting status", "catchUp": ""
+"start": "2021-02-20T15:00:00", "status": "Awaiting status", "catchUp": null
 },
 {
-"start": "2021-03-06T15:00:00", "status": "Awaiting status", "catchUp": ""
+"start": "2021-03-06T15:00:00", "status": "Awaiting status", "catchUp": null
 }
 ]
 ''';

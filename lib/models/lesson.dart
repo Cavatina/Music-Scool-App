@@ -14,7 +14,11 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
 import 'package:my_musicscool_app/models/homework.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'lesson.g.dart';
+
+@JsonSerializable()
 class Lesson {
   final DateTime start;
   final String status;
@@ -23,23 +27,7 @@ class Lesson {
 
   Lesson(this.start, this.status, this.catchUp, this.homework);
 
-  Lesson.fromJson(Map<String, dynamic> json) :
-      start = DateTime.parse(json['start']),
-      status = json['status'],
-      catchUp = json['catchUp'].toString().isNotEmpty
-          ? DateTime.parse(json['catchUp']) : null,
-      homework = (json['homework'] as List)
-          ?.map((e) =>
-                  e == null ? null : Homework.fromJson(e as Map<String, dynamic>))
-                ?.toList();
-//      json.containsKey('homework') ? json['homework'].map<Homework>(
-//              (Map<String, dynamic> obj) => Homework.fromJson(obj)).toList() : <Homework>[];
+  factory Lesson.fromJson(Map<String, dynamic> json) => _$LessonFromJson(json);
 
-  Map<String, dynamic> toJson() =>
-      <String, dynamic> {
-        'start': start?.toIso8601String(),
-        'status': status,
-        'catchUp': catchUp?.toIso8601String(),
-        'homework': homework?.map((o) => o.toJson())?.toList()
-      };
+  Map<String, dynamic> toJson() => _$LessonToJson(this);
 }

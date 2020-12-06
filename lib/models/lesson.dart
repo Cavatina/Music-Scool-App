@@ -26,6 +26,14 @@ class Lesson {
   final List<Homework> homework;
 
   Lesson(this.start, this.status, this.catchUp, this.homework);
+  Lesson copyWith({DateTime start, String status, DateTime catchUp, List<Homework> homework}) {
+    return Lesson(
+      start ?? this.start,
+      status ?? this.status,
+      catchUp ?? this.catchUp,
+      homework ?? this.homework
+    );
+  }
 
   factory Lesson.fromJson(Map<String, dynamic> json) => _$LessonFromJson(json);
 

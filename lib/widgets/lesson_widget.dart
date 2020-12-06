@@ -15,6 +15,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:my_musicscool_app/models/lesson.dart';
 import 'package:my_musicscool_app/models/homework.dart';
 
@@ -22,6 +23,28 @@ class LessonWidget extends StatelessWidget {
   LessonWidget({this.lesson}) : super(key: Key(lesson.start.toIso8601String()));
 
   final Lesson lesson;
+
+  Widget homeworkIcons(Homework homework) {
+    List<Widget> icons = <Widget>[];
+    if (homework.downloadUrl != null) {
+      icons.add(GestureDetector(
+          onTap: () {
+
+          },
+          child: Icon(Icons.download_outlined)
+      ));
+    }
+    if (homework.linkUrl != null) {
+      icons.add(
+          GestureDetector(
+            onTap: () {
+              launch(homework.linkUrl);
+            },
+            child: Icon(Icons.ondemand_video_outlined)
+      ));
+    }
+    return Wrap(direction: Axis.vertical, children: icons);
+  }
 
   List<Widget> rows() {
     List<Widget> out = <Widget>[];
@@ -31,9 +54,8 @@ class LessonWidget extends StatelessWidget {
     if (lesson.homework != null) {
       lesson.homework.forEach((Homework homework) =>
           out.add(ListTile(
-            leading: homework.downloadUrl != null && homework.downloadUrl.isNotEmpty ? Icon(Icons.download_outlined) : null,
-              title:Text(homework.description),
-          trailing: homework.linkUrl != null && homework.linkUrl.isNotEmpty ? Icon(Icons.ondemand_video_outlined) : null)));
+            leading: homeworkIcons(homework),
+              title: Text(homework.description))));
     }
     return out;
   }

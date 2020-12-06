@@ -13,6 +13,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_musicscool_app/models/lesson.dart';
 import 'package:my_musicscool_app/models/homework.dart';
@@ -36,11 +37,55 @@ class LessonWidget extends StatelessWidget {
     }
     return out;
   }
+
+  Future<bool> confirmCancel(BuildContext context) async {
+    return await showCupertinoDialog<bool>(
+        context: context,
+        builder: (context) => CupertinoAlertDialog(
+          content: Text('Cancel lesson?'),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              child: Text('No'),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              }
+            ),
+            CupertinoDialogAction(
+                child: Text('Yes'),
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                }
+            )
+          ]
+        )) ?? false;
+  }
+
+  Future<bool> confirmDismiss(BuildContext context, DismissDirection direction) async {
+    if (direction == DismissDirection.endToStart) {
+      await confirmCancel(context);
+    }
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: Column(
-        children: rows()
+      child: Dismissible(
+        key: Key(lesson.start.toString()),
+        child: Column(
+          children: rows()
+        ),
+        confirmDismiss: (dir) => confirmDismiss(context, dir),
+        direction: DismissDirection.endToStart,
+        background: Container(
+          color: Colors.red,
+          padding: EdgeInsets.symmetric(horizontal: 20),
+          alignment: AlignmentDirectional.centerEnd,
+          child: FlatButton.icon(
+                  onPressed: null,
+                  icon: Text('Cancel'),
+                  label: Icon(Icons.delete, color: Colors.white))
+        )
       )
     );
   }

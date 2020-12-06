@@ -9,13 +9,15 @@ part of 'homework.dart';
 Homework _$HomeworkFromJson(Map<String, dynamic> json) {
   return Homework(
     json['description'] as String,
-    json['download'] as String,
-    json['link'] as String,
+    json['downloadTitle'] as String,
+    json['downloadUrl'] as String,
+    json['linkUrl'] as String,
   );
 }
 
 Map<String, dynamic> _$HomeworkToJson(Homework instance) => <String, dynamic>{
       'description': instance.description,
-      'download': instance.download,
-      'link': instance.link,
+      'downloadTitle': instance.downloadTitle,
+      'downloadUrl': instance.downloadUrl,
+      'linkUrl': instance.linkUrl,
     };

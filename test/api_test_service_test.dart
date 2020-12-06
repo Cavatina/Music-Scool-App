@@ -23,7 +23,7 @@ void main() {
   test('lessons with pagination works', () async {
     var api = ApiTestService();
     await api.login(username: 'someone@acme.com', password: 'password');
-    DateTime now = DateTime.parse('2020-11-23 22:46:00');
+    DateTime now = DateTime.now();
     List<Lesson> lessons = await api.getNextLessons();
     expect(lessons.length, ApiTestService.pageSize);
     expect(lessons[0].start.isAfter(now), isTrue);

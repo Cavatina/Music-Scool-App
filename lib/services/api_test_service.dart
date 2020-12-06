@@ -64,18 +64,23 @@ class ApiTestService implements Api {
 
   Future<List<Lesson>> _cachedLessons() async {
     if (_lessonIndex == -1) {
-      return Future.value(json.decode(testLessons)).then((js) { // _readFixture("lessons.json").then((js) {
-        _allLessons = js.map<Lesson>((jsObj) => Lesson.fromJson(jsObj)).toList();
-        var now = DateTime.now();
-        _lessonIndex = _allLessons.length;
-        for (int i = 0; i < _allLessons.length; ++i) {
-          if (_allLessons[i].start.isAfter(now)) {
-            _lessonIndex = _prevLessonIndex = i;
-            break;
-          }
+      List<dynamic> js = json.decode(testLessons);
+      _allLessons = js.map<Lesson>((jsObj) => Lesson.fromJson(jsObj)).toList();
+      DateTime now = DateTime.now();
+      Duration diff;
+      if (_allLessons.isNotEmpty) {
+        diff = now.difference(DateTime.parse('2020-11-23 22:46:00'));
+      }
+      _lessonIndex = _allLessons.length;
+      for (int i = 0; i < _allLessons.length; ++i) {
+        _allLessons[i] = _allLessons[i].copyWith(
+            start: _allLessons[i].start.add(Duration(days:diff.inDays))
+        );
+        if (_allLessons[i].start.isAfter(now) && _lessonIndex == _allLessons.length) {
+          _lessonIndex = _prevLessonIndex = i;
         }
-        return _allLessons;
-      });
+      }
+      return _allLessons;
     }
     return _allLessons;
   }

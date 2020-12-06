@@ -15,19 +15,32 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
 import 'package:flutter/material.dart';
 import 'package:my_musicscool_app/models/lesson.dart';
+import 'package:my_musicscool_app/models/homework.dart';
 
 class LessonWidget extends StatelessWidget {
   LessonWidget({this.lesson}) : super(key: Key(lesson.start.toIso8601String()));
 
   final Lesson lesson;
 
+  List<Widget> rows() {
+    List<Widget> out = <Widget>[];
+    out.add(ListTile(
+              title: Text(lesson.start.toString()),
+              subtitle: Text(lesson.status)));
+    if (lesson.homework != null) {
+      lesson.homework.forEach((Homework homework) =>
+          out.add(ListTile(
+            leading: homework.downloadUrl != null && homework.downloadUrl.isNotEmpty ? Icon(Icons.download_outlined) : null,
+              title:Text(homework.description),
+          trailing: homework.linkUrl != null && homework.linkUrl.isNotEmpty ? Icon(Icons.ondemand_video_outlined) : null)));
+    }
+    return out;
+  }
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: ListTile(
-        title: Text(lesson.start.toString()),
-        subtitle: Text(lesson.status),
-        trailing: Text(lesson.homework != null ? lesson.homework.length.toString() : '')
+      child: Column(
+        children: rows()
       )
     );
   }

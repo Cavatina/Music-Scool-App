@@ -14,6 +14,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:my_musicscool_app/models/lesson.dart';
 import 'package:my_musicscool_app/services/api_test_service.dart';
 import 'package:my_musicscool_app/widgets/lesson_widget.dart';
@@ -42,12 +43,10 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(100.0),
-        child: AppBar(
-          title: Image.asset('assets/images/musicscool_logo.png', height: 50),
-          centerTitle: true,
-        ),
+      appBar: AppBar(
+        title: SvgPicture.asset('assets/images/Musicscool - Logo - Zwart beeld- en woordmerk.svg',
+        height: 48 /* @todo Size dynamically */),
+        centerTitle: true,
       ),
       body: ListView.separated(
         padding: const EdgeInsets.all(8),

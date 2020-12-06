@@ -27,7 +27,7 @@ class LessonWidget extends StatelessWidget {
       child: ListTile(
         title: Text(lesson.start.toString()),
         subtitle: Text(lesson.status),
-        trailing: Text(lesson.homework.length.toString())
+        trailing: Text(lesson.homework != null ? lesson.homework.length.toString() : '')
       )
     );
   }

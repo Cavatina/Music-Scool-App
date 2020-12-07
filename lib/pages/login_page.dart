@@ -15,7 +15,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
 import 'package:flutter/material.dart';
 
-import 'dart:convert';
 import 'package:flutter/services.dart';
 //import 'package:http/http.dart' as http;
 //import 'package:shared_preferences/shared_preferences.dart';
@@ -34,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage("assets/images/mymusicscoolbackground.jpg"),
+            image: AssetImage('assets/images/mymusicscoolbackground.jpg'),
             fit: BoxFit.cover,
           ),
         ),
@@ -61,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
             style: TextStyle(color: Colors.white70),
             decoration: InputDecoration(
               icon: Icon(Icons.email, color: Colors.white70),
-              hintText: "Email",
+              hintText: 'Email',
               border: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white70)),
               hintStyle: TextStyle(color: Colors.white70),
             ),
@@ -74,7 +73,7 @@ class _LoginPageState extends State<LoginPage> {
             style: TextStyle(color: Colors.white70),
             decoration: InputDecoration(
               icon: Icon(Icons.lock, color: Colors.white70),
-              hintText: "Password",
+              hintText: 'Password',
               border: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white70)),
               hintStyle: TextStyle(color: Colors.white70),
             ),
@@ -103,7 +102,7 @@ class _LoginPageState extends State<LoginPage> {
         },*/
         elevation: 0.0,
         color: Colors.purple,
-        child: Text("Sign In", style: TextStyle(color: Colors.white70)),
+        child: Text('Sign In', style: TextStyle(color: Colors.white70)),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
       ),
     );

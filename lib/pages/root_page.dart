@@ -16,7 +16,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:my_musicscool_app/pages/login_page.dart';
+//import 'package:my_musicscool_app/pages/login_page.dart';
 import 'package:my_musicscool_app/pages/home_page.dart';
 
 class RootPage extends StatefulWidget {
@@ -26,8 +26,8 @@ class RootPage extends StatefulWidget {
 
 class _RootPageState extends State<RootPage> {
   bool _isLoading = true;
-  bool _isLoggedIn = false;
-  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+//  bool _isLoggedIn = true;
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   Widget _waitingPage() {
     return Scaffold(
@@ -38,11 +38,11 @@ class _RootPageState extends State<RootPage> {
     );
   }
 
-  @override initState() {
+  @override void initState() {
     super.initState();
     _prefs.then((SharedPreferences prefs) {
       setState(() {
-        _isLoggedIn = prefs.containsKey('token') && prefs.getString('token').isNotEmpty;
+//        _isLoggedIn = prefs.containsKey('token') && prefs.getString('token').isNotEmpty;
         _isLoading = false;
       });
     });
@@ -51,12 +51,12 @@ class _RootPageState extends State<RootPage> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) return _waitingPage();
-    if (true) { //_isLoggedIn) {
+    //   if (_isLoggedIn) {
       return HomePage();
-    }
-    else {
-      return LoginPage();
-    }
+//    }
+    // else {
+    //   return LoginPage();
+    // }
   }
 }
 

@@ -25,8 +25,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  ApiTestService _api = ApiTestService();
-  List<Lesson> _lessons = List<Lesson>();
+  final ApiTestService _api = ApiTestService();
+  List<Lesson> _lessons = <Lesson>[];
 
   final _scrollController = ScrollController();
 

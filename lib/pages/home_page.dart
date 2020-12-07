@@ -15,6 +15,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:my_musicscool_app/models/lesson.dart';
 import 'package:my_musicscool_app/services/api_test_service.dart';
 import 'package:my_musicscool_app/widgets/lesson_widget.dart';
@@ -28,6 +29,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final ApiTestService _api = ApiTestService();
   List<Lesson> _lessons = <Lesson>[];
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final _scrollController = ScrollController();
 
@@ -43,16 +45,49 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.menu),
+          onPressed: () => _scaffoldKey.currentState.openDrawer()
+        ),
         title: SvgPicture.asset('assets/images/Musicscool - Logo - Zwart beeld- en woordmerk.svg',
         height: 48 /* @todo Size dynamically */),
         centerTitle: true,
       ),
-      body: ListView.separated(
-        padding: const EdgeInsets.all(8),
-        itemCount: _lessons != null ? _lessons.length : 0,
-        itemBuilder: (BuildContext context, int index) => LessonWidget(lesson: _lessons[index]),
-          separatorBuilder: (BuildContext context, int index) => const Divider()
+        body: Container(
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image:
+                    AssetImage('assets/images/background4.jpg'),
+                    fit: BoxFit.cover)),
+            child: ListView.separated(
+                padding: const EdgeInsets.all(8),
+                itemCount: _lessons != null ? _lessons.length : 0,
+                itemBuilder: (BuildContext context, int index) =>
+                    LessonWidget(lesson: _lessons[index]),
+                separatorBuilder: (BuildContext context, int index) =>
+                const Divider())),
+        drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget> [
+            DrawerHeader(
+                child: Text('Hello, world!'),
+                decoration: BoxDecoration(color: Theme.of(context).primaryColor)
+            ),
+
+            InkWell(
+              child: ListTile(
+                title: Text('Privacy Policy'),
+                trailing: Icon(Icons.open_in_browser)
+              ),
+                onTap: () {
+                  launch('https://musicscool.dk/privacypolicy');
+                }
+            )
+          ]
+        )
       )
     );
   }

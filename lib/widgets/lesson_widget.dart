@@ -16,8 +16,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:my_musicscool_app/models/lesson.dart';
-import 'package:my_musicscool_app/models/homework.dart';
+import 'package:musicscool/models/lesson.dart';
+import 'package:musicscool/models/homework.dart';
 
 class LessonWidget extends StatelessWidget {
   LessonWidget({this.lesson}) : super(key: Key(lesson.start.toIso8601String()));

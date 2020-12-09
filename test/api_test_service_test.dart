@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:my_musicscool_app/models/lesson.dart';
+import 'package:musicscool/models/lesson.dart';
 import 'package:test/test.dart';
-import 'package:my_musicscool_app/services/api_test_service.dart';
+import 'package:musicscool/services/api_test_service.dart';
 
 void main() {
   test('login returns token', () async {

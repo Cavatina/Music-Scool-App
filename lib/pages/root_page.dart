@@ -16,8 +16,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-//import 'package:my_musicscool_app/pages/login_page.dart';
-import 'package:my_musicscool_app/pages/home_page.dart';
+//import 'package:musicscool/pages/login_page.dart';
+import 'package:musicscool/pages/home_page.dart';
 
 class RootPage extends StatefulWidget {
   @override

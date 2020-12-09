@@ -16,9 +16,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 import 'dart:async';
 import 'dart:convert' show json;
 import 'dart:math';
-import 'package:my_musicscool_app/services/api.dart';
-import 'package:my_musicscool_app/models/student.dart';
-import 'package:my_musicscool_app/models/lesson.dart';
+import 'package:musicscool/services/api.dart';
+import 'package:musicscool/models/student.dart';
+import 'package:musicscool/models/lesson.dart';
 
 
 class ApiTestService implements Api {

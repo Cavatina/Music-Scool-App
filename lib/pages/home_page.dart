@@ -16,9 +16,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:my_musicscool_app/models/lesson.dart';
-import 'package:my_musicscool_app/services/api_test_service.dart';
-import 'package:my_musicscool_app/widgets/lesson_widget.dart';
+import 'package:musicscool/models/lesson.dart';
+import 'package:musicscool/services/api_test_service.dart';
+import 'package:musicscool/widgets/lesson_widget.dart';
 
 
 class HomePage extends StatefulWidget {

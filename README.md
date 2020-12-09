@@ -1,12 +1,12 @@
-# My Music'Scool App
+# Music'Scool App
 
-Mobile app for Music'Scool students. Developed for Music'Scool DK.
+Mobile app for Music'Scool students. Developed for Music'Scool, Denmark.
 
 ## Copyright
 
-Copyright (C) 2020 Music'Scool DK.
+Copyright (C) 2020 Music'Scool, Denmark.
 
-All artwork, including the Music'Scool logo, is (C) Music'Scool DK.
+All artwork, including the Music'Scool logo, is (C) Music'Scool, Denmark.
 All rights reserved. Any use or redistribution without explicit permission
 is prohibited.
 

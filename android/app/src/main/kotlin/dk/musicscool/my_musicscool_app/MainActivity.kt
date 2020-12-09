@@ -1,4 +1,4 @@
-package dk.musicscool.my_musicscool_app
+package dk.musicscool.musicscool
 
 import io.flutter.embedding.android.FlutterActivity
 

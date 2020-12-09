@@ -1,4 +1,4 @@
-name: my_musicscool_app
+name: musicscool
 description: Mobile app for Music'Scool students.
 
 publish_to: 'none' # Do not publish to pub.dev

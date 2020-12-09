@@ -13,11 +13,13 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
+import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:musicscool/models/lesson.dart';
 import 'package:musicscool/models/homework.dart';
+import 'package:musicscool/widgets/countdown_timer_widget.dart';
 
 class LessonWidget extends StatelessWidget {
   LessonWidget({this.lesson}) : super(key: Key(lesson.start.toIso8601String()));
@@ -46,10 +48,24 @@ class LessonWidget extends StatelessWidget {
     return Wrap(direction: Axis.vertical, children: icons);
   }
 
-  List<Widget> rows() {
+  List<Widget> rows(BuildContext context) {
     List<Widget> out = <Widget>[];
+    if (lesson.isNext) {
+      var devSize = MediaQuery.of(context).size;
+      double boxWidth = min(devSize.width / 5.5, 100.0);
+      out.add(Container(
+        padding: EdgeInsets.symmetric(vertical: devSize.height / 6),
+        child: Column(
+          children: <Widget> [
+            Text('You\'re about to ROCK in:'),
+            CountdownTimer(to: lesson.start, boxWidth: boxWidth)
+          ]
+        ),
+      ));
+      //out.add(ListTile(title: CountdownTimer(to:lesson.start)));
+    }
     out.add(ListTile(
-              title: Text(lesson.start.toString()),
+              title: Text(lesson.start.toString().substring(0, 16)),
               subtitle: Text(lesson.status)));
     if (lesson.homework != null) {
       lesson.homework.forEach((Homework homework) =>
@@ -95,7 +111,7 @@ class LessonWidget extends StatelessWidget {
       child: Dismissible(
         key: Key(lesson.start.toString()),
         child: Column(
-          children: rows()
+          children: rows(context)
         ),
         confirmDismiss: (dir) => confirmDismiss(context, dir),
         direction: DismissDirection.endToStart,

@@ -78,12 +78,14 @@ class ApiTestService implements Api {
         );
         if (_allLessons[i].start.isAfter(now) && _lessonIndex == _allLessons.length) {
           _lessonIndex = _prevLessonIndex = i;
+          _allLessons[i].isNext = true;
         }
       }
       return _allLessons;
     }
     return _allLessons;
   }
+
   List<Lesson> _allLessons;
   int _lessonIndex = -1;
   int _prevLessonIndex = -1;

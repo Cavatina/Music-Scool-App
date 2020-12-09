@@ -25,6 +25,9 @@ class Lesson {
   final DateTime catchUp;
   final List<Homework> homework;
 
+  @JsonKey(ignore: true)
+  bool isNext = false;
+
   Lesson(this.start, this.status, this.catchUp, this.homework);
   Lesson copyWith({DateTime start, String status, DateTime catchUp, List<Homework> homework}) {
     return Lesson(

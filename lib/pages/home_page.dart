@@ -19,6 +19,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:musicscool/models/lesson.dart';
 import 'package:musicscool/services/api_test_service.dart';
 import 'package:musicscool/widgets/lesson_widget.dart';
+import 'package:musicscool/generated/l10n.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -73,13 +74,13 @@ class _HomePageState extends State<HomePage> {
           padding: EdgeInsets.zero,
           children: <Widget> [
             DrawerHeader(
-                child: Text('Hello, world!'),
+                child: Text(''),
                 decoration: BoxDecoration(color: Theme.of(context).primaryColor)
             ),
 
             InkWell(
               child: ListTile(
-                title: Text('Privacy Policy'),
+                title: Text(S.of(context).privacyPolicy),
                 trailing: Icon(Icons.open_in_browser)
               ),
                 onTap: () {

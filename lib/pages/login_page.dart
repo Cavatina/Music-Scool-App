@@ -16,6 +16,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 import 'package:flutter/material.dart';
 
 import 'package:flutter/services.dart';
+import 'package:musicscool/generated/l10n.dart';
 //import 'package:http/http.dart' as http;
 //import 'package:shared_preferences/shared_preferences.dart';
 
@@ -60,7 +61,7 @@ class _LoginPageState extends State<LoginPage> {
             style: TextStyle(color: Colors.white70),
             decoration: InputDecoration(
               icon: Icon(Icons.email, color: Colors.white70),
-              hintText: 'Email',
+              hintText: S.of(context).email,
               border: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white70)),
               hintStyle: TextStyle(color: Colors.white70),
             ),
@@ -73,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
             style: TextStyle(color: Colors.white70),
             decoration: InputDecoration(
               icon: Icon(Icons.lock, color: Colors.white70),
-              hintText: 'Password',
+              hintText: S.of(context).password,
               border: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white70)),
               hintStyle: TextStyle(color: Colors.white70),
             ),
@@ -102,7 +103,7 @@ class _LoginPageState extends State<LoginPage> {
         },*/
         elevation: 0.0,
         color: Colors.purple,
-        child: Text('Sign In', style: TextStyle(color: Colors.white70)),
+        child: Text(S.of(context).signIn, style: TextStyle(color: Colors.white70)),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
       ),
     );

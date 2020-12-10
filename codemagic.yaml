@@ -33,6 +33,8 @@ workflows:
         # set up local properties
         echo "flutter.sdk=$HOME/programs/flutter" > "$FCI_BUILD_DIR/android/local.properties"
       - cd . && flutter packages pub get
+      - cd . && flutter pub global activate intl_utils
+      - cd . && flutter pub global run intl_utils:generate
       - cd . && flutter analyze
       - cd . && flutter test
       - cd . && flutter build apk --debug

@@ -108,24 +108,32 @@ class LessonWidget extends StatelessWidget {
     return false;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Dismissible(
-        key: Key(lesson.id.toString()),
-        child: Column(
-          children: rows(context)
-        ),
-        confirmDismiss: (dir) => confirmDismiss(context, dir),
-        direction: DismissDirection.endToStart,
-        background: Container(
-          color: Colors.red,
-          padding: EdgeInsets.symmetric(horizontal: 20),
-          alignment: AlignmentDirectional.centerEnd,
-          child: FlatButton.icon(
+  Widget cancellableIfPending(BuildContext context, Widget child) {
+    if (lesson.pending == true) {
+      return Dismissible(
+          key: Key(lesson.id.toString()),
+          child: child,
+          confirmDismiss: (dir) => confirmDismiss(context, dir),
+          direction: DismissDirection.endToStart,
+          background: Container(
+              color: Colors.red,
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              alignment: AlignmentDirectional.centerEnd,
+              child: FlatButton.icon(
                   onPressed: null,
                   icon: Text('Cancel'),
                   label: Icon(Icons.delete, color: Colors.white))
+          )
+      );
+    }
+    return child;
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: cancellableIfPending(context,
+          Column(
+            children: rows(context)
         )
       )
     );

@@ -24,13 +24,13 @@ import 'package:musicscool/widgets/countdown_timer_widget.dart';
 import 'package:musicscool/generated/l10n.dart';
 
 class LessonWidget extends StatelessWidget {
-  LessonWidget({this.lesson}) : super(key: Key(lesson.start.toIso8601String()));
+  LessonWidget({this.lesson}) : super(key: Key(lesson.from.toIso8601String()));
 
   final Lesson lesson;
 
   Widget homeworkIcons(Homework homework) {
     List<Widget> icons = <Widget>[];
-    if (homework.downloadUrl != null) {
+    if (homework.fileUrl != null) {
       icons.add(GestureDetector(
           onTap: () {
 
@@ -60,13 +60,13 @@ class LessonWidget extends StatelessWidget {
         child: Column(
           children: <Widget> [
             Text(S.of(context).aboutToRock),
-            CountdownTimer(to: lesson.start, boxWidth: boxWidth)
+            CountdownTimer(to: lesson.from, boxWidth: boxWidth)
           ]
         ),
       ));
       //out.add(ListTile(title: CountdownTimer(to:lesson.start)));
     }
-    String start = DateFormat.yMMMEd().format(lesson.start);
+    String start = DateFormat.yMMMEd().format(lesson.from);
     out.add(ListTile(
               title: Text(start),
               subtitle: Text(lesson.status)));
@@ -74,7 +74,7 @@ class LessonWidget extends StatelessWidget {
       lesson.homework.forEach((Homework homework) =>
           out.add(ListTile(
             leading: homeworkIcons(homework),
-              title: Text(homework.description))));
+              title: Text(homework.message))));
     }
     return out;
   }
@@ -112,7 +112,7 @@ class LessonWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Dismissible(
-        key: Key(lesson.start.toString()),
+        key: Key(lesson.id.toString()),
         child: Column(
           children: rows(context)
         ),

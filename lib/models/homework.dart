@@ -19,12 +19,12 @@ part 'homework.g.dart';
 
 @JsonSerializable()
 class Homework {
-  final String description;
-  final String downloadTitle;
-  final String downloadUrl;
+  final String message;
+  final String fileName;
+  final String fileUrl;
   final String linkUrl;
 
-  Homework(this.description, this.downloadTitle, this.downloadUrl, this.linkUrl);
+  Homework(this.message, this.fileName, this.fileUrl, this.linkUrl);
   factory Homework.fromJson(Map<String, dynamic> json) => _$HomeworkFromJson(json);
 
   Map<String, dynamic> toJson() => _$HomeworkToJson(this);

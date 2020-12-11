@@ -17,21 +17,21 @@ import 'dart:async';
 import 'dart:convert' show json;
 import 'dart:math';
 import 'package:musicscool/services/api.dart';
-import 'package:musicscool/models/student.dart';
+import 'package:musicscool/models/user.dart';
 import 'package:musicscool/models/lesson.dart';
 
 
 class ApiTestService implements Api {
   @override
   Future<String> login({String username, String password}) async {
-    Student s = await student;
+    User s = await user;
     if (username == s.email && password == 'password') return 'dummy-token';
     throw Exception('Illegal login');
   }
 
   @override
-  Future<Student> get student async {
-    return Student.fromJson(json.decode(testStudent));
+  Future<User> get user async {
+    return User.fromJson(json.decode(testUser)['data']);
   }
 
   Future<List<Lesson>> allLessons() async {
@@ -39,45 +39,43 @@ class ApiTestService implements Api {
   }
 
   @override
-  Future<List<Lesson>> getPrevLessons() async {
+  Future<List<Lesson>> getLessons({DateTime before, DateTime after}) async {
     return _cachedLessons().then((lessons) {
-      int itemCount = min(_prevLessonIndex, pageSize);
-      _prevLessonIndex -= itemCount;
-      return lessons.sublist(_prevLessonIndex, _prevLessonIndex + itemCount);
-    });
-  }
-
-  @override
-  Future<List<Lesson>> getNextLessons() async {
-    return _cachedLessons().then((lessons) {
-      int start = _lessonIndex;
-      _lessonIndex = min(_lessonIndex + pageSize, lessons.length);
-      return lessons.sublist(start, _lessonIndex);
+      if (before != null) {
+        for (int i = _allLessons.length - 1; i > 0; --i) {
+          if (_allLessons[i].from.isBefore(before)) {
+            return _allLessons.sublist(max(0, i-pageSize+1), i+1);
+          }
+        }
+      }
+      // Default: 8 Weeks before now
+      after ??= DateTime.now().subtract(Duration(days: 7*8));
+      for (int i = 0; i < _allLessons.length; ++i) {
+        if (_allLessons[i].from.isAfter(after)) {
+          return _allLessons.sublist(i, min(i+pageSize, _allLessons.length));
+        }
+      }
+      return [];
       });
   }
 
-  // Future _readFixture(String baseName) {
-  //   String path = join(dirname(Platform.script.toFilePath()), 'test', 'fixtures',
-  //       baseName);
-  //   return File(path).readAsString().then<String>((String value) => json.decode(value));
-  // }
-
   Future<List<Lesson>> _cachedLessons() async {
     if (_lessonIndex == -1) {
-      List<dynamic> js = json.decode(testLessons);
+      List<dynamic> js = json.decode(testLessons)['data'];
       _allLessons = js.map<Lesson>((jsObj) => Lesson.fromJson(jsObj)).toList();
       DateTime now = DateTime.now();
       Duration diff;
       if (_allLessons.isNotEmpty) {
         diff = now.difference(DateTime.parse('2020-11-23 22:46:00'));
       }
+      User u = await user;
       _lessonIndex = _allLessons.length;
       for (int i = 0; i < _allLessons.length; ++i) {
         _allLessons[i] = _allLessons[i].copyWith(
-            start: _allLessons[i].start.add(Duration(days:diff.inDays))
+            from: _allLessons[i].from.add(Duration(days:diff.inDays)),
+            until: _allLessons[i].until.add(Duration(days:diff.inDays))
         );
-        if (_allLessons[i].start.isAfter(now) && _lessonIndex == _allLessons.length) {
-          _lessonIndex = _prevLessonIndex = i;
+        if (u.student.nextLessonId == _allLessons[i].id) {
           _allLessons[i].isNext = true;
         }
       }
@@ -88,132 +86,13 @@ class ApiTestService implements Api {
 
   List<Lesson> _allLessons;
   int _lessonIndex = -1;
-  int _prevLessonIndex = -1;
-  static const pageSize = 10;
+  static const pageSize = 25;
 }
 
-String testStudent = '''
-{
-"name": "My Favourite Student",
-"email": "someone@acme.com",
-"nextLesson": "2020-11-28T15:00:00",
-"lessonsOwed": 0,
-"lessonsPresent": 49,
-"nextInvoice": "2020-10-01"
-}
+String testUser = '''
+{"data":{"name":"Mrs. Pixie","email":"someone@acme.com","student":{"schoolContact":{"name":"Roan Segers","phone":"+45 12 34 56 78","email":"info@musicschooI.dk"},"nextLessonId":1138}}}
 ''';
 
 String testLessons = '''
-[
-{
-  "start": "2020-08-29T15:00:00", "status": "Student cancelled too late", "catchUp": null
-},
-{
-"start": "2020-09-05T12:30:00", "status": "Student present", "catchUp": null
-},
-{
-"start": "2020-09-12T15:00:00", "status": "Student present", "catchUp": null,
-"homework": [
-{"description": "16th kick grooves",
-"downloadTitle": "Grooves 16th Kick.pdf",
-"downloadUrl": "https://www.musicscool.dk/my/public/homework/download/9"}
-]
-},
-{
-"start": "2020-09-19T15:00:00", "status": "Student present", "catchUp": null
-},
-{
-"start": "2020-09-26T13:00:00", "status": "Student present", "catchUp": null,
-"homework": [
-{"description": "Øvelse til fills. Spil mønstrene med snare og ride bækken samtidligt henover stortromme på takt (hihat off beat)",
-"downloadTitle": "LATI-050.pdf",
-"downloadUrl": "https://www.musicscool.dk/my/public/homework/download/21",
-"linkUrl": "https://www.youtube.com/embed/M0zfNytpoeQ"}
-]
-},
-{
-"start": "2020-10-03T15:00:00", "status": "Student cancelled", "catchUp": "2020-10-24T14:00:00"
-},
-{
-"start": "2020-10-10T08:30:00", "status": "Student present", "catchUp": null
-},
-{
-"start": "2020-10-24T14:00:00", "status": "Student present", "catchUp": "2020-10-03T15:00:00"
-},
-{
-"start": "2020-10-24T14:30:00", "status": "Student present", "catchUp": null,
-"homework": [
-{"description": "Behind the Blood - Katatonia",
-"downloadTitle": "Behind The Blood.pdf",
-"downloadUrl": "https://www.musicscool.dk/my/public/homework/download/182",
-"linkUrl": "https://www.youtube.com/embed/nQaN2elJ-dQ"}
-]
-},
-{
-"start": "2020-10-31T15:00:00", "status": "Student cancelled too late", "catchUp": "2020-10-03T15:00:00",
-"homework": [
-{"description": "Trommenoder forklaring",
-"downloadTitle": "Trommenoder.pdf",
-"downloadUrl": "https://www.musicscool.dk/my/public/homework/download/209"},
-{"description": "Første 30 sekunder :)",
-"downloadTitle": "Behind The Blood.pdf",
-"downloadUrl": "https://www.musicscool.dk/my/public/homework/download/211"}
-]
-},
-{
-"start": "2020-11-07T15:00:00", "status": "Student present", "catchUp": null
-},
-{
-"start": "2020-11-14T15:00:00", "status": "Student present", "catchUp": null,
-"homework": [
-{"description": "Update Behind the Blood",
-"downloadTitle": "Behind The Blood.pdf",
-"downloadUrl": "https://www.musicscool.dk/my/public/homework/download/261"}
-]
-},
-{
-"start": "2020-11-21T15:00:00", "status": "Student present", "catchUp": null,
-"homework": [
-{"description": "R L K grouping som fill in over 2 takter",
-"downloadTitle": "RLK grouping.pdf",
-"downloadUrl": "https://www.musicscool.dk/my/public/homework/download/284"}
-]
-},
-{
-"start": "2020-11-28T15:00:00", "status": "Awaiting status", "catchUp": null
-},
-{
-"start": "2020-12-05T15:00:00", "status": "Awaiting status", "catchUp": null
-},
-{
-"start": "2020-12-12T15:00:00", "status": "Awaiting status", "catchUp": null
-},
-{
-"start": "2020-12-19T15:00:00", "status": "Awaiting status", "catchUp": null
-},
-{
-"start": "2021-01-09T15:00:00", "status": "Awaiting status", "catchUp": null
-},
-{
-"start": "2021-01-16T15:00:00", "status": "Awaiting status", "catchUp": null
-},
-{
-"start": "2021-01-23T15:00:00", "status": "Awaiting status", "catchUp": null
-},
-{
-"start": "2021-01-30T15:00:00", "status": "Awaiting status", "catchUp": null
-},
-{
-"start": "2021-02-06T15:00:00", "status": "Awaiting status", "catchUp": null
-},
-{
-"start": "2021-02-13T15:00:00", "status": "Awaiting status", "catchUp": null
-},
-{
-"start": "2021-02-20T15:00:00", "status": "Awaiting status", "catchUp": null
-},
-{
-"start": "2021-03-06T15:00:00", "status": "Awaiting status", "catchUp": null
-}
-]
+{"data":[{"id":1116,"from":"2020-05-02T13:00:00.000000Z","until":"2020-05-02T13:30:00.000000Z","status":"STUDENT_PRESENT","teacher":{"id":1,"name":"Roan Segers"}},{"id":1117,"from":"2020-05-09T13:00:00.000000Z","until":"2020-05-09T13:30:00.000000Z","status":"STUDENT_PRESENT","teacher":{"id":1,"name":"Roan Segers"}},{"id":1118,"from":"2020-05-16T13:00:00.000000Z","until":"2020-05-16T13:30:00.000000Z","status":"STUDENT_PRESENT","teacher":{"id":1,"name":"Roan Segers"}},{"id":1119,"from":"2020-05-23T13:00:00.000000Z","until":"2020-05-23T13:30:00.000000Z","status":"STUDENT_CANCELLED_LATE","teacher":{"id":1,"name":"Roan Segers"},"cancelled":true},{"id":1120,"from":"2020-06-06T13:00:00.000000Z","until":"2020-06-06T13:30:00.000000Z","status":"STUDENT_PRESENT","teacher":{"id":1,"name":"Roan Segers"}},{"id":1121,"from":"2020-06-13T13:00:00.000000Z","until":"2020-06-13T13:30:00.000000Z","status":"STUDENT_PRESENT","teacher":{"id":1,"name":"Roan Segers"}},{"id":1397,"from":"2020-06-13T13:30:00.000000Z","until":"2020-06-13T14:00:00.000000Z","status":"STUDENT_CANCELLED_LATE","teacher":{"id":1,"name":"Roan Segers"},"cancelled":true,"replacesLesson":{"id":1104,"from":"2020-01-25T14:00:00.000000Z"}},{"id":1122,"from":"2020-06-20T13:00:00.000000Z","until":"2020-06-20T13:30:00.000000Z","status":"STUDENT_PRESENT","teacher":{"id":1,"name":"Roan Segers"}},{"id":1123,"from":"2020-06-27T13:00:00.000000Z","until":"2020-06-27T13:30:00.000000Z","status":"STUDENT_PRESENT","teacher":{"id":1,"name":"Roan Segers"}},{"id":3071,"from":"2020-08-15T12:30:00.000000Z","until":"2020-08-15T13:00:00.000000Z","status":"STUDENT_ABSENT","teacher":{"id":1,"name":"Roan Segers"},"cancelled":true,"replacesLesson":{"id":1091,"from":"2019-11-16T14:00:00.000000Z"}},{"id":1124,"from":"2020-08-15T13:00:00.000000Z","until":"2020-08-15T13:30:00.000000Z","status":"STUDENT_PRESENT","teacher":{"id":1,"name":"Roan Segers"}},{"id":1125,"from":"2020-08-22T13:00:00.000000Z","until":"2020-08-22T13:30:00.000000Z","status":"STUDENT_PRESENT","teacher":{"id":1,"name":"Roan Segers"}},{"id":1126,"from":"2020-08-29T13:00:00.000000Z","until":"2020-08-29T13:30:00.000000Z","status":"STUDENT_CANCELLED_LATE","teacher":{"id":1,"name":"Roan Segers"},"cancelled":true},{"id":1127,"from":"2020-09-05T10:30:00.000000Z","until":"2020-09-05T11:00:00.000000Z","status":"STUDENT_PRESENT","teacher":{"id":1,"name":"Roan Segers"},"relocated":true},{"id":1128,"from":"2020-09-12T13:00:00.000000Z","until":"2020-09-12T13:30:00.000000Z","status":"STUDENT_PRESENT","teacher":{"id":1,"name":"Roan Segers"},"homework":[{"message":"16th kick grooves","fileName":"homework\/Grooves 16th Kick.pdf","fileUrl":"http:\/\/localhost:8000\/api\/v1\/homework\/9"}]},{"id":1129,"from":"2020-09-19T13:00:00.000000Z","until":"2020-09-19T13:30:00.000000Z","status":"STUDENT_PRESENT","teacher":{"id":1,"name":"Roan Segers"}},{"id":1130,"from":"2020-09-26T11:00:00.000000Z","until":"2020-09-26T11:30:00.000000Z","status":"STUDENT_PRESENT","teacher":{"id":1,"name":"Roan Segers"},"relocated":true,"homework":[{"message":"\u00d8velse til fills. Spil m\u00f8nstrene med snare og ride b\u00e6kken samtidligt henover stortromme p\u00e5 takt (hihat off beat)","fileName":"homework\/LATI-050.pdf","fileUrl":"http:\/\/localhost:8000\/api\/v1\/homework\/21","linkUrl":"https:\/\/www.youtube.com\/embed\/M0zfNytpoeQ"}]},{"id":1131,"from":"2020-10-03T13:00:00.000000Z","until":"2020-10-03T13:30:00.000000Z","status":"STUDENT_CANCELLED","teacher":{"id":1,"name":"Roan Segers"},"cancelled":true,"replacementLesson":{"id":3946,"from":"2020-10-24T12:00:00.000000Z"}},{"id":1132,"from":"2020-10-10T06:30:00.000000Z","until":"2020-10-10T07:00:00.000000Z","status":"STUDENT_PRESENT","teacher":{"id":1,"name":"Roan Segers"},"relocated":true},{"id":3946,"from":"2020-10-24T12:00:00.000000Z","until":"2020-10-24T12:30:00.000000Z","status":"STUDENT_PRESENT","teacher":{"id":1,"name":"Roan Segers"},"replacesLesson":{"id":1131,"from":"2020-10-03T13:00:00.000000Z"}},{"id":1133,"from":"2020-10-24T12:30:00.000000Z","until":"2020-10-24T13:00:00.000000Z","status":"STUDENT_PRESENT","teacher":{"id":1,"name":"Roan Segers"},"relocated":true,"homework":[{"message":"Behind the Blood - Katatonia","fileName":"homework\/Behind The Blood.pdf","fileUrl":"http:\/\/localhost:8000\/api\/v1\/homework\/182","linkUrl":"https:\/\/www.youtube.com\/embed\/nQaN2elJ-dQ"}]},{"id":1134,"from":"2020-10-31T14:00:00.000000Z","until":"2020-10-31T14:30:00.000000Z","status":"STUDENT_CANCELLED_LATE","teacher":{"id":1,"name":"Roan Segers"},"cancelled":true,"homework":[{"message":"Trommenoder forklaring","fileName":"homework\/Trommenoder.pdf","fileUrl":"http:\/\/localhost:8000\/api\/v1\/homework\/209"},{"message":"F\u00f8rste 30 sekunder :)","fileName":"homework\/Behind The Blood.pdf","fileUrl":"http:\/\/localhost:8000\/api\/v1\/homework\/211"}]},{"id":1135,"from":"2020-11-07T14:00:00.000000Z","until":"2020-11-07T14:30:00.000000Z","status":"STUDENT_PRESENT","teacher":{"id":1,"name":"Roan Segers"}},{"id":1136,"from":"2020-11-14T14:00:00.000000Z","until":"2020-11-14T14:30:00.000000Z","status":"STUDENT_PRESENT","teacher":{"id":1,"name":"Roan Segers"},"homework":[{"message":"Update Behind the Blood","fileName":"homework\/Behind The Blood.pdf","fileUrl":"http:\/\/localhost:8000\/api\/v1\/homework\/261"}]},{"id":1137,"from":"2020-11-21T14:00:00.000000Z","until":"2020-11-21T14:30:00.000000Z","status":"STUDENT_PRESENT","teacher":{"id":1,"name":"Roan Segers"},"homework":[{"message":"R L K grouping som fill in over 2 takter","fileName":"homework\/RLK grouping.pdf","fileUrl":"http:\/\/localhost:8000\/api\/v1\/homework\/284"}]},{"id":1138,"from":"2020-11-28T14:00:00.000000Z","until":"2020-11-28T14:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":1139,"from":"2020-12-05T14:00:00.000000Z","until":"2020-12-05T14:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":1140,"from":"2020-12-12T14:00:00.000000Z","until":"2020-12-12T14:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":1141,"from":"2020-12-19T14:00:00.000000Z","until":"2020-12-19T14:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":4573,"from":"2021-01-09T14:00:00.000000Z","until":"2021-01-09T14:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":4574,"from":"2021-01-16T14:00:00.000000Z","until":"2021-01-16T14:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":4575,"from":"2021-01-23T14:00:00.000000Z","until":"2021-01-23T14:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":4576,"from":"2021-01-30T14:00:00.000000Z","until":"2021-01-30T14:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":4577,"from":"2021-02-06T14:00:00.000000Z","until":"2021-02-06T14:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":4578,"from":"2021-02-13T14:00:00.000000Z","until":"2021-02-13T14:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":4579,"from":"2021-02-20T14:00:00.000000Z","until":"2021-02-20T14:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":4580,"from":"2021-03-06T14:00:00.000000Z","until":"2021-03-06T14:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":4581,"from":"2021-03-13T14:00:00.000000Z","until":"2021-03-13T14:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":4582,"from":"2021-03-20T14:00:00.000000Z","until":"2021-03-20T14:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":4583,"from":"2021-03-27T14:00:00.000000Z","until":"2021-03-27T14:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":4584,"from":"2021-04-10T13:00:00.000000Z","until":"2021-04-10T13:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":4585,"from":"2021-04-17T13:00:00.000000Z","until":"2021-04-17T13:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":4586,"from":"2021-04-24T13:00:00.000000Z","until":"2021-04-24T13:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":4587,"from":"2021-05-01T13:00:00.000000Z","until":"2021-05-01T13:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":4588,"from":"2021-05-08T13:00:00.000000Z","until":"2021-05-08T13:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":4589,"from":"2021-05-15T13:00:00.000000Z","until":"2021-05-15T13:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":4590,"from":"2021-05-29T13:00:00.000000Z","until":"2021-05-29T13:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":4591,"from":"2021-06-05T13:00:00.000000Z","until":"2021-06-05T13:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":4592,"from":"2021-06-12T13:00:00.000000Z","until":"2021-06-12T13:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":4593,"from":"2021-06-19T13:00:00.000000Z","until":"2021-06-19T13:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":4594,"from":"2021-06-26T13:00:00.000000Z","until":"2021-06-26T13:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":4595,"from":"2021-08-14T13:00:00.000000Z","until":"2021-08-14T13:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":4596,"from":"2021-08-21T13:00:00.000000Z","until":"2021-08-21T13:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":4597,"from":"2021-08-28T13:00:00.000000Z","until":"2021-08-28T13:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":4598,"from":"2021-09-04T13:00:00.000000Z","until":"2021-09-04T13:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":4599,"from":"2021-09-11T13:00:00.000000Z","until":"2021-09-11T13:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":4600,"from":"2021-09-18T13:00:00.000000Z","until":"2021-09-18T13:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":4601,"from":"2021-09-25T13:00:00.000000Z","until":"2021-09-25T13:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":4602,"from":"2021-10-02T13:00:00.000000Z","until":"2021-10-02T13:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":4603,"from":"2021-10-09T13:00:00.000000Z","until":"2021-10-09T13:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":4604,"from":"2021-10-16T13:00:00.000000Z","until":"2021-10-16T13:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":4605,"from":"2021-10-30T13:00:00.000000Z","until":"2021-10-30T13:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":4606,"from":"2021-11-06T14:00:00.000000Z","until":"2021-11-06T14:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":4607,"from":"2021-11-13T14:00:00.000000Z","until":"2021-11-13T14:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":4608,"from":"2021-11-20T14:00:00.000000Z","until":"2021-11-20T14:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":4609,"from":"2021-11-27T14:00:00.000000Z","until":"2021-11-27T14:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":4610,"from":"2021-12-04T14:00:00.000000Z","until":"2021-12-04T14:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":4611,"from":"2021-12-11T14:00:00.000000Z","until":"2021-12-11T14:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true},{"id":4612,"from":"2021-12-18T14:00:00.000000Z","until":"2021-12-18T14:30:00.000000Z","status":"PENDING","teacher":{"id":1,"name":"Roan Segers"},"pending":true}]}
 ''';

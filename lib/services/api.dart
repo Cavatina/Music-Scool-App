@@ -13,13 +13,12 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
-import 'package:musicscool/models/student.dart';
+import 'package:musicscool/models/user.dart';
 import 'package:musicscool/models/lesson.dart';
 import 'dart:async';
 
 abstract class Api {
   Future<String> login({String username, String password});
-  Future<Student> get student;
-  Future<List<Lesson>> getPrevLessons();
-  Future<List<Lesson>> getNextLessons();
+  Future<User> get user;
+  Future<List<Lesson>> getLessons({DateTime before, DateTime after});
 }

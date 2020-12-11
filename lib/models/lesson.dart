@@ -14,27 +14,48 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
 import 'package:musicscool/models/homework.dart';
+import 'package:musicscool/models/teacher.dart';
+import 'package:musicscool/models/lesson_ref.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'lesson.g.dart';
 
 @JsonSerializable()
 class Lesson {
-  final DateTime start;
+  final int id;
+  final DateTime from;
+  final DateTime until;
   final String status;
-  final DateTime catchUp;
+  final Teacher teacher;
+  final bool pending;
+  final bool cancelled;
+  final bool relocated;
+  final bool requested;
+  final LessonRef replacesLesson;
+  final LessonRef replacementLesson;
   final List<Homework> homework;
 
   @JsonKey(ignore: true)
   bool isNext = false;
 
-  Lesson(this.start, this.status, this.catchUp, this.homework);
-  Lesson copyWith({DateTime start, String status, DateTime catchUp, List<Homework> homework}) {
+  Lesson(this.id, this.from, this.until, this.status, this.teacher,
+      this.pending, this.cancelled, this.relocated, this.requested,
+      this.replacesLesson, this.replacementLesson, this.homework);
+  Lesson copyWith({DateTime from, DateTime until, String status,
+    bool pending, bool cancelled, bool relocated, bool requested}) {
     return Lesson(
-      start ?? this.start,
-      status ?? this.status,
-      catchUp ?? this.catchUp,
-      homework ?? this.homework
+        id,
+        from ?? this.from,
+        until ?? this.until,
+        status ?? this.status,
+        teacher,
+        pending ?? this.pending,
+        cancelled ?? this.cancelled,
+        relocated ?? this.relocated,
+        requested ?? this.requested,
+        replacesLesson,
+        replacementLesson,
+        homework
     );
   }
 

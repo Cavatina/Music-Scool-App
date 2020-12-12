@@ -130,11 +130,29 @@ class LessonWidget extends StatelessWidget {
   }
   @override
   Widget build(BuildContext context) {
+    Border border;
+    if (lesson.cancelled == true) {
+      border = Border(left: BorderSide(width: 2.0, color: Colors.red[900]));
+    }
+    else if (lesson.pending != true) {
+      border = Border(left: BorderSide(width: 2.0, color: Theme.of(context).primaryColor));
+    }
+    else if (lesson.isNext != true) {
+      border = Border(right: BorderSide(width: 2.0, color: Colors.white));
+    }
+    else {
+      border = Border(right: BorderSide(width: 2.0, color: Colors.black));
+    }
     return Card(
       child: cancellableIfPending(context,
-          Column(
-            children: rows(context)
-        )
+          Container(
+            decoration: BoxDecoration(
+              border: border
+            ),
+            child: Column(
+              children: rows(context)
+            ),
+          )
       )
     );
   }

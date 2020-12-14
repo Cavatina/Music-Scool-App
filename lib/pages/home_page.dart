@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:musicscool/models/lesson.dart';
+import 'package:musicscool/models/user.dart';
 import 'package:musicscool/services/api_test_service.dart';
 import 'package:musicscool/widgets/lesson_widget.dart';
 import 'package:musicscool/generated/l10n.dart';
@@ -29,6 +30,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final ApiTestService _api = ApiTestService();
+  bool _notifications = true;
   List<Lesson> _lessons = <Lesson>[];
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -70,26 +72,101 @@ class _HomePageState extends State<HomePage> {
                 separatorBuilder: (BuildContext context, int index) =>
                 const Divider())),
         drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget> [
-            DrawerHeader(
-                child: Text(''),
-                decoration: BoxDecoration(color: Theme.of(context).primaryColor)
-            ),
+            child: FutureBuilder<User>(
+                future: _api.user,
 
-            InkWell(
-              child: ListTile(
-                title: Text(S.of(context).privacyPolicy),
-                trailing: Icon(Icons.open_in_browser)
-              ),
-                onTap: () {
-                  launch('https://musicscool.dk/privacypolicy');
-                }
-            )
-          ]
+          builder: (context, AsyncSnapshot<User> snapshot) {
+            if (snapshot.hasData) {
+              return userInfo(context, snapshot.data);
+            }
+            else {
+              return CircularProgressIndicator();
+            }
+          }
         )
       )
+    );
+  }
+
+  Widget userInfo(BuildContext context, User user) {
+    return ListView(
+        padding: EdgeInsets.zero,
+        children: <Widget> [
+          SizedBox(
+            height: 120.0,
+            child: UserAccountsDrawerHeader(
+              accountName: Text(user.name),
+              accountEmail: Text(user.email),
+              //currentAccountPicture: CircleAvatar(child: Text('MS'))
+            ),
+          ),
+          ListTile(
+            title: Text("Music'scool"),
+            leading: SvgPicture.asset('assets/images/Musicscool - Logo - Wit beeldmerk.svg')
+          ),
+          Divider(),
+          InkWell(
+              child: ListTile(
+                  title: Text(user.student.schoolContact.name),
+                  leading: Icon(Icons.sms)
+              ),
+              onTap: () {
+                launch('sms:${user.student.schoolContact.phone}');
+              }
+          ),
+          InkWell(
+              child: ListTile(
+                  title: Text(user.student.schoolContact.phone),
+                  leading: Icon(Icons.call)
+              ),
+              onTap: () {
+                launch('tel:${user.student.schoolContact.phone}');
+              }
+          ),
+          InkWell(
+              child: ListTile(
+                  title: Text(user.student.schoolContact.email),
+                  leading: Icon(Icons.email)
+              ),
+              onTap: () {
+                launch('mailto:${user.student.schoolContact.email}');
+              }
+          ),
+          InkWell(
+              child: ListTile(
+                  title: Text(S.of(context).privacyPolicy),
+                  leading: Icon(Icons.open_in_browser)
+              ),
+              onTap: () {
+                launch('https://musicscool.dk/privacypolicy');
+              }
+          ),
+          ListTile(),
+          ListTile(
+              title: Text('Settings'),
+              leading: Icon(Icons.settings)
+          ),
+          Divider(),
+          SwitchListTile(
+            title: Text('Notifications'),
+            value: _notifications,
+            secondary: Icon(Icons.notifications),
+            onChanged: (bool value) {
+              setState(() {
+                _notifications = value;
+              });
+            }
+          ),
+          InkWell(
+            child: ListTile(
+              title: Text('Logout'),
+              leading: Icon(Icons.logout)
+            ),
+            onTap: () {
+
+            }
+          )
+        ]
     );
   }
 }

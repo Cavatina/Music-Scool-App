@@ -1,9 +1,9 @@
 # Based on https://codemagic.io/app/5fc5305a253cd4a4babce97d/settings
 
 workflows:
-  default-workflow:
-    name: Default Workflow
-    max_build_duration: 60
+  deploy-master:
+    name: deploy-master
+    max_build_duration: 30
     environment:
       vars:
         FCI_KEYSTORE_PATH: /tmp/keystore.keystore
@@ -23,7 +23,7 @@ workflows:
         - push
         - tag
       branch_patterns:
-        - pattern: '*'
+        - pattern: 'master'
           include: true
           source: true
     scripts:
@@ -44,13 +44,13 @@ workflows:
       - cd . && flutter pub global run intl_utils:generate
       - cd . && flutter analyze
       - cd . && flutter test
-      - cd . && flutter build appbundle --build-number=$BUILD_NUMBER
+      - cd . && flutter build appbundle --build-number=$PROJECT_BUILD_NUMBER
       - find . -name "Podfile" -execdir pod install \;
       - keychain initialize
       - app-store-connect fetch-signing-files "$(xcode-project detect-bundle-id)"
         --type IOS_APP_STORE --create
       - keychain add-certificates
-      - cd . && flutter build ios --release --no-codesign --build-number=$BUILD_NUMBER
+      - cd . && flutter build ios --release --no-codesign --build-number=$PROJECT_BUILD_NUMBER
       - xcode-project use-profiles
       - cd . && xcode-project build-ipa --workspace "ios/Runner.xcworkspace" --scheme
         "Runner"

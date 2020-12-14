@@ -5,5 +5,14 @@
   "privacyPolicy": "Privacy Policy",
   "signIn": "Sign In",
   "email": "Email",
-  "password": "Password"
+  "password": "Password",
+  "cancel": "Cancel",
+  "yes": "Yes",
+  "no": "No",
+  "download": "Download",
+  "view": "View",
+  "statusStudentAbsent": "Student absent",
+  "statusStudentCancelled": "Student cancelled",
+  "statusStudentCancelledLate": "Student cancelled too late",
+  "statusTeacherCancelled": "Teacher cancelled"
 }

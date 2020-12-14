@@ -34,6 +34,6 @@ ThemeData theme()
     brightness: Brightness.dark,
     primaryColor: mmColors[900],
     visualDensity: VisualDensity.adaptivePlatformDensity,
-    cardTheme: CardTheme(color: Color.fromRGBO(21, 21, 21, 0.5))
+    cardTheme: CardTheme(color: Color.fromRGBO(21, 21, 21, 0.3))
   );
 }

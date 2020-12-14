@@ -28,28 +28,52 @@ class LessonWidget extends StatelessWidget {
 
   final Lesson lesson;
 
-  Widget homeworkIcons(Homework homework) {
+  Widget homeworkIcons(BuildContext context, Homework homework) {
     List<Widget> icons = <Widget>[];
-    if (homework.fileUrl != null) {
-      icons.add(GestureDetector(
-          onTap: () {
+    var devSize = MediaQuery.of(context).size;
+    double boxWidth = min(devSize.width / 2.6, 300.0);
 
-          },
-          child: Icon(Icons.download_outlined)
-      ));
+    if (homework.fileUrl != null) {
+      icons.add(
+          SizedBox(
+            width: boxWidth,
+            child: OutlinedButton.icon(
+                label: Text(S.of(context).download),
+                onPressed: () {
+                  launch(homework.fileUrl);
+                },
+                icon: Icon(Icons.download_outlined)
+            ),
+          )
+          );
     }
     if (homework.linkUrl != null) {
       icons.add(
-          GestureDetector(
-            onTap: () {
+        SizedBox(
+          width: boxWidth,
+          child: OutlinedButton.icon(
+            label: Text(S.of(context).view),
+            onPressed: () {
               launch(homework.linkUrl);
             },
-            child: Icon(Icons.ondemand_video_outlined)
-      ));
+              icon: Icon(Icons.ondemand_video_outlined)
+          ),
+        )
+      );
     }
-    return Wrap(direction: Axis.vertical, children: icons);
+    return Wrap(direction: Axis.horizontal, spacing: 16.0, children: icons);
   }
 
+  String cancelledText(BuildContext context, String statusKey) {
+    switch(statusKey) {
+      case 'STUDENT_CANCELLED': return S.of(context).statusStudentCancelled; break;
+      case 'STUDENT_CANCELLED_LATE': return S.of(context).statusStudentCancelledLate; break;
+      case 'TEACHER_CANCELLED': return S.of(context).statusTeacherCancelled; break;
+      case 'STUDENT_ABSENT': return S.of(context).statusStudentAbsent; break;
+      default:
+        return '';
+    }
+  }
   List<Widget> rows(BuildContext context) {
     List<Widget> out = <Widget>[];
     if (lesson.isNext) {
@@ -64,17 +88,35 @@ class LessonWidget extends StatelessWidget {
           ]
         ),
       ));
-      //out.add(ListTile(title: CountdownTimer(to:lesson.start)));
     }
     String start = DateFormat.yMMMEd().format(lesson.from);
     out.add(ListTile(
               title: Text(start),
-              subtitle: Text(lesson.status)));
+              subtitle: Text(lesson.teacher.name)));
+    if (lesson.cancelled == true) {
+      out.add(ListTile(subtitle: Text(cancelledText(context, lesson.status))));
+    }
     if (lesson.homework != null) {
+//      out.add(ListTile(subtitle: Text('Homework')/*, tileColor: Color.fromRGBO(64, 64, 64, 0.5)*/));
       lesson.homework.forEach((Homework homework) =>
-          out.add(ListTile(
-            leading: homeworkIcons(homework),
-              title: Text(homework.message))));
+          out.add(
+              Container(
+                color: Color.fromRGBO(64, 64, 64, 0.3),
+//                margin: EdgeInsets.symmetric(vertical: 16.0),
+                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(homework.message),
+                    Padding(padding: EdgeInsets.symmetric(vertical: 8.0)),
+                    homeworkIcons(context, homework),
+//                    Padding(padding: EdgeInsets.symmetric(vertical: 8.0)),
+                  ]
+                ),
+              )
+          )
+      );
     }
     return out;
   }
@@ -86,13 +128,13 @@ class LessonWidget extends StatelessWidget {
           content: Text(S.of(context).cancelLesson),
           actions: <Widget>[
             CupertinoDialogAction(
-              child: Text('No'),
+              child: Text(S.of(context).no),
               onPressed: () {
                 Navigator.of(context).pop(false);
               }
             ),
             CupertinoDialogAction(
-                child: Text('Yes'),
+                child: Text(S.of(context).yes),
                 onPressed: () {
                   Navigator.of(context).pop(true);
                 }
@@ -121,7 +163,7 @@ class LessonWidget extends StatelessWidget {
               alignment: AlignmentDirectional.centerEnd,
               child: FlatButton.icon(
                   onPressed: null,
-                  icon: Text('Cancel'),
+                  icon: Text(S.of(context).cancel),
                   label: Icon(Icons.delete, color: Colors.white))
           )
       );

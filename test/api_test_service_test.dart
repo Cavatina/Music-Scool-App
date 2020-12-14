@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:my_musicscool_app/models/lesson.dart';
+import 'package:musicscool/models/lesson.dart';
 import 'package:test/test.dart';
-import 'package:my_musicscool_app/services/api_test_service.dart';
+import 'package:musicscool/services/api_test_service.dart';
 
 void main() {
   test('login returns token', () async {
@@ -16,29 +16,30 @@ void main() {
   test('student returned from logged in api', () async {
     var api = ApiTestService();
     await api.login(username: 'someone@acme.com', password: 'password');
-    expect(await api.student, isNotNull);
-    expect((await api.student).email, isNotEmpty);
+    expect(await api.user, isNotNull);
+    expect((await api.user).email, isNotEmpty);
   });
 
-  test('lessons with pagination works', () async {
+  test('lessons browse after/before works', () async {
     var api = ApiTestService();
     await api.login(username: 'someone@acme.com', password: 'password');
     DateTime now = DateTime.now();
-    List<Lesson> lessons = await api.getNextLessons();
+    List<Lesson> lessons = await api.getLessons();
     expect(lessons.length, ApiTestService.pageSize);
-    expect(lessons[0].start.isAfter(now), isTrue);
+    expect(lessons.last.from.isAfter(now), isTrue);
     print(json.encode(lessons[0].toJson()));
-    List<Lesson> prevLessons = await api.getPrevLessons();
-    expect(prevLessons.length, ApiTestService.pageSize);
-    expect(prevLessons[0] == lessons[0], isFalse);
-    expect(prevLessons[0].start.isAfter(now), isFalse);
+    List<Lesson> prevLessons = await api.getLessons(before:lessons.first.from);
+    expect(prevLessons.length, lessThan(ApiTestService.pageSize));
+    expect(prevLessons.first == lessons.first, isFalse);
+    expect(prevLessons.first.from.isAfter(now), isFalse);
 
-    lessons = await api.getNextLessons();
+    lessons = await api.getLessons(after:lessons.last.from);
+    expect(lessons.length, ApiTestService.pageSize);
+    expect(lessons.first == prevLessons.first, isFalse);
+    print('first.id=${lessons.first.id}, from=${lessons.first.from}');
+    print('last.id=${lessons.last.id}, from=${lessons.last.from}');
+
+    lessons = await api.getLessons(after:lessons.last.from);
     expect(lessons.length, lessThan(ApiTestService.pageSize));
-    expect(lessons.length, isNot(0));
-    expect(lessons[0] == prevLessons[0], isFalse);
-
-    lessons = await api.getNextLessons();
-    expect(lessons.length, equals(0));
   });
 }

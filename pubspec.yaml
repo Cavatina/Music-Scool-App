@@ -1,9 +1,9 @@
-name: my_musicscool_app
+name: musicscool
 description: Mobile app for Music'Scool students.
 
 publish_to: 'none' # Do not publish to pub.dev
 
-version: 1.0.0+1
+version: 1.0.0
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -11,9 +11,14 @@ environment:
 dependencies:
   shared_preferences: '>=0.5.0 <2.0.0'  # Temporary
   json_annotation: ^3.1.1
+  scrollable_positioned_list: ^0.1.8
+  intl: ^0.16.1
+  url_launcher: ^5.7.10
+  flutter_svg: ^0.19.0
   flutter:
     sdk: flutter
-
+  flutter_localizations:
+    sdk: flutter
   cupertino_icons: ^1.0.0
 
 dev_dependencies:
@@ -26,7 +31,12 @@ dev_dependencies:
 
 # The following section is specific to Flutter.
 flutter:
+  generate: true
   uses-material-design: true
 
   assets:
     - assets/images/
+
+flutter_intl:
+  main_locale: en_US
+  enabled: true

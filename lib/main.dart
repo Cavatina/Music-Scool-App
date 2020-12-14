@@ -14,21 +14,29 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
 import 'package:flutter/material.dart';
-import 'package:my_musicscool_app/pages/root_page.dart';
-import 'package:my_musicscool_app/theme.dart';
-
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:musicscool/generated/l10n.dart';
+import 'package:musicscool/pages/root_page.dart';
+import 'package:musicscool/theme.dart';
 
 void main() {
-  runApp(MyMusicScoolApp());
+  runApp(MusicScoolApp());
 }
 
-class MyMusicScoolApp extends StatelessWidget {
+class MusicScoolApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Music\'Scool',
       theme: theme(),
       home: RootPage(),
+      localizationsDelegates: [
+        S.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: S.delegate.supportedLocales,
     );
   }
 }

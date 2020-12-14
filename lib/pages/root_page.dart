@@ -13,11 +13,12 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
+import 'package:intl/date_symbol_data_local.dart';  //for date locale
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-//import 'package:my_musicscool_app/pages/login_page.dart';
-import 'package:my_musicscool_app/pages/home_page.dart';
+//import 'package:musicscool/pages/login_page.dart';
+import 'package:musicscool/pages/home_page.dart';
 
 class RootPage extends StatefulWidget {
   @override
@@ -41,9 +42,11 @@ class _RootPageState extends State<RootPage> {
   @override void initState() {
     super.initState();
     _prefs.then((SharedPreferences prefs) {
-      setState(() {
+      initializeDateFormatting().then((_) {
+        setState(() {
 //        _isLoggedIn = prefs.containsKey('token') && prefs.getString('token').isNotEmpty;
-        _isLoading = false;
+          _isLoading = false;
+        });
       });
     });
   }

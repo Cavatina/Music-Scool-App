@@ -1,4 +1,5 @@
 # Music'Scool App
+[![Codemagic build status](https://api.codemagic.io/apps/5fc5305a253cd4a4babce97d/5fc5305a253cd4a4babce97c/status_badge.svg)](https://codemagic.io/apps/5fc5305a253cd4a4babce97d/5fc5305a253cd4a4babce97c/latest_build)
 
 Mobile app for Music'Scool students. Developed for Music'Scool, Denmark.
 

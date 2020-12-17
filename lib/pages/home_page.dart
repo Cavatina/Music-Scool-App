@@ -148,16 +148,26 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           ExpansionTile(
-            title: Text("Music'scool"),
-            leading: CircleAvatar(
-              backgroundColor: Colors.black,
-                child: SvgPicture.asset('assets/images/Musicscool - Logo - Okergeel beeldmerk.svg',
-                color: Theme.of(context).primaryColor)),
+            title: Text('Contact'),
+            leading: Icon(Icons.contact_page),
+            // CircleAvatar(
+            //   backgroundColor: Colors.black,
+            //     child: SvgPicture.asset('assets/images/Musicscool - Logo - Okergeel beeldmerk.svg',
+            //     color: Theme.of(context).primaryColor)),
             children: <Widget>[
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
                 child: Column(
                   children: <Widget> [
+                    CircleAvatar(
+                      minRadius: 24,
+                      maxRadius: 48,
+                      backgroundColor: Colors.black,
+                        child: SvgPicture.asset('assets/images/Musicscool - Logo - Okergeel beeldmerk.svg',
+                        color: Theme.of(context).primaryColor)),
+                    Text(''),
+                    Text("Music'scool", textScaleFactor: 1.75),
+                    Text(''),
                     Text('Penselstrøget 56'),
                     Text('4000 Roskilde'),
                     Text('Danmark'),

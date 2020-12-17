@@ -20,7 +20,7 @@ part 'lesson_ref.g.dart';
 @JsonSerializable()
 class LessonRef {
   final int id;
-  final DateTime from;
+  DateTime from;
 
   LessonRef(this.id, this.from);
 

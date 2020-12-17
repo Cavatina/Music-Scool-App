@@ -11,11 +11,13 @@ Student _$StudentFromJson(Map<String, dynamic> json) {
     json['schoolContact'] == null
         ? null
         : SchoolContact.fromJson(json['schoolContact'] as Map<String, dynamic>),
-    json['nextLessonId'] as int,
+    json['nextLesson'] == null
+        ? null
+        : LessonRef.fromJson(json['nextLesson'] as Map<String, dynamic>),
   );
 }
 
 Map<String, dynamic> _$StudentToJson(Student instance) => <String, dynamic>{
       'schoolContact': instance.schoolContact,
-      'nextLessonId': instance.nextLessonId,
+      'nextLesson': instance.nextLesson,
     };

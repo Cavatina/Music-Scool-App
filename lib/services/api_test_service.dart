@@ -31,7 +31,10 @@ class ApiTestService implements Api {
 
   @override
   Future<User> get user async {
-    return User.fromJson(json.decode(testUser)['data']);
+    User u = User.fromJson(json.decode(testUser)['data']);
+    u.student.nextLesson.from =
+        u.student.nextLesson.from.add(fixtureTimeDelta);
+    return u;
   }
 
   Future<List<Lesson>> allLessons() async {
@@ -59,23 +62,24 @@ class ApiTestService implements Api {
       });
   }
 
+  static Duration _fixtureTimeDelta() {
+    DateTime now = DateTime.now();
+    return Duration(days: now.difference(DateTime.parse('2020-11-23 22:46:00')).inDays);
+  }
+
   Future<List<Lesson>> _cachedLessons() async {
     if (_lessonIndex == -1) {
       List<dynamic> js = json.decode(testLessons)['data'];
       _allLessons = js.map<Lesson>((jsObj) => Lesson.fromJson(jsObj)).toList();
-      DateTime now = DateTime.now();
-      Duration diff;
-      if (_allLessons.isNotEmpty) {
-        diff = now.difference(DateTime.parse('2020-11-23 22:46:00'));
-      }
       User u = await user;
+
       _lessonIndex = _allLessons.length;
       for (int i = 0; i < _allLessons.length; ++i) {
         _allLessons[i] = _allLessons[i].copyWith(
-            from: _allLessons[i].from.add(Duration(days:diff.inDays)),
-            until: _allLessons[i].until.add(Duration(days:diff.inDays))
+            from: _allLessons[i].from.add(fixtureTimeDelta),
+            until: _allLessons[i].until.add(fixtureTimeDelta)
         );
-        if (u.student.nextLessonId == _allLessons[i].id) {
+        if (u.student.nextLesson.id == _allLessons[i].id) {
           _allLessons[i].isNext = true;
         }
       }
@@ -87,10 +91,11 @@ class ApiTestService implements Api {
   List<Lesson> _allLessons;
   int _lessonIndex = -1;
   static const pageSize = 25;
+  static final fixtureTimeDelta = _fixtureTimeDelta();
 }
 
 String testUser = '''
-{"data":{"name":"Mrs. Pixie","email":"someone@acme.com","student":{"schoolContact":{"name":"Roan Segers","phone":"+45 12 34 56 78","email":"info@musicschooI.dk"},"nextLessonId":1138}}}
+{"data":{"name":"Mrs. Pixie","email":"someone@acme.com","student":{"schoolContact":{"name":"Roan Segers","phone":"+45 12 34 56 78","email":"info@musicschooI.dk"},"nextLesson":{"id":1138, "from":"2020-11-28T14:00:00.000000Z"}}}}
 ''';
 
 String testLessons = '''

@@ -1,13 +1,13 @@
-# Music'Scool App
-[![Codemagic build status](https://api.codemagic.io/apps/5fc5305a253cd4a4babce97d/5fc5305a253cd4a4babce97c/status_badge.svg)](https://codemagic.io/apps/5fc5305a253cd4a4babce97d/5fc5305a253cd4a4babce97c/latest_build)
+# Music'scool App
+[![Codemagic build status for master branch](https://api.codemagic.io/apps/5fc5305a253cd4a4babce97d/deploy-master/status_badge.svg)](https://codemagic.io/app/5fc5305a253cd4a4babce97d/) <sup>[master]</sup> [![Codemagic build status for feature branches](https://api.codemagic.io/apps/5fc5305a253cd4a4babce97d/development/status_badge.svg)](https://codemagic.io/app/5fc5305a253cd4a4babce97d/) <sup>[development]</sup>
 
-Mobile app for Music'Scool students. Developed for Music'Scool, Denmark.
+Mobile app for Music'scool students. Developed for Music'scool, Denmark.
 
 ## Copyright
 
-Copyright (C) 2020 Music'Scool, Denmark.
+Copyright (C) 2020 Music'scool, Denmark.
 
-All artwork, including the Music'Scool logo, is (C) Music'Scool, Denmark.
+All artwork, including the Music'scool logo, is (C) Music'scool, Denmark.
 All rights reserved. Any use or redistribution without explicit permission
 is prohibited.
 

@@ -1,4 +1,4 @@
-/* My Music'Scool - Copyright (C) 2020  Music'Scool DK
+/* Music'scool App - Copyright (C) 2020  Music'scool DK
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

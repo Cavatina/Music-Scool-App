@@ -74,6 +74,22 @@ class LessonWidget extends StatelessWidget {
         return '';
     }
   }
+
+  String instrumentText(BuildContext context, String instrumentKey) {
+    switch (instrumentKey) {
+      case 'Bass guitar': return S.of(context).bassGuitar; break;
+      case 'Guitar': return S.of(context).guitar; break;
+      case 'Piano': return S.of(context).piano; break;
+      case 'Vocal': return S.of(context).vocals; break;
+      case 'Vocals': return S.of(context).vocals; break;
+      case 'Drums': return S.of(context).drums; break;
+      case 'Songwriting': return S.of(context).songwriting; break;
+      case 'EDM': return S.of(context).EDM; break;
+      default:
+        return instrumentKey;
+    }
+  }
+
   List<Widget> rows(BuildContext context) {
     List<Widget> out = <Widget>[];
     if (lesson.isNext) {

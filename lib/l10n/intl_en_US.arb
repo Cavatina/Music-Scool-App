@@ -14,5 +14,12 @@
   "statusStudentAbsent": "Student absent",
   "statusStudentCancelled": "Student cancelled",
   "statusStudentCancelledLate": "Student cancelled too late",
-  "statusTeacherCancelled": "Teacher cancelled"
+  "statusTeacherCancelled": "Teacher cancelled",
+  "bassGuitar": "Bass guitar",
+  "guitar": "Guitar",
+  "piano": "Piano",
+  "vocals": "Vocals",
+  "drums": "Drums",
+  "songwriting": "Songwriting",
+  "EDM": "EDM"
 }

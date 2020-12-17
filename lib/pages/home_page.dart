@@ -140,7 +140,7 @@ class _HomePageState extends State<HomePage> {
         padding: EdgeInsets.zero,
         children: <Widget> [
           SizedBox(
-            height: 120.0,
+            height: 140.0,
             child: UserAccountsDrawerHeader(
               accountName: Text(user.name),
               accountEmail: Text(user.email),

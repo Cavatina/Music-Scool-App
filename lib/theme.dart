@@ -14,6 +14,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 ThemeData theme()
 {
@@ -30,10 +31,11 @@ ThemeData theme()
     900: Color.fromRGBO(255, 186, 0, 1),
   };
   //MaterialColor mmYellow = MaterialColor(mmColors[900].value, mmColors);
-  return ThemeData(
+  ThemeData theme = ThemeData(
     brightness: Brightness.dark,
     primaryColor: mmColors[900],
     visualDensity: VisualDensity.adaptivePlatformDensity,
     cardTheme: CardTheme(color: Color.fromRGBO(21, 21, 21, 0.3))
   );
+  return theme.copyWith(textTheme: GoogleFonts.robotoTextTheme(theme.textTheme));
 }

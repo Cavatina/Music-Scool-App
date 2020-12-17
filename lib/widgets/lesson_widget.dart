@@ -105,10 +105,22 @@ class LessonWidget extends StatelessWidget {
         ),
       ));
     }
-    String start = DateFormat.yMMMEd().format(lesson.from);
+    String start = DateFormat.yMMMEd().format(lesson.from) + ' ' +
+        DateFormat.Hm().format(lesson.from);
+    String subtitle;
+    if (lesson.instrument != null && lesson.teacher != null) {
+      subtitle = S.of(context).instrumentWithTeacher(lesson.instrument.name,
+          lesson.teacher.name);
+    }
+    else if (lesson.teacher != null) {
+      subtitle = S.of(context).withTeacher(lesson.teacher.name);
+    }
+    else {
+      subtitle = '';
+    }
     out.add(ListTile(
               title: Text(start),
-              subtitle: Text(lesson.teacher.name)));
+              subtitle: Text(subtitle)));
     if (lesson.cancelled == true) {
       out.add(ListTile(subtitle: Text(cancelledText(context, lesson.status))));
     }

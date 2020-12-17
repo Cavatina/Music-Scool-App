@@ -11,6 +11,8 @@
   "no": "No",
   "download": "Download",
   "view": "View",
+  "instrumentWithTeacher": "{instrument} with {teacher}",
+  "withTeacher": "With {teacher}",
   "statusStudentAbsent": "Student absent",
   "statusStudentCancelled": "Student cancelled",
   "statusStudentCancelledLate": "Student cancelled too late",

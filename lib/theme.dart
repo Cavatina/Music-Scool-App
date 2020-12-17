@@ -33,9 +33,20 @@ ThemeData theme()
   //MaterialColor mmYellow = MaterialColor(mmColors[900].value, mmColors);
   ThemeData theme = ThemeData(
     brightness: Brightness.dark,
+    scaffoldBackgroundColor: Colors.black,
+    accentColor: mmColors[800],
     primaryColor: mmColors[900],
     visualDensity: VisualDensity.adaptivePlatformDensity,
     cardTheme: CardTheme(color: Color.fromRGBO(21, 21, 21, 0.3))
   );
-  return theme.copyWith(textTheme: GoogleFonts.robotoTextTheme(theme.textTheme));
+  return theme.copyWith(
+      textTheme: GoogleFonts.robotoTextTheme(theme.textTheme),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        primary: Colors.white,
+        //backgroundColor: Colors.white24,
+        backgroundColor: Colors.black
+      )
+    )
+  );
 }

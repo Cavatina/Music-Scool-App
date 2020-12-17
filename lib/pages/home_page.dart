@@ -144,75 +144,89 @@ class _HomePageState extends State<HomePage> {
             child: UserAccountsDrawerHeader(
               accountName: Text(user.name),
               accountEmail: Text(user.email),
-              //currentAccountPicture: CircleAvatar(child: Text('MS'))
+              //currentAccountPicture: CircleAvatar(child: Icon(Icons.person)) //Text('MS'))
             ),
           ),
-          ListTile(
+          ExpansionTile(
             title: Text("Music'scool"),
-            leading: SvgPicture.asset('assets/images/Musicscool - Logo - Wit beeldmerk.svg')
-          ),
-          Divider(),
-          InkWell(
-              child: ListTile(
-                  title: Text(user.student.schoolContact.name),
-                  leading: Icon(Icons.sms)
+            leading: CircleAvatar(
+              backgroundColor: Colors.black,
+                child: SvgPicture.asset('assets/images/Musicscool - Logo - Okergeel beeldmerk.svg',
+                color: Theme.of(context).primaryColor)),
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                child: Column(
+                  children: <Widget> [
+                    Text('Penselstrøget 56'),
+                    Text('4000 Roskilde'),
+                    Text('Danmark'),
+                    Text(''),
+                    Wrap(spacing: 8.0,
+                      children: <Widget> [
+                        TextButton.icon(icon: Icon(Icons.sms), label: Text('SMS'),
+                          onPressed: () {
+                            launch('sms://${user.student.schoolContact.phone}');
+                          }
+                        ),
+                        TextButton.icon(icon: Icon(Icons.call), label: Text('Call'),
+                          onPressed: () {
+                            launch('tel://${user.student.schoolContact.phone}');
+                          }
+                          ),
+                        TextButton.icon(icon: Icon(Icons.email), label: Text('Mail'),
+                          onPressed: () {
+                              launch('mailto:${user.student.schoolContact.email}');
+                            }
+                          ),
+                      ]
+                    ),
+                  //   TextButton.icon(icon: Icon(Icons.open_in_browser), label: Text('Privacy Policy'),
+                  //       onPressed: () {
+                  //         launch('https://musicscool.dk/privacypolicy');
+                  //       }
+                  //   )
+                  ]
+                )
               ),
-              onTap: () {
-                launch('sms:${user.student.schoolContact.phone}');
-              }
+            ]
           ),
-          InkWell(
-              child: ListTile(
-                  title: Text(user.student.schoolContact.phone),
-                  leading: Icon(Icons.call)
-              ),
-              onTap: () {
-                launch('tel:${user.student.schoolContact.phone}');
-              }
-          ),
-          InkWell(
-              child: ListTile(
-                  title: Text(user.student.schoolContact.email),
-                  leading: Icon(Icons.email)
-              ),
-              onTap: () {
-                launch('mailto:${user.student.schoolContact.email}');
-              }
-          ),
-          InkWell(
-              child: ListTile(
-                  title: Text(S.of(context).privacyPolicy),
-                  leading: Icon(Icons.open_in_browser)
-              ),
-              onTap: () {
-                launch('https://musicscool.dk/privacypolicy');
-              }
-          ),
-          ListTile(),
-          ListTile(
+          ExpansionTile(
               title: Text('Settings'),
-              leading: Icon(Icons.settings)
-          ),
-          Divider(),
-          SwitchListTile(
-            title: Text('Notifications'),
-            value: _notifications,
-            secondary: Icon(Icons.notifications),
-            onChanged: (bool value) {
-              setState(() {
-                _notifications = value;
-              });
-            }
-          ),
-          InkWell(
-            child: ListTile(
-              title: Text('Logout'),
-              leading: Icon(Icons.logout)
-            ),
-            onTap: () {
+              leading: Column(mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget> [Icon(Icons.settings)]),
+            children: <Widget> [
+              SwitchListTile(
+                  title: Text('Notifications'),
+                  value: _notifications,
+                  secondary: Icon(Icons.notifications),
+                  onChanged: (bool value) {
+                    setState(() {
+                      _notifications = value;
+                    });
+                  }
+              ),
+              InkWell(
+                  child: ListTile(
+                      title: Text(S.of(context).privacyPolicy),
+                      leading: Icon(Icons.open_in_browser)
+                  ),
+                  onTap: () {
+                    launch('https://musicscool.dk/privacypolicy');
+                  }
+              ),
+              InkWell(
+                  child: ListTile(
+                      title: Text('Logout'),
+                      leading: Icon(Icons.logout)
+                  ),
+                  onTap: () {
 
-            }
-          )
+                  }
+              )
+
+            ]
+          ),
         ]
     );
   }

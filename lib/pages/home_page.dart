@@ -13,8 +13,13 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
+import 'package:musicscool/models/student.dart';
+import 'package:musicscool/widgets/countdown_timer_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:musicscool/models/lesson.dart';
 import 'package:musicscool/models/user.dart';
@@ -76,13 +81,91 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
+  Widget countdownView(BuildContext context) {
+    return FutureBuilder<User>(
+      future: _api.user,
+      builder: (context, AsyncSnapshot<User> snapshot) {
+        if (snapshot.hasData) {
+          return studentCountdownView(context, snapshot.data.student);
+        }
+        else {
+          return CircularProgressIndicator();
+        }
+        }
+        );
+  }
+
+  Widget studentCountdownView(BuildContext context, Student student) {
+    var devSize = MediaQuery.of(context).size;
+    double boxWidth = min(devSize.width / 5.5, 100.0);
+    String start = DateFormat.yMMMEd().format(student.nextLesson.from) + ' ' +
+        DateFormat.Hm().format(student.nextLesson.from);
+
+    return Container(
+      // decoration: BoxDecoration(
+      //     image: DecorationImage(
+      //         image:
+      //         AssetImage('assets/images/background4.jpg'),
+      //         fit: BoxFit.cover)),
+      padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+      //EdgeInsets.symmetric(vertical: devSize.height / 6),
+      child: Column(
+          children: <Widget> [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget> [
+                Text('Hi, Mrs. Pixie')
+              ]
+            ),
+            Expanded(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget> [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget> [
+                      Text(S.of(context).aboutToRock,
+                          textScaleFactor: 1.25,
+                        style: TextStyle(height: 4.0)
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Theme.of(context).primaryColor, width:2.0),
+                            borderRadius: BorderRadius.circular(12)
+                          ),
+                          padding: EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+                          child: Column(
+
+                          children: <Widget> [
+                            CountdownTimer(to: student.nextLesson.from, boxWidth: boxWidth),
+                            Text(''),
+                            Text(start, textScaleFactor: 1.25)
+                          ]
+                        )
+                      ),
+                      Text('', textScaleFactor: 1.25,
+                      style: TextStyle(height: 4.0)),
+                      Text('', textScaleFactor: 1.25,
+                          style: TextStyle(height: 4.0))
+                    ]
+                  )
+                ]
+              ),
+            ),
+          ]
+      ),
+    );
+  }
+
   Widget mainLessonView(BuildContext context) {
     return Container(
-        decoration: BoxDecoration(
-            image: DecorationImage(
-                image:
-                AssetImage('assets/images/background4.jpg'),
-                fit: BoxFit.cover)),
+        // decoration: BoxDecoration(
+        //     image: DecorationImage(
+        //         image:
+        //         AssetImage('assets/images/background4.jpg'),
+        //         fit: BoxFit.cover)),
         child: ValueListenableBuilder(
             builder: (BuildContext context, int value, Widget child) {
               if (_initial && _initialScrollIndex.value != 0) {
@@ -108,34 +191,134 @@ class _HomePageState extends State<HomePage> {
         ));
   }
 
+  Widget emptyView(BuildContext context) {
+    return Column(
+      children: <Widget> [
+
+      ]
+    );
+  }
+
+  Widget homeworkLessonsView(BuildContext context) {
+    return Container(
+        child: FutureBuilder(
+            builder: (BuildContext context, AsyncSnapshot<List<Lesson>> snap) {
+              if (!snap.hasData) {
+                return CircularProgressIndicator();
+              }
+              print(snap.data.length);
+              return ListView.separated(
+                  padding: const EdgeInsets.all(8),
+                  itemCount: snap.data.length,
+//                  itemScrollController: itemScrollController,
+//                  itemPositionsListener: itemPositionsListener,
+                  itemBuilder: (BuildContext context, int index) =>
+                  LessonWidget(lesson: snap.data[index]),
+                  separatorBuilder: (BuildContext context, int index) =>
+                  const Divider());
+            },
+            future: _api.getHomeworkLessons()
+        ));
+  }
+
+  Widget upcomingLessonsView(BuildContext context) {
+    return Container(
+        child: FutureBuilder(
+            builder: (BuildContext context, AsyncSnapshot<List<Lesson>> snap) {
+              if (!snap.hasData) {
+                return CircularProgressIndicator();
+              }
+              return ListView.separated(
+                  padding: const EdgeInsets.all(8),
+                  itemCount: snap.data.length,
+//                  itemScrollController: itemScrollController,
+//                  itemPositionsListener: itemPositionsListener,
+                  itemBuilder: (BuildContext context, int index) =>
+                    LessonWidget(lesson: snap.data[index]),
+                  separatorBuilder: (BuildContext context, int index) =>
+                  const Divider());
+            },
+            future: _api.getUpcomingLessons()
+        ));
+  }
+
+  Widget settingsView(BuildContext context) {
+    return FutureBuilder<User>(
+        future: _api.user,
+
+        builder: (context, AsyncSnapshot<User> snapshot) {
+          if (snapshot.hasData) {
+            return userInfo(context, snapshot.data);
+          }
+          else {
+            return CircularProgressIndicator();
+          }
+        }
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.menu),
-          onPressed: () => _scaffoldKey.currentState.openDrawer()
+    return DefaultTabController(
+      length: 4,
+      initialIndex: 2,
+      child: Scaffold(
+        key: _scaffoldKey,
+        // bottomNavigationBar: BottomAppBar(
+        //   color: Theme.of(context).primaryColor,
+        //   child:
+        // ),
+        appBar: AppBar(
+//          toolbarHeight: 160,
+//           leading: IconButton(
+//             icon: Icon(Icons.menu),
+//             onPressed: () => _scaffoldKey.currentState.openDrawer()
+//           ),
+          title: SvgPicture.asset('assets/images/Musicscool - Logo - Zwart beeld- en woordmerk.svg',
+          height: 48 /* @todo Size dynamically */ //),
+          ),
+          centerTitle: true,
+          bottom: TabBar(
+              labelStyle: TextStyle(fontSize: 10),
+              tabs: <Widget> [
+                Tab(text: 'About', icon: Icon(Icons.info)),
+                Tab(text: 'Homework', icon: Icon(Icons.all_inbox)),
+                Tab(text: 'Next', icon: Icon(Icons.home)),
+                Tab(text: 'Upcoming', icon: Icon(Icons.next_week_outlined)),
+//                Tab(text: '')
+              ]
+          )
         ),
-        title: SvgPicture.asset('assets/images/Musicscool - Logo - Zwart beeld- en woordmerk.svg',
-        height: 48 /* @todo Size dynamically */),
-        centerTitle: true,
+          body: Container(
+    decoration: BoxDecoration(
+    image: DecorationImage(
+    image:
+    AssetImage('assets/images/background4.jpg'),
+    fit: BoxFit.cover)),
+    child: TabBarView(
+            children: <Widget> [
+              settingsView(context),
+              homeworkLessonsView(context),
+              countdownView(context),
+              upcomingLessonsView(context),
+            ]
+          ),
+          )
+        //   drawer: Drawer(
+        //       child: FutureBuilder<User>(
+        //           future: _api.user,
+        //
+        //     builder: (context, AsyncSnapshot<User> snapshot) {
+        //       if (snapshot.hasData) {
+        //         return userInfo(context, snapshot.data);
+        //       }
+        //       else {
+        //         return CircularProgressIndicator();
+        //       }
+        //     }
+        //   )
+        // )
       ),
-        body: mainLessonView(context),
-        drawer: Drawer(
-            child: FutureBuilder<User>(
-                future: _api.user,
-
-          builder: (context, AsyncSnapshot<User> snapshot) {
-            if (snapshot.hasData) {
-              return userInfo(context, snapshot.data);
-            }
-            else {
-              return CircularProgressIndicator();
-            }
-          }
-        )
-      )
     );
   }
 
@@ -143,16 +326,21 @@ class _HomePageState extends State<HomePage> {
     return ListView(
         padding: EdgeInsets.zero,
         children: <Widget> [
-          SizedBox(
-            height: 140.0,
-            child: UserAccountsDrawerHeader(
-              accountName: Text(user.name),
-              accountEmail: Text(user.email),
-              //currentAccountPicture: CircleAvatar(child: Icon(Icons.person)) //Text('MS'))
-            ),
+          ListTile(
+            title: Text(user.name),
+            subtitle: Text(user.email),
+            leading: Icon(Icons.person)
           ),
+          // SizedBox(
+          //   height: 140.0,
+          //   child: UserAccountsDrawerHeader(
+          //     accountName: Text(user.name),
+          //     accountEmail: Text(user.email),
+          //     //currentAccountPicture: CircleAvatar(child: Icon(Icons.person)) //Text('MS'))
+          //   ),
+          // ),
           ExpansionTile(
-            title: Text('Contact'),
+            title: Text('School'),
             leading: Icon(Icons.contact_page),
             // CircleAvatar(
             //   backgroundColor: Colors.black,

@@ -20,7 +20,7 @@ import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:musicscool/models/lesson.dart';
 import 'package:musicscool/models/homework.dart';
-import 'package:musicscool/widgets/countdown_timer_widget.dart';
+//import 'package:musicscool/widgets/countdown_timer_widget.dart';
 import 'package:musicscool/generated/l10n.dart';
 
 class LessonWidget extends StatelessWidget {
@@ -90,21 +90,7 @@ class LessonWidget extends StatelessWidget {
     }
   }
 
-  List<Widget> rows(BuildContext context) {
-    List<Widget> out = <Widget>[];
-    if (lesson.isNext) {
-      var devSize = MediaQuery.of(context).size;
-      double boxWidth = min(devSize.width / 5.5, 100.0);
-      out.add(Container(
-        padding: EdgeInsets.symmetric(vertical: devSize.height / 6),
-        child: Column(
-          children: <Widget> [
-            Text(S.of(context).aboutToRock),
-            CountdownTimer(to: lesson.from, boxWidth: boxWidth)
-          ]
-        ),
-      ));
-    }
+  Widget header(BuildContext context, bool expand, {List<Widget> children}) {
     String start = DateFormat.yMMMEd().format(lesson.from) + ' ' +
         DateFormat.Hm().format(lesson.from);
     String subtitle;
@@ -118,9 +104,18 @@ class LessonWidget extends StatelessWidget {
     else {
       subtitle = '';
     }
-    out.add(ListTile(
-              title: Text(start),
-              subtitle: Text(subtitle)));
+    if (expand) {
+      return ExpansionTile(
+          title: Text(start),
+          subtitle: Text(subtitle, style: TextStyle(color: Colors.white60)),
+          children: children);
+    }
+    return(ListTile(
+        title: Text(start),
+        subtitle: Text(subtitle)));
+  }
+  List<Widget> body(BuildContext context) {
+    List<Widget> out = <Widget>[];
     if (lesson.cancelled == true) {
       out.add(ListTile(subtitle: Text(cancelledText(context, lesson.status))));
     }
@@ -133,19 +128,39 @@ class LessonWidget extends StatelessWidget {
 //                margin: EdgeInsets.symmetric(vertical: 16.0),
                 padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(homework.message),
-                    Padding(padding: EdgeInsets.symmetric(vertical: 8.0)),
-                    homeworkIcons(context, homework),
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(homework.message),
+                      Padding(padding: EdgeInsets.symmetric(vertical: 8.0)),
+                      homeworkIcons(context, homework),
 //                    Padding(padding: EdgeInsets.symmetric(vertical: 8.0)),
-                  ]
+                    ]
                 ),
               )
           )
       );
     }
+    return out;
+  }
+
+  List<Widget> rows(BuildContext context) {
+    List<Widget> out = <Widget>[];
+    // if (lesson.isNext) {
+    //   var devSize = MediaQuery.of(context).size;
+    //   double boxWidth = min(devSize.width / 5.5, 100.0);
+    //   out.add(Container(
+    //     padding: EdgeInsets.symmetric(vertical: devSize.height / 6),
+    //     child: Column(
+    //       children: <Widget> [
+    //         Text(S.of(context).aboutToRock),
+    //         CountdownTimer(to: lesson.from, boxWidth: boxWidth)
+    //       ]
+    //     ),
+    //   ));
+    // }
+    out.add(header(context, false));
+    out.addAll(body(context));
     return out;
   }
 
@@ -207,23 +222,32 @@ class LessonWidget extends StatelessWidget {
     else if (lesson.pending != true) {
       border = Border(left: BorderSide(width: 2.0, color: Theme.of(context).primaryColor));
     }
-    else if (lesson.isNext != true) {
+    else { //if (lesson.isNext != true) {
       border = Border(right: BorderSide(width: 2.0, color: Colors.white));
     }
-    else {
-      border = Border(right: BorderSide(width: 2.0, color: Colors.black));
-    }
-    return Card(
-      child: cancellableIfPending(context,
-          Container(
-            decoration: BoxDecoration(
-              border: border
-            ),
-            child: Column(
-              children: rows(context)
-            ),
+    // else {
+    //   border = Border(right: BorderSide(width: 2.0, color: Colors.black));
+    // }
+    if (lesson.pending == true) {
+      return Card(
+          child: cancellableIfPending(context,
+              Container(
+                decoration: BoxDecoration(
+                    border: border
+                ),
+                child: Column(
+                    children: rows(context)
+                ),
+              )
           )
-      )
-    );
+      );
+    }
+    else {
+      return Card(
+        child: header(context, true,
+          children: body(context)
+        )
+      );
+    }
   }
 }

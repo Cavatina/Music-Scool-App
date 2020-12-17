@@ -41,6 +41,32 @@ class ApiTestService implements Api {
     return _cachedLessons();
   }
 
+  //@override
+  Future<List<Lesson>> getUpcomingLessons() async {
+    DateTime now = DateTime.now();
+    for (int i = 0; i < _allLessons.length; ++i) {
+      if (_allLessons[i].from.isAfter(now)) {
+        print('upcomingStartIndex:${i}');
+        return _allLessons.sublist(i, _allLessons.length-i);
+      }
+    }
+    return [];
+  }
+
+  Future<List<Lesson>> getHomeworkLessons() async {
+    //DateTime now = DateTime.now();
+    return _allLessons.reversed.where((Lesson lesson) {
+      return lesson.homework != null;
+    }).toList();
+    // List<Lesson> out = <Lesson>[];
+    // for (int i = 0; i < _allLessons.length; ++i) {
+    //   if (_allLessons[i].homework != null) {
+    //     out.add(_allLessons[i]);
+    //   }
+    // }
+    // return List<Lesson>(out.reversed);
+  }
+
   @override
   Future<List<Lesson>> getLessons({DateTime before, DateTime after}) async {
     return _cachedLessons().then((lessons) {

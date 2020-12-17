@@ -76,6 +76,38 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
+  Widget mainLessonView(BuildContext context) {
+    return Container(
+        decoration: BoxDecoration(
+            image: DecorationImage(
+                image:
+                AssetImage('assets/images/background4.jpg'),
+                fit: BoxFit.cover)),
+        child: ValueListenableBuilder(
+            builder: (BuildContext context, int value, Widget child) {
+              if (_initial && _initialScrollIndex.value != 0) {
+                WidgetsBinding.instance.addPostFrameCallback((_){
+                  scrollTo(_initialScrollIndex.value);
+                  setState(() {
+                    _initial = false;
+                  });
+                });
+              }
+              return ScrollablePositionedList.separated(
+                  padding: const EdgeInsets.all(8),
+                  initialScrollIndex: value,
+                  itemCount: _lessons != null ? _lessons.length : 0,
+                  itemScrollController: itemScrollController,
+                  itemPositionsListener: itemPositionsListener,
+                  itemBuilder: (BuildContext context, int index) =>
+                  index > 0 ? LessonWidget(lesson: _lessons[index]) : null,
+                  separatorBuilder: (BuildContext context, int index) =>
+                  const Divider());
+            },
+            valueListenable: _initialScrollIndex
+        ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -89,35 +121,7 @@ class _HomePageState extends State<HomePage> {
         height: 48 /* @todo Size dynamically */),
         centerTitle: true,
       ),
-        body: Container(
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                    image:
-                    AssetImage('assets/images/background4.jpg'),
-                    fit: BoxFit.cover)),
-            child: ValueListenableBuilder(
-              builder: (BuildContext context, int value, Widget child) {
-                if (_initial && _initialScrollIndex.value != 0) {
-                  WidgetsBinding.instance.addPostFrameCallback((_){
-                    scrollTo(_initialScrollIndex.value);
-                    setState(() {
-                      _initial = false;
-                    });
-                  });
-                }
-                return ScrollablePositionedList.separated(
-                    padding: const EdgeInsets.all(8),
-                    initialScrollIndex: value,
-                    itemCount: _lessons != null ? _lessons.length : 0,
-                    itemScrollController: itemScrollController,
-                    itemPositionsListener: itemPositionsListener,
-                    itemBuilder: (BuildContext context, int index) =>
-                    index > 0 ? LessonWidget(lesson: _lessons[index]) : null,
-                    separatorBuilder: (BuildContext context, int index) =>
-                    const Divider());
-                },
-                valueListenable: _initialScrollIndex
-                )),
+        body: mainLessonView(context),
         drawer: Drawer(
             child: FutureBuilder<User>(
                 future: _api.user,

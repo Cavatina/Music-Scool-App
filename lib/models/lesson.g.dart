@@ -15,6 +15,9 @@ Lesson _$LessonFromJson(Map<String, dynamic> json) {
     json['teacher'] == null
         ? null
         : Teacher.fromJson(json['teacher'] as Map<String, dynamic>),
+    json['instrument'] == null
+        ? null
+        : Instrument.fromJson(json['instrument'] as Map<String, dynamic>),
     json['pending'] as bool,
     json['cancelled'] as bool,
     json['relocated'] as bool,
@@ -38,6 +41,7 @@ Map<String, dynamic> _$LessonToJson(Lesson instance) => <String, dynamic>{
       'until': instance.until?.toIso8601String(),
       'status': instance.status,
       'teacher': instance.teacher,
+      'instrument': instance.instrument,
       'pending': instance.pending,
       'cancelled': instance.cancelled,
       'relocated': instance.relocated,

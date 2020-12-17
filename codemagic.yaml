@@ -17,11 +17,11 @@ workflows:
       events:
         - push
       branch_patterns:
-        - pattern: 'master'
-          include: false
-          source: true
         - pattern: '*'
           include: true
+          source: true
+        - pattern: 'master'
+          include: false
           source: true
     scripts:
       - |

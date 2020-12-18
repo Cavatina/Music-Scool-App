@@ -24,9 +24,10 @@ import 'package:musicscool/models/homework.dart';
 import 'package:musicscool/generated/l10n.dart';
 
 class LessonWidget extends StatelessWidget {
-  LessonWidget({this.lesson}) : super(key: Key(lesson.from.toIso8601String()));
+  LessonWidget({this.lesson, this.index}) : super(key: Key(lesson.from.toIso8601String()));
 
   final Lesson lesson;
+  final int index;
 
   Widget homeworkIcons(BuildContext context, Homework homework) {
     List<Widget> icons = <Widget>[];
@@ -105,9 +106,17 @@ class LessonWidget extends StatelessWidget {
       subtitle = '';
     }
     if (expand) {
+      if (lesson.homework != null && lesson.homework.isNotEmpty) {
+        subtitle = lesson.homework.first.message;
+      }
       return ExpansionTile(
           title: Text(start),
-          subtitle: Text(subtitle, style: TextStyle(color: Colors.white60)),
+          subtitle: Text(subtitle, style: TextStyle(color: Colors.white60),
+          overflow: TextOverflow.ellipsis),
+          initiallyExpanded: index == 0,
+//          onExpansionChanged: (bool state) {
+//
+//          },
           children: children);
     }
     return(ListTile(
@@ -116,9 +125,9 @@ class LessonWidget extends StatelessWidget {
   }
   List<Widget> body(BuildContext context) {
     List<Widget> out = <Widget>[];
-    if (lesson.cancelled == true) {
-      out.add(ListTile(subtitle: Text(cancelledText(context, lesson.status))));
-    }
+//    if (lesson.cancelled == true) {
+//      out.add(ListTile(subtitle: Text(cancelledText(context, lesson.status))));
+//    }
     if (lesson.homework != null) {
 //      out.add(ListTile(subtitle: Text('Homework')/*, tileColor: Color.fromRGBO(64, 64, 64, 0.5)*/));
       lesson.homework.forEach((Homework homework) =>

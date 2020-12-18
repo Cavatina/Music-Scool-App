@@ -15,11 +15,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:musicscool/models/student.dart';
 import 'package:musicscool/widgets/countdown_timer_widget.dart';
+import 'package:musicscool/widgets/homework_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:musicscool/models/lesson.dart';
 import 'package:musicscool/models/user.dart';
@@ -183,7 +185,7 @@ class _HomePageState extends State<HomePage> {
                   itemScrollController: itemScrollController,
                   itemPositionsListener: itemPositionsListener,
                   itemBuilder: (BuildContext context, int index) =>
-                  index > 0 ? LessonWidget(lesson: _lessons[index]) : null,
+                  index > 0 ? LessonWidget(lesson: _lessons[index], index: index) : null,
                   separatorBuilder: (BuildContext context, int index) =>
                   const Divider());
             },
@@ -213,7 +215,7 @@ class _HomePageState extends State<HomePage> {
 //                  itemScrollController: itemScrollController,
 //                  itemPositionsListener: itemPositionsListener,
                   itemBuilder: (BuildContext context, int index) =>
-                  LessonWidget(lesson: snap.data[index]),
+                  HomeworkWidget(lesson: snap.data[index], expanded: index == 0),
                   separatorBuilder: (BuildContext context, int index) =>
                   const Divider());
             },
@@ -281,10 +283,10 @@ class _HomePageState extends State<HomePage> {
           bottom: TabBar(
               labelStyle: TextStyle(fontSize: 10),
               tabs: <Widget> [
-                Tab(text: 'About', icon: Icon(Icons.info)),
-                Tab(text: 'Homework', icon: Icon(Icons.all_inbox)),
-                Tab(text: 'Next', icon: Icon(Icons.home)),
-                Tab(text: 'Upcoming', icon: Icon(Icons.next_week_outlined)),
+                Tab(text: 'Info', icon: Icon(CupertinoIcons.info_circle_fill)), //Icons.info)),
+                Tab(text: 'Homework', icon: Icon(CupertinoIcons.music_albums_fill)), //doc_on_doc_fill)),//Icons.book)),
+                Tab(text: 'Next', icon: Icon(CupertinoIcons.house_fill)), //Icons.home)),
+                Tab(text: 'Upcoming', icon: Icon(CupertinoIcons.calendar)), //Icons.fast_forward)),
 //                Tab(text: '')
               ]
           )
@@ -322,6 +324,37 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Widget contactButton({BuildContext context, IconData icon, String label, String url}) {
+    // return TextButton.icon(icon: Icon(icon), label: Text(label),
+    //     onPressed: () {
+    //       launch(url);
+    //     }
+    // );
+    return FlatButton(
+      onPressed: () {
+        launch(url);
+      },
+      color: Colors.black, //Theme.of(context).primaryColor,
+        textColor: Theme.of(context).primaryColor,
+      padding: EdgeInsets.all(12.0),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
+//            side: BorderSide(color: Colors.white10)
+        ),
+      child: Column(
+        children: <Widget> [
+          Icon(icon, size: 36),
+          Text(label)
+        ]
+      )
+    );
+    // return TextButton.icon(icon: Icon(Icons.sms), label: Text('SMS'),
+    //     onPressed: () {
+    //       launch('sms://${user.student.schoolContact.phone}');
+    //     }
+    // );
+  }
+
   Widget userInfo(BuildContext context, User user) {
     return ListView(
         padding: EdgeInsets.zero,
@@ -329,7 +362,7 @@ class _HomePageState extends State<HomePage> {
           ListTile(
             title: Text(user.name),
             subtitle: Text(user.email),
-            leading: Icon(Icons.person)
+            leading: Icon(CupertinoIcons.person_fill) //Icons.person)
           ),
           // SizedBox(
           //   height: 140.0,
@@ -339,9 +372,10 @@ class _HomePageState extends State<HomePage> {
           //     //currentAccountPicture: CircleAvatar(child: Icon(Icons.person)) //Text('MS'))
           //   ),
           // ),
+          ListTile(),
           ExpansionTile(
-            title: Text('School'),
-            leading: Icon(Icons.contact_page),
+            title: Text('Contact'),
+            leading: Icon(CupertinoIcons.doc_person_fill),
             // CircleAvatar(
             //   backgroundColor: Colors.black,
             //     child: SvgPicture.asset('assets/images/Musicscool - Logo - Okergeel beeldmerk.svg',
@@ -360,27 +394,27 @@ class _HomePageState extends State<HomePage> {
                     Text(''),
                     Text("Music'scool", textScaleFactor: 1.75),
                     Text(''),
-                    Text('Penselstrøget 56'),
-                    Text('4000 Roskilde'),
-                    Text('Danmark'),
+                    Text('Penselstrøget 56', textScaleFactor: 1.2),
+                    Text('4000 Roskilde', textScaleFactor: 1.2),
+                    Text('Danmark', textScaleFactor: 1.2),
                     Text(''),
-                    Wrap(spacing: 8.0,
+                    Wrap(spacing: 12.0,
                       children: <Widget> [
-                        TextButton.icon(icon: Icon(Icons.sms), label: Text('SMS'),
-                          onPressed: () {
-                            launch('sms://${user.student.schoolContact.phone}');
-                          }
+                        contactButton(context: context,
+                            icon: CupertinoIcons.phone_fill,
+                            label: 'Call',
+                            url: 'tel://${user.student.schoolContact.phone}'
                         ),
-                        TextButton.icon(icon: Icon(Icons.call), label: Text('Call'),
-                          onPressed: () {
-                            launch('tel://${user.student.schoolContact.phone}');
-                          }
-                          ),
-                        TextButton.icon(icon: Icon(Icons.email), label: Text('Mail'),
-                          onPressed: () {
-                              launch('mailto:${user.student.schoolContact.email}');
-                            }
-                          ),
+                        contactButton(context: context,
+                            icon: CupertinoIcons.bubble_left_fill,
+                            label: 'SMS',
+                            url: 'sms://${user.student.schoolContact.phone}'
+                        ),
+                        contactButton(context: context,
+                            icon: CupertinoIcons.envelope_fill,
+                            label: 'Email',
+                            url: 'mailto:${user.student.schoolContact.email}'
+                        ),
                       ]
                     ),
                   //   TextButton.icon(icon: Icon(Icons.open_in_browser), label: Text('Privacy Policy'),
@@ -396,7 +430,7 @@ class _HomePageState extends State<HomePage> {
           ExpansionTile(
               title: Text('Settings'),
               leading: Column(mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget> [Icon(Icons.settings)]),
+                  children: <Widget> [Icon(CupertinoIcons.gear_alt_fill)]),
             children: <Widget> [
               SwitchListTile(
                   title: Text('Notifications'),

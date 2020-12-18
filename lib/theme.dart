@@ -43,7 +43,7 @@ ThemeData theme()
       textTheme: GoogleFonts.robotoTextTheme(theme.textTheme),
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
-        primary: Colors.white,
+        primary: theme.primaryColor, // Colors.white,
         //backgroundColor: Colors.white24,
         backgroundColor: Colors.black
       )

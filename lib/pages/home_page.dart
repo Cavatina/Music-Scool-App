@@ -49,10 +49,20 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
+  Widget waiting() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget> [
+        CircularProgressIndicator()
+      ]
+    );
+  }
+
   Widget countdownView(BuildContext context) {
     return Consumer<AuthModel>(
         builder: (context, model, child) {
-          if (model == null) return CircularProgressIndicator();
+          if (model == null) return waiting();
           return FutureBuilder<User>(
             future: model.user,
             builder: (context, AsyncSnapshot<User> snapshot) {
@@ -69,7 +79,7 @@ class _HomePageState extends State<HomePage> {
                 return Container();
               }
               else {
-                return CircularProgressIndicator();
+                return waiting();
               }
             }
           );
@@ -169,7 +179,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget settingsView(BuildContext context) {
     return Consumer<AuthModel>(builder: (context, model, child) {
-      if (model == null) return CircularProgressIndicator();
+      if (model == null) return waiting();
       return FutureBuilder<User>(
           future: model?.user,
           builder: (context, AsyncSnapshot<User> snapshot) {
@@ -177,7 +187,7 @@ class _HomePageState extends State<HomePage> {
               return userInfo(context, snapshot.data);
             }
             else {
-              return CircularProgressIndicator();
+              return waiting();
             }
           }
       );

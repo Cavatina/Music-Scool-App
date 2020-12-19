@@ -28,7 +28,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:musicscool/models/lesson.dart';
 import 'package:musicscool/models/user.dart';
 import 'package:musicscool/widgets/lesson_widget.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:musicscool/generated/l10n.dart';
 
 
@@ -39,44 +38,10 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool _notifications = true;
-  List<Lesson> _lessons = <Lesson>[];
-  bool _initial = true;
-  final ValueNotifier<int> _initialScrollIndex = ValueNotifier<int>(0);
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final _scrollController = ScrollController();
 
-  /// Controller to scroll or jump to a particular item.
-  final ItemScrollController itemScrollController = ItemScrollController();
-
-  /// Listener that reports the position of items when the list is scrolled.
-  final ItemPositionsListener itemPositionsListener = ItemPositionsListener.create();
-
-  void scrollTo(int index) => itemScrollController.scrollTo(
-      index: index,
-      duration: Duration(seconds: 2),
-      curve: Curves.easeInOutCubic,
-      alignment: 0.0);
-
-  void jumpTo(int index) =>
-      itemScrollController.jumpTo(index: index, alignment: 0.0);
-
-  _HomePageState() {
-    _api.allLessons().then((lessons) {
-      int i = 0;
-      for (; i<lessons.length; ++i) {
-        if (lessons[i].isNext) {
-          break;
-        }
-      }
-      setState(() {
-        _lessons = lessons;
-      });
-      if (_initialScrollIndex.value == 0) {
-          _initialScrollIndex.value = i;
-      }
-    });
-  }
   @override
   void dispose() {
     _scrollController.dispose();
@@ -163,46 +128,6 @@ class _HomePageState extends State<HomePage> {
             ),
           ]
       ),
-    );
-  }
-
-  Widget mainLessonView(BuildContext context) {
-    return Container(
-        // decoration: BoxDecoration(
-        //     image: DecorationImage(
-        //         image:
-        //         AssetImage('assets/images/background4.jpg'),
-        //         fit: BoxFit.cover)),
-        child: ValueListenableBuilder(
-            builder: (BuildContext context, int value, Widget child) {
-              if (_initial && _initialScrollIndex.value != 0) {
-                WidgetsBinding.instance.addPostFrameCallback((_){
-                  scrollTo(_initialScrollIndex.value);
-                  setState(() {
-                    _initial = false;
-                  });
-                });
-              }
-              return ScrollablePositionedList.separated(
-                  padding: const EdgeInsets.all(8),
-                  initialScrollIndex: value,
-                  itemCount: _lessons != null ? _lessons.length : 0,
-                  itemScrollController: itemScrollController,
-                  itemPositionsListener: itemPositionsListener,
-                  itemBuilder: (BuildContext context, int index) =>
-                  index > 0 ? LessonWidget(lesson: _lessons[index], index: index) : null,
-                  separatorBuilder: (BuildContext context, int index) =>
-                  const Divider());
-            },
-            valueListenable: _initialScrollIndex
-        ));
-  }
-
-  Widget emptyView(BuildContext context) {
-    return Column(
-      children: <Widget> [
-
-      ]
     );
   }
 

@@ -27,7 +27,7 @@ class MusicScoolApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Music\'Scool',
+      title: 'Music\'scool',
       theme: theme(),
       home: RootPage(),
       localizationsDelegates: [

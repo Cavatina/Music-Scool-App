@@ -247,18 +247,20 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget settingsView(BuildContext context) {
-    return FutureBuilder<User>(
-        future: _api.user,
-
-        builder: (context, AsyncSnapshot<User> snapshot) {
-          if (snapshot.hasData) {
-            return userInfo(context, snapshot.data);
+    return Consumer<AuthModel>(builder: (context, model, child) {
+      if (model == null) return CircularProgressIndicator();
+      return FutureBuilder<User>(
+          future: model?.user,
+          builder: (context, AsyncSnapshot<User> snapshot) {
+            if (snapshot.hasData) {
+              return userInfo(context, snapshot.data);
+            }
+            else {
+              return CircularProgressIndicator();
+            }
           }
-          else {
-            return CircularProgressIndicator();
-          }
-        }
-    );
+      );
+    });
   }
 
   @override

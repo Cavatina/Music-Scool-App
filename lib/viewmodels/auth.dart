@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:musicscool/models/user.dart';
 import 'package:musicscool/services/api.dart';
 
 class AuthModel extends ChangeNotifier
@@ -24,5 +25,9 @@ class AuthModel extends ChangeNotifier
   void logout() {
     isLoggedIn = false;
     notifyListeners();
+  }
+
+  Future<User> get user {
+    return api.user;
   }
 }

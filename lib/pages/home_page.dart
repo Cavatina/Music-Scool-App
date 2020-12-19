@@ -19,7 +19,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
-import 'package:musicscool/models/student.dart';
 import 'package:musicscool/viewmodels/auth.dart';
 import 'package:musicscool/widgets/countdown_timer_widget.dart';
 import 'package:musicscool/widgets/homework_widget.dart';
@@ -28,7 +27,6 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:musicscool/models/lesson.dart';
 import 'package:musicscool/models/user.dart';
-import 'package:musicscool/services/api_test_service.dart';
 import 'package:musicscool/widgets/lesson_widget.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:musicscool/generated/l10n.dart';
@@ -40,7 +38,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final ApiTestService _api = ApiTestService();
   bool _notifications = true;
   List<Lesson> _lessons = <Lesson>[];
   bool _initial = true;
@@ -87,24 +84,29 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget countdownView(BuildContext context) {
-    return FutureBuilder<User>(
-      future: _api.user,
-      builder: (context, AsyncSnapshot<User> snapshot) {
-        if (snapshot.hasData) {
-          return studentCountdownView(context, snapshot.data.student);
-        }
-        else {
-          return CircularProgressIndicator();
-        }
-        }
-        );
+    return Consumer<AuthModel>(
+        builder: (context, model, child) {
+          if (model == null) return CircularProgressIndicator();
+          return FutureBuilder<User>(
+            future: model.user,
+            builder: (context, AsyncSnapshot<User> snapshot) {
+              if (snapshot.hasData) {
+                return studentCountdownView(context, snapshot.data);
+              }
+              else {
+                return CircularProgressIndicator();
+              }
+            }
+          );
+      }
+    );
   }
 
-  Widget studentCountdownView(BuildContext context, Student student) {
+  Widget studentCountdownView(BuildContext context, User user) {
     var devSize = MediaQuery.of(context).size;
     double boxWidth = min(devSize.width / 5.5, 100.0);
-    String start = DateFormat.yMMMEd().format(student.nextLesson.from) + ' ' +
-        DateFormat.Hm().format(student.nextLesson.from);
+    String start = DateFormat.yMMMEd().format(user.student.nextLesson.from) + ' ' +
+        DateFormat.Hm().format(user.student.nextLesson.from);
 
     return Container(
       // decoration: BoxDecoration(
@@ -120,7 +122,7 @@ class _HomePageState extends State<HomePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget> [
-                Text('Hi, Mrs. Pixie')
+                Text(S.of(context).heyUser(user.name))
               ]
             ),
             Expanded(
@@ -144,7 +146,7 @@ class _HomePageState extends State<HomePage> {
                           child: Column(
 
                           children: <Widget> [
-                            CountdownTimer(to: student.nextLesson.from, boxWidth: boxWidth),
+                            CountdownTimer(to: user.student.nextLesson.from, boxWidth: boxWidth),
                             Text(''),
                             Text(start, textScaleFactor: 1.25)
                           ]

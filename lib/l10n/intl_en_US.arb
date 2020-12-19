@@ -1,5 +1,6 @@
 {
   "@@locale": "en_US",
+  "heyUser": "Hey {name}",
   "aboutToRock": "You're about to ROCK in:",
   "cancelLesson": "Cancel Lesson?",
   "privacyPolicy": "Privacy Policy",

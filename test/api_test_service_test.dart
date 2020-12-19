@@ -1,6 +1,4 @@
-import 'dart:convert';
 
-import 'package:musicscool/models/lesson.dart';
 import 'package:test/test.dart';
 import 'package:musicscool/services/api_test_service.dart';
 
@@ -19,7 +17,7 @@ void main() {
     expect(await api.user, isNotNull);
     expect((await api.user).email, isNotEmpty);
   });
-
+/*
   test('lessons browse after/before works', () async {
     var api = ApiTestService();
     await api.login(username: 'someone@acme.com', password: 'password');
@@ -42,4 +40,5 @@ void main() {
     lessons = await api.getLessons(after:lessons.last.from);
     expect(lessons.length, lessThan(ApiTestService.pageSize));
   });
+ */
 }

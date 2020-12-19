@@ -15,7 +15,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
 import 'dart:async';
 import 'dart:convert' show json;
-import 'dart:math';
 import 'package:musicscool/services/api.dart';
 import 'package:musicscool/models/user.dart';
 import 'package:musicscool/models/lesson.dart';
@@ -41,8 +40,8 @@ class ApiTestService implements Api {
     return _cachedLessons();
   }
 
-  //@override
-  Future<List<Lesson>> getUpcomingLessons() async {
+  @override
+  Future<List<Lesson>> getUpcomingLessons({page = 0}) async {
     DateTime now = DateTime.now();
     for (int i = 0; i < _allLessons.length; ++i) {
       if (_allLessons[i].from.isAfter(now)) {
@@ -53,7 +52,8 @@ class ApiTestService implements Api {
     return [];
   }
 
-  Future<List<Lesson>> getHomeworkLessons() async {
+  @override
+  Future<List<Lesson>> getHomeworkLessons({page = 0}) async {
     //DateTime now = DateTime.now();
     return _allLessons.reversed.where((Lesson lesson) {
       return lesson.homework != null;
@@ -67,26 +67,26 @@ class ApiTestService implements Api {
     // return List<Lesson>(out.reversed);
   }
 
-  @override
-  Future<List<Lesson>> getLessons({DateTime before, DateTime after}) async {
-    return _cachedLessons().then((lessons) {
-      if (before != null) {
-        for (int i = _allLessons.length - 1; i > 0; --i) {
-          if (_allLessons[i].from.isBefore(before)) {
-            return _allLessons.sublist(max(0, i-pageSize+1), i+1);
-          }
-        }
-      }
-      // Default: 8 Weeks before now
-      after ??= DateTime.now().subtract(Duration(days: 7*8));
-      for (int i = 0; i < _allLessons.length; ++i) {
-        if (_allLessons[i].from.isAfter(after)) {
-          return _allLessons.sublist(i, min(i+pageSize, _allLessons.length));
-        }
-      }
-      return [];
-      });
-  }
+  // @override
+  // Future<List<Lesson>> getLessons({DateTime before, DateTime after}) async {
+  //   return _cachedLessons().then((lessons) {
+  //     if (before != null) {
+  //       for (int i = _allLessons.length - 1; i > 0; --i) {
+  //         if (_allLessons[i].from.isBefore(before)) {
+  //           return _allLessons.sublist(max(0, i-pageSize+1), i+1);
+  //         }
+  //       }
+  //     }
+  //     // Default: 8 Weeks before now
+  //     after ??= DateTime.now().subtract(Duration(days: 7*8));
+  //     for (int i = 0; i < _allLessons.length; ++i) {
+  //       if (_allLessons[i].from.isAfter(after)) {
+  //         return _allLessons.sublist(i, min(i+pageSize, _allLessons.length));
+  //       }
+  //     }
+  //     return [];
+  //     });
+  // }
 
   static Duration _fixtureTimeDelta() {
     DateTime now = DateTime.now();

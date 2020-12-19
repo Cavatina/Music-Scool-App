@@ -12,15 +12,14 @@ class AuthModel extends ChangeNotifier
 
   bool isLoading = false;
   bool isLoggedIn = false;
-  String token;
+  String _token;
 
   AuthModel(this.api) {
     isLoading = true;
-    storage.read(key: 'token').then((value) {
+    token.then((value) {
       if (value?.isNotEmpty == true) {
         print('reading token from storage:${value}');
         isLoggedIn = true;
-        token = value;
       }
       else {
         print('token empty!');
@@ -30,14 +29,20 @@ class AuthModel extends ChangeNotifier
     });
   }
 
+  Future<String> get token async {
+    _token ??= await storage.read(key: 'token');
+    return _token;
+  }
+
   Future<void> login({
     @required String username,
     @required String password}) async {
 
     isLoading = true;
-    token = await api.login(username: username, password: password);
-    if (token?.isNotEmpty == true) {
-      await storage.write(key: 'token', value: token);
+    _token = await api.login(username: username, password: password);
+    if (_token?.isNotEmpty == true) {
+      api.token = _token;
+      await storage.write(key: 'token', value: _token);
       await storage.write(key: 'lastUsername', value: username);
     }
     isLoggedIn = true;
@@ -47,12 +52,25 @@ class AuthModel extends ChangeNotifier
 
   void logout() {
     isLoggedIn = false;
+    _token = '';
     storage.write(key: 'token', value: '').then((value){});
     notifyListeners();
   }
 
   Future<User> get user async {
-    return api.user;
+    try {
+      api.token = await token;
+      return await api.user;
+    }
+    on AuthenticationFailed catch (_) {
+      print('AuthenticationFailed');
+      logout();
+      rethrow;
+    }
+    catch (error) {
+      print(error);
+      rethrow;
+    }
   }
 
   Future<String> get lastUsername async {
@@ -60,10 +78,12 @@ class AuthModel extends ChangeNotifier
   }
 
   Future<List<Lesson>> getUpcomingLessons({int page, int perPage}) async {
+    api.token = await token;
     return await api.getUpcomingLessons(page: page, perPage: perPage);
   }
 
   Future<List<Lesson>> getHomeworkLessons({int page, int perPage}) async {
+    api.token = await token;
     return await api.getHomeworkLessons(page: page, perPage: perPage);
   }
 }

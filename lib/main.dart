@@ -18,11 +18,11 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:musicscool/generated/l10n.dart';
 import 'package:musicscool/pages/root_page.dart';
 import 'package:musicscool/services/api.dart';
-import 'package:musicscool/services/api_test_service.dart';
+import 'package:musicscool/services/api_service.dart';
 import 'package:musicscool/theme.dart';
 
 void main() {
-  runApp(MusicScoolApp(ApiTestService()));
+  runApp(MusicScoolApp(ApiService()));
 }
 
 class MusicScoolApp extends StatelessWidget {

@@ -19,6 +19,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:musicscool/services/api.dart';
 import 'package:musicscool/viewmodels/auth.dart';
 import 'package:musicscool/widgets/countdown_timer_widget.dart';
 import 'package:musicscool/widgets/homework_widget.dart';
@@ -57,6 +58,15 @@ class _HomePageState extends State<HomePage> {
             builder: (context, AsyncSnapshot<User> snapshot) {
               if (snapshot.hasData) {
                 return studentCountdownView(context, snapshot.data);
+              }
+              else if (snapshot.hasError) {
+                if (snapshot.error.runtimeType != AuthenticationFailed().runtimeType) {
+                  Scaffold.of(context).showSnackBar(SnackBar(
+                      content: Text(snapshot.error.toString()),
+                      duration: Duration(seconds: 20)
+                  )); // snapshot.error;
+                }
+                return Container();
               }
               else {
                 return CircularProgressIndicator();

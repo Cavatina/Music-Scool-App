@@ -40,8 +40,10 @@ class _LessonListViewState extends State<LessonListView> {
         _pagingController.appendPage(lessons, pageKey + 1);
       }
     }
-    catch (error) {
-      _pagingController.error = error;
+    catch (error, stacktrace) {
+      print(error.toString());
+      print(stacktrace);
+      _pagingController.error = error.toString();
     }
   }
 

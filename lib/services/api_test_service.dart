@@ -22,11 +22,21 @@ import 'package:musicscool/models/lesson.dart';
 
 
 class ApiTestService implements Api {
+  String _token;
+
   @override
   Future<String> login({String username, String password}) async {
     User s = await user;
-    if (username == s.email && password == 'password') return 'dummy-token';
+    if (username == s.email && password == 'password') {
+      _token = 'dummy-token';
+      return _token;
+    }
     throw Exception('Illegal login');
+  }
+
+  @override
+  set token (String token) {
+    _token = token;
   }
 
   @override

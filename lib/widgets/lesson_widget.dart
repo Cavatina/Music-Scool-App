@@ -14,7 +14,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
 import 'dart:math';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -174,18 +173,18 @@ class LessonWidget extends StatelessWidget {
   }
 
   Future<bool> confirmCancel(BuildContext context) async {
-    return await showCupertinoDialog<bool>(
+    return await showDialog<bool>(
         context: context,
-        builder: (context) => CupertinoAlertDialog(
+        builder: (context) => AlertDialog(
           content: Text(S.of(context).cancelLesson),
           actions: <Widget>[
-            CupertinoDialogAction(
+            TextButton(
               child: Text(S.of(context).no),
               onPressed: () {
                 Navigator.of(context).pop(false);
               }
             ),
-            CupertinoDialogAction(
+            TextButton(
                 child: Text(S.of(context).yes),
                 onPressed: () {
                   Navigator.of(context).pop(true);

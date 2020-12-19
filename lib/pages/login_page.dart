@@ -40,6 +40,14 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light.copyWith(
         statusBarColor: Colors.transparent));
+    final AuthModel _auth = Provider.of<AuthModel>(context, listen: true);
+    _auth.lastUsername.then((String lastUsername) {
+      print('lastUsername:${lastUsername}');
+      if (lastUsername?.isNotEmpty == true) {
+        emailController.value = TextEditingValue(text: lastUsername);
+      }
+    });
+
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(

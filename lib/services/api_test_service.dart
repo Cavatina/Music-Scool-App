@@ -15,6 +15,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
 import 'dart:async';
 import 'dart:convert' show json;
+import 'dart:math';
 import 'package:musicscool/services/api.dart';
 import 'package:musicscool/models/user.dart';
 import 'package:musicscool/models/lesson.dart';
@@ -41,22 +42,32 @@ class ApiTestService implements Api {
   }
 
   @override
-  Future<List<Lesson>> getUpcomingLessons({page = 0}) async {
+  Future<List<Lesson>> getUpcomingLessons({page = 0, perPage = 20}) async {
     DateTime now = DateTime.now();
-    for (int i = 0; i < _allLessons.length; ++i) {
-      if (_allLessons[i].from.isAfter(now)) {
-        print('upcomingStartIndex:${i}');
-        return _allLessons.sublist(i, _allLessons.length-i);
-      }
+    List<Lesson> lessons = await allLessons();
+    int firstOffset = 0;
+    for (; firstOffset < lessons.length; ++firstOffset) {
+      if (lessons[firstOffset].from.isAfter(now)) break;
     }
-    return [];
+    int start = min(lessons.length, firstOffset + page * perPage);
+    print('upcomingStartIndex:${start}');
+    int end = min(lessons.length, start+perPage);
+    return lessons.sublist(start, end);
   }
 
   @override
-  Future<List<Lesson>> getHomeworkLessons({page = 0}) async {
-    //DateTime now = DateTime.now();
-    return _allLessons.reversed.where((Lesson lesson) {
-      return lesson.homework != null;
+  Future<List<Lesson>> getHomeworkLessons({page = 0, perPage = 20}) async {
+    List<Lesson> lessons = await allLessons();
+    int i = 0;
+    int start = page * perPage;
+    int end = start + perPage;
+    if (start >= lessons.length) return <Lesson> [];
+    return lessons.reversed.where((Lesson lesson) {
+      if (lesson.homework != null) {
+        if (i >= start && i < end) return true;
+        ++i;
+      }
+      return false;
     }).toList();
     // List<Lesson> out = <Lesson>[];
     // for (int i = 0; i < _allLessons.length; ++i) {

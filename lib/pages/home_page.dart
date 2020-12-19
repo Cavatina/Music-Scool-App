@@ -23,6 +23,7 @@ import 'package:musicscool/models/student.dart';
 import 'package:musicscool/viewmodels/auth.dart';
 import 'package:musicscool/widgets/countdown_timer_widget.dart';
 import 'package:musicscool/widgets/homework_widget.dart';
+import 'package:musicscool/widgets/lesson_list_view.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:musicscool/models/lesson.dart';
@@ -204,46 +205,29 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget homeworkLessonsView(BuildContext context) {
-    return Container(
-        child: FutureBuilder(
-            builder: (BuildContext context, AsyncSnapshot<List<Lesson>> snap) {
-              if (!snap.hasData) {
-                return CircularProgressIndicator();
-              }
-              print(snap.data.length);
-              return ListView.separated(
-                  padding: const EdgeInsets.all(8),
-                  itemCount: snap.data.length,
-//                  itemScrollController: itemScrollController,
-//                  itemPositionsListener: itemPositionsListener,
-                  itemBuilder: (BuildContext context, int index) =>
-                  HomeworkWidget(lesson: snap.data[index], expanded: index == 0),
-                  separatorBuilder: (BuildContext context, int index) =>
-                  const Divider());
-            },
-            future: _api.getHomeworkLessons()
-        ));
+    return LessonListView(
+        itemGetter: (int page, int perPage) {
+          AuthModel auth = Provider.of<AuthModel>(context, listen:false);
+          return auth.getHomeworkLessons(
+              page: page,
+              perPage: perPage);
+        },
+        itemBuilder: (BuildContext context, Lesson item, int index) =>
+            HomeworkWidget(lesson: item, expanded: index == 0)
+    );
   }
 
   Widget upcomingLessonsView(BuildContext context) {
-    return Container(
-        child: FutureBuilder(
-            builder: (BuildContext context, AsyncSnapshot<List<Lesson>> snap) {
-              if (!snap.hasData) {
-                return CircularProgressIndicator();
-              }
-              return ListView.separated(
-                  padding: const EdgeInsets.all(8),
-                  itemCount: snap.data.length,
-//                  itemScrollController: itemScrollController,
-//                  itemPositionsListener: itemPositionsListener,
-                  itemBuilder: (BuildContext context, int index) =>
-                    LessonWidget(lesson: snap.data[index]),
-                  separatorBuilder: (BuildContext context, int index) =>
-                  const Divider());
-            },
-            future: _api.getUpcomingLessons()
-        ));
+    return LessonListView(
+      itemGetter: (int page, int perPage) {
+        AuthModel auth = Provider.of<AuthModel>(context, listen:false);
+        return auth.getUpcomingLessons(
+            page: page,
+            perPage: perPage);
+      },
+      itemBuilder: (BuildContext context, Lesson item, int index) =>
+        LessonWidget(lesson: item, index: index)
+    );
   }
 
   Widget settingsView(BuildContext context) {

@@ -1,7 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:musicscool/models/lesson.dart';
 import 'package:musicscool/models/user.dart';
 import 'package:musicscool/services/api.dart';
+import 'dart:async';
 
 class AuthModel extends ChangeNotifier
 {
@@ -55,5 +57,13 @@ class AuthModel extends ChangeNotifier
 
   Future<String> get lastUsername async {
     return await storage.read(key: 'lastUsername');
+  }
+
+  Future<List<Lesson>> getUpcomingLessons({int page, int perPage}) async {
+    return await api.getUpcomingLessons(page: page, perPage: perPage);
+  }
+
+  Future<List<Lesson>> getHomeworkLessons({int page, int perPage}) async {
+    return await api.getHomeworkLessons(page: page, perPage: perPage);
   }
 }

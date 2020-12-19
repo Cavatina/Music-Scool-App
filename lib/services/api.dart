@@ -20,6 +20,6 @@ import 'dart:async';
 abstract class Api {
   Future<String> login({String username, String password});
   Future<User> get user;
-  Future<List<Lesson>> getHomeworkLessons({page = 0});
-  Future<List<Lesson>> getUpcomingLessons({page = 0});
+  Future<List<Lesson>> getHomeworkLessons({page = 0, perPage = 20});
+  Future<List<Lesson>> getUpcomingLessons({page = 0, perPage = 20});
 }

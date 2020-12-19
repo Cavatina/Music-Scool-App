@@ -17,8 +17,9 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter/services.dart';
 import 'package:musicscool/generated/l10n.dart';
-//import 'package:http/http.dart' as http;
-//import 'package:shared_preferences/shared_preferences.dart';
+import 'package:musicscool/viewmodels/auth.dart';
+import 'package:provider/provider.dart';
+
 
 class LoginPage extends StatefulWidget {
   @override
@@ -26,6 +27,14 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  TextEditingController emailController, passwordController;
+
+  @override
+  void initState() {
+    super.initState();
+    emailController = TextEditingController();
+    passwordController = TextEditingController();
+  }
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light.copyWith(
@@ -42,7 +51,7 @@ class _LoginPageState extends State<LoginPage> {
           child: ListView(
             children: <Widget> [
               userPwSection(),
-              buttonSection(),
+              buttonSection(context),
             ],
           ),
         ),
@@ -55,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
       child: Column(
         children: <Widget>[
           TextFormField(
-  //          controller: emailController,
+            controller: emailController,
             cursorColor: Colors.white,
 
             style: TextStyle(color: Colors.white70),
@@ -68,7 +77,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
           SizedBox(height: 30.0),
           TextFormField(
-//            controller: passwordController,
+            controller: passwordController,
             cursorColor: Colors.white,
             obscureText: true,
             style: TextStyle(color: Colors.white70),
@@ -84,7 +93,8 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Container buttonSection() {
+  Container buttonSection(BuildContext context) {
+    final AuthModel _auth = Provider.of<AuthModel>(context, listen: true);
     return Container(
       width: MediaQuery.of(context).size.width,
       height: 40.0,
@@ -92,8 +102,7 @@ class _LoginPageState extends State<LoginPage> {
       margin: EdgeInsets.only(top: 15.0),
       child: RaisedButton(
         onPressed: () {
-   //       Route route = MaterialPageRoute(builder: (context) => HomePage());
-//          Navigator.pushReplacement(context, route);
+          _auth.login(username: emailController.text, password: passwordController.text);
         },
 /*        onPressed: emailController.text == "" || passwordController.text == "" ? null : () {
           setState(() {

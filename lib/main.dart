@@ -17,19 +17,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:musicscool/generated/l10n.dart';
 import 'package:musicscool/pages/root_page.dart';
+import 'package:musicscool/services/api.dart';
+import 'package:musicscool/services/api_test_service.dart';
 import 'package:musicscool/theme.dart';
 
 void main() {
-  runApp(MusicScoolApp());
+  runApp(MusicScoolApp(ApiTestService()));
 }
 
 class MusicScoolApp extends StatelessWidget {
+  final Api api;
+  MusicScoolApp(this.api);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Music\'scool',
       theme: theme(),
-      home: RootPage(),
+      home: RootPage(api),
       localizationsDelegates: [
         S.delegate,
         GlobalMaterialLocalizations.delegate,

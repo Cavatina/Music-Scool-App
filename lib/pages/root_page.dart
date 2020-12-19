@@ -15,19 +15,25 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
 import 'package:intl/date_symbol_data_local.dart';  //for date locale
 import 'package:flutter/material.dart';
+import 'package:musicscool/services/api.dart';
+import 'package:musicscool/viewmodels/auth.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-//import 'package:musicscool/pages/login_page.dart';
-import 'package:musicscool/pages/home_page.dart';
+import 'login_page.dart';
+import 'home_page.dart';
 
 class RootPage extends StatefulWidget {
+  final Api api;
+  final AuthModel auth;
+
+  RootPage(this.api) : auth = AuthModel(api);
+
   @override
   _RootPageState createState() => _RootPageState();
 }
 
 class _RootPageState extends State<RootPage> {
-  bool _isLoading = true;
-//  bool _isLoggedIn = true;
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   Widget _waitingPage() {
@@ -39,27 +45,33 @@ class _RootPageState extends State<RootPage> {
     );
   }
 
-  @override void initState() {
+  @override
+  void initState() {
+    initializeDateFormatting().then((obj){});
     super.initState();
     _prefs.then((SharedPreferences prefs) {
-      initializeDateFormatting().then((_) {
-        setState(() {
-//        _isLoggedIn = prefs.containsKey('token') && prefs.getString('token').isNotEmpty;
-          _isLoading = false;
-        });
-      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) return _waitingPage();
-    //   if (_isLoggedIn) {
-      return HomePage();
-//    }
-    // else {
-    //   return LoginPage();
-    // }
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider<AuthModel>.value(value: widget.auth)
+        ],
+        child: choosePage(context)
+    );
+  }
+
+  Widget choosePage(BuildContext context) {
+    return Consumer<AuthModel>(builder: (context, model, child) {
+      if (model?.isLoading == true) return _waitingPage();
+      if (model.isLoggedIn) {
+        return HomePage();
+      }
+      else {
+        return LoginPage();
+      }
+    });
   }
 }
-

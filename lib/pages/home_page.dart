@@ -20,8 +20,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:musicscool/models/student.dart';
+import 'package:musicscool/viewmodels/auth.dart';
 import 'package:musicscool/widgets/countdown_timer_widget.dart';
 import 'package:musicscool/widgets/homework_widget.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:musicscool/models/lesson.dart';
 import 'package:musicscool/models/user.dart';
@@ -457,7 +459,7 @@ class _HomePageState extends State<HomePage> {
                       leading: Icon(Icons.logout)
                   ),
                   onTap: () {
-
+                      Provider.of<AuthModel>(context, listen:false).logout();
                   }
               )
 

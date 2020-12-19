@@ -16,6 +16,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 import 'package:flutter/material.dart';
 
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:musicscool/generated/l10n.dart';
 import 'package:musicscool/viewmodels/auth.dart';
 import 'package:provider/provider.dart';
@@ -47,13 +48,22 @@ class _LoginPageState extends State<LoginPage> {
             fit: BoxFit.cover,
           ),
         ),
-        child: Center(
-          child: ListView(
-            children: <Widget> [
-              userPwSection(),
-              buttonSection(context),
-            ],
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget> [
+            CircleAvatar(
+                minRadius: 24,
+                maxRadius: 48,
+                backgroundColor: Colors.black,
+                child: SvgPicture.asset('assets/images/Musicscool - Logo - Okergeel beeldmerk.svg',
+                    color: Theme.of(context).primaryColor)),
+            Text(''),
+            Text("Music'scool", textScaleFactor: 1.75),
+            Text(''),
+            userPwSection(),
+            buttonSection(context),
+          ],
         ),
       ),
     );
@@ -111,8 +121,8 @@ class _LoginPageState extends State<LoginPage> {
           signIn(emailController.text, passwordController.text);
         },*/
         elevation: 0.0,
-        color: Colors.purple,
-        child: Text(S.of(context).signIn, style: TextStyle(color: Colors.white70)),
+        color: Theme.of(context).primaryColor,
+        child: Text(S.of(context).signIn, style: TextStyle(color: Colors.black)),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
       ),
     );

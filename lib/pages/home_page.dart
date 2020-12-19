@@ -37,11 +37,27 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   bool _notifications = true;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  TabController _tabController;
+  final List<Tab> _tabs = <Tab> [
+    Tab(text: 'Info', icon: Icon(CupertinoIcons.info_circle_fill)), //Icons.info)),
+    Tab(text: 'Homework', icon: Icon(CupertinoIcons.music_albums_fill)), //doc_on_doc_fill)),//Icons.book)),
+    Tab(text: 'Next', icon: Icon(CupertinoIcons.house_fill)), //Icons.home)),
+    Tab(text: 'Upcoming', icon: Icon(CupertinoIcons.calendar)), //Icons.fast_forward)),
+  ];
 
   final _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(
+         length: _tabs.length,
+         initialIndex: 2,
+         vsync: this);
+  }
 
   @override
   void dispose() {
@@ -196,10 +212,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 4,
-      initialIndex: 2,
-      child: Scaffold(
+    return Scaffold(
         key: _scaffoldKey,
         // bottomNavigationBar: BottomAppBar(
         //   color: Theme.of(context).primaryColor,
@@ -207,55 +220,31 @@ class _HomePageState extends State<HomePage> {
         // ),
         appBar: AppBar(
 //          toolbarHeight: 160,
-//           leading: IconButton(
-//             icon: Icon(Icons.menu),
-//             onPressed: () => _scaffoldKey.currentState.openDrawer()
-//           ),
-          title: SvgPicture.asset('assets/images/Musicscool - Logo - Zwart beeld- en woordmerk.svg',
-          height: 48 /* @todo Size dynamically */ //),
-          ),
-          centerTitle: true,
-          bottom: TabBar(
-              labelStyle: TextStyle(fontSize: 10),
-              tabs: <Widget> [
-                Tab(text: 'Info', icon: Icon(CupertinoIcons.info_circle_fill)), //Icons.info)),
-                Tab(text: 'Homework', icon: Icon(CupertinoIcons.music_albums_fill)), //doc_on_doc_fill)),//Icons.book)),
-                Tab(text: 'Next', icon: Icon(CupertinoIcons.house_fill)), //Icons.home)),
-                Tab(text: 'Upcoming', icon: Icon(CupertinoIcons.calendar)), //Icons.fast_forward)),
-//                Tab(text: '')
-              ]
-          )
+            title: SvgPicture.asset('assets/images/Musicscool - Logo - Zwart beeld- en woordmerk.svg',
+                height: 48 /* @todo Size dynamically */ //),
+            ),
+            centerTitle: true,
+            bottom: TabBar(
+                controller: _tabController,
+                labelStyle: TextStyle(fontSize: 10),
+                tabs: _tabs
+            )
         ),
-          body: Container(
-    decoration: BoxDecoration(
-    image: DecorationImage(
-    image:
-    AssetImage('assets/images/background4.jpg'),
-    fit: BoxFit.cover)),
-    child: TabBarView(
-            children: <Widget> [
-              settingsView(context),
-              homeworkLessonsView(context),
-              countdownView(context),
-              upcomingLessonsView(context),
-            ]
+        body: Container(
+          decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage('assets/images/background4.jpg'),
+                  fit: BoxFit.cover)),
+          child: TabBarView(
+              controller: _tabController,
+              children: <Widget> [
+                settingsView(context),
+                homeworkLessonsView(context),
+                countdownView(context),
+                upcomingLessonsView(context),
+              ]
           ),
-          )
-        //   drawer: Drawer(
-        //       child: FutureBuilder<User>(
-        //           future: _api.user,
-        //
-        //     builder: (context, AsyncSnapshot<User> snapshot) {
-        //       if (snapshot.hasData) {
-        //         return userInfo(context, snapshot.data);
-        //       }
-        //       else {
-        //         return CircularProgressIndicator();
-        //       }
-        //     }
-        //   )
-        // )
-      ),
+        )
     );
   }
 

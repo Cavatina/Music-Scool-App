@@ -182,14 +182,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   Widget upcomingLessonsView(BuildContext context) {
     return LessonListView(
-      itemGetter: (int page, int perPage) {
-        AuthModel auth = Provider.of<AuthModel>(context, listen:false);
-        return auth.getUpcomingLessons(
-            page: page,
-            perPage: perPage);
-      },
-      itemBuilder: (BuildContext context, Lesson item, int index) =>
-        LessonWidget(lesson: item, index: index)
+        itemGetter: (int page, int perPage) {
+          AuthModel auth = Provider.of<AuthModel>(context, listen: false);
+          return auth.getUpcomingLessons(
+              page: page,
+              perPage: perPage);
+          },
+        itemBuilder: (BuildContext context, Lesson item, int index) =>
+            LessonWidget(lesson: item)
     );
   }
 

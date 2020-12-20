@@ -17,6 +17,7 @@ import 'dart:async';
 import 'dart:convert' show json;
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:musicscool/models/lesson_cancel_info.dart';
 import 'package:musicscool/models/lesson_response.dart';
 import 'package:musicscool/services/api.dart';
 import 'package:musicscool/models/user.dart';
@@ -111,6 +112,27 @@ class ApiService implements Api {
     LessonResponse response = LessonResponse.fromJson(await jsonGet('/student/lessons/past',
         page: page, perPage: perPage, withHomework: true));
     return response.data;
+  }
+
+  @override
+  Future<LessonCancelInfo> cancelLessonInfo({int id}) async {
+    return LessonCancelInfo.fromJson((await jsonGet('/student/lessons/${id}/cancel'))['data']);
+  }
+
+  @override
+  Future<Lesson> cancelLesson({int id}) async {
+    http.Response response = await client.post('${baseUrl}/student/lessons/${id}/cancel',
+        headers: {
+          HttpHeaders.acceptHeader: 'application/json',
+          HttpHeaders.authorizationHeader: 'Bearer ${_token}'
+        }).timeout(Duration(seconds: 20));
+    if (response.statusCode != 200) {
+      print(response.statusCode);
+      // @todo Error handling!!
+      throw ApiError(response.body);
+    }
+
+    return Lesson.fromJson(json.decode(response.body)['data']);
   }
 
   static const pageSize = 25;

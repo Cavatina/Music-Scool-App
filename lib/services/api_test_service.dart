@@ -16,6 +16,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 import 'dart:async';
 import 'dart:convert' show json;
 import 'dart:math';
+import 'package:musicscool/models/lesson_cancel_info.dart';
 import 'package:musicscool/services/api.dart';
 import 'package:musicscool/models/user.dart';
 import 'package:musicscool/models/lesson.dart';
@@ -88,6 +89,28 @@ class ApiTestService implements Api {
     // return List<Lesson>(out.reversed);
   }
 
+  @override
+  Future<LessonCancelInfo> cancelLessonInfo({int id}) async {
+    List<Lesson> lessons = await allLessons();
+    for (int i=0; i<lessons.length; ++i) {
+      if (lessons[i].id == id) {
+        return LessonCancelInfo(id, lessons[i].from, true, 0, 3);
+      }
+    }
+    throw ApiError('Unknown lesson');
+  }
+
+  @override
+  Future<Lesson> cancelLesson({int id}) async {
+    List<Lesson> lessons = await allLessons();
+    for (int i=0; i<lessons.length; ++i) {
+      if (lessons[i].id == id) {
+        lessons[i] = lessons[i].copyWith(cancelled: true, status: 'STUDENT_CANCELLED');
+        return lessons[i];
+      }
+    }
+    throw ApiError('Unknown lesson');
+  }
   // @override
   // Future<List<Lesson>> getLessons({DateTime before, DateTime after}) async {
   //   return _cachedLessons().then((lessons) {

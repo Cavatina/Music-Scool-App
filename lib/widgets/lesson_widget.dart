@@ -13,56 +13,28 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
-import 'dart:math';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:musicscool/models/lesson_cancel_info.dart';
+import 'package:musicscool/viewmodels/auth.dart';
+import 'package:provider/provider.dart';
 import 'package:musicscool/models/lesson.dart';
-import 'package:musicscool/models/homework.dart';
-//import 'package:musicscool/widgets/countdown_timer_widget.dart';
 import 'package:musicscool/generated/l10n.dart';
 
-class LessonWidget extends StatelessWidget {
-  LessonWidget({this.lesson, this.index}) : super(key: Key(lesson.from.toIso8601String()));
-
+class LessonWidget extends StatefulWidget {
   final Lesson lesson;
-  final int index;
+  LessonWidget({this.lesson});
 
-  Widget homeworkIcons(BuildContext context, Homework homework) {
-    List<Widget> icons = <Widget>[];
-    var devSize = MediaQuery.of(context).size;
-    double boxWidth = min(devSize.width / 2.6, 300.0);
+  @override
+  _LessonWidgetState createState() => _LessonWidgetState(lesson: lesson);
+}
 
-    if (homework.fileUrl != null) {
-      icons.add(
-          SizedBox(
-            width: boxWidth,
-            child: OutlinedButton.icon(
-                label: Text(S.of(context).download),
-                onPressed: () {
-                  launch(homework.fileUrl);
-                },
-                icon: Icon(Icons.download_outlined)
-            ),
-          )
-          );
-    }
-    if (homework.linkUrl != null) {
-      icons.add(
-        SizedBox(
-          width: boxWidth,
-          child: OutlinedButton.icon(
-            label: Text(S.of(context).view),
-            onPressed: () {
-              launch(homework.linkUrl);
-            },
-              icon: Icon(Icons.ondemand_video_outlined)
-          ),
-        )
-      );
-    }
-    return Wrap(direction: Axis.horizontal, spacing: 16.0, children: icons);
-  }
+class _LessonWidgetState extends State<LessonWidget> {
+  _LessonWidgetState({this.lesson});
+
+  Lesson lesson;
 
   String cancelledText(BuildContext context, String statusKey) {
     switch(statusKey) {
@@ -90,9 +62,12 @@ class LessonWidget extends StatelessWidget {
     }
   }
 
+  static String formattedDate(DateTime time) {
+    return DateFormat.yMMMEd().format(time) + ' ' +
+        DateFormat.Hm().format(time);
+  }
+
   Widget header(BuildContext context, bool expand, {List<Widget> children}) {
-    String start = DateFormat.yMMMEd().format(lesson.from) + ' ' +
-        DateFormat.Hm().format(lesson.from);
     String subtitle;
     if (lesson.instrument != null && lesson.teacher != null) {
       subtitle = S.of(context).instrumentWithTeacher(lesson.instrument.name,
@@ -105,50 +80,21 @@ class LessonWidget extends StatelessWidget {
       subtitle = '';
     }
     if (expand) {
-      if (lesson.homework != null && lesson.homework.isNotEmpty) {
-        subtitle = lesson.homework.first.message;
-      }
       return ExpansionTile(
-          title: Text(start),
+          title: Text(formattedDate(lesson.from)),
           subtitle: Text(subtitle, style: TextStyle(color: Colors.white60),
           overflow: TextOverflow.ellipsis),
-          initiallyExpanded: index == 0,
-//          onExpansionChanged: (bool state) {
-//
-//          },
           children: children);
     }
     return(ListTile(
-        title: Text(start),
+        title: Text(formattedDate(lesson.from)),
         subtitle: Text(subtitle)));
   }
   List<Widget> body(BuildContext context) {
     List<Widget> out = <Widget>[];
-//    if (lesson.cancelled == true) {
-//      out.add(ListTile(subtitle: Text(cancelledText(context, lesson.status))));
-//    }
-    if (lesson.homework != null) {
-//      out.add(ListTile(subtitle: Text('Homework')/*, tileColor: Color.fromRGBO(64, 64, 64, 0.5)*/));
-      lesson.homework.forEach((Homework homework) =>
-          out.add(
-              Container(
-                color: Color.fromRGBO(64, 64, 64, 0.3),
-//                margin: EdgeInsets.symmetric(vertical: 16.0),
-                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(homework.message),
-                      Padding(padding: EdgeInsets.symmetric(vertical: 8.0)),
-                      homeworkIcons(context, homework),
-//                    Padding(padding: EdgeInsets.symmetric(vertical: 8.0)),
-                    ]
-                ),
-              )
-          )
-      );
-    }
+   if (lesson.cancelled == true) {
+     out.add(ListTile(subtitle: Text(cancelledText(context, lesson.status))));
+   }
     return out;
   }
 
@@ -173,10 +119,30 @@ class LessonWidget extends StatelessWidget {
   }
 
   Future<bool> confirmCancel(BuildContext context) async {
+    AuthModel auth = Provider.of<AuthModel>(context, listen: false);
+    LessonCancelInfo cancelInfo = await auth.cancelLessonInfo(id: lesson.id);
+    String textContent;
+    print(jsonEncode(cancelInfo.toJson()));
+    if (cancelInfo.canGetReplacement) {
+      textContent = S.of(context).cancelLessonRefundable(
+          cancelInfo.countCancelled+1,  // Total: include this cancellation.
+          cancelInfo.allowCancelled);
+    }
+    else {
+      textContent = S.of(context).cancelLessonNonRefundable;
+    }
     return await showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(
-          content: Text(S.of(context).cancelLesson),
+          title: Text(S.of(context).confirm),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(S.of(context).cancelLessonAt(formattedDate(lesson.from))),
+              Text(''),
+              Text(textContent),
+            ],
+          ),
           actions: <Widget>[
             TextButton(
               child: Text(S.of(context).no),
@@ -187,7 +153,12 @@ class LessonWidget extends StatelessWidget {
             TextButton(
                 child: Text(S.of(context).yes),
                 onPressed: () {
-                  Navigator.of(context).pop(true);
+                  auth.cancelLesson(id: lesson.id).then((Lesson l) {
+                    setState(() {
+                      lesson = l;
+                    });
+                    Navigator.of(context).pop(true);
+                  });
                 }
             )
           ]
@@ -252,8 +223,13 @@ class LessonWidget extends StatelessWidget {
     }
     else {
       return Card(
-        child: header(context, true,
-          children: body(context)
+        child: Container(
+          decoration: BoxDecoration(
+              border: border
+          ),
+          child: header(context, true,
+            children: body(context)
+          ),
         )
       );
     }

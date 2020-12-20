@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:musicscool/models/lesson_cancel_info.dart';
 import 'package:musicscool/models/lesson.dart';
 import 'package:musicscool/models/user.dart';
 import 'package:musicscool/services/api.dart';
@@ -85,5 +86,15 @@ class AuthModel extends ChangeNotifier
   Future<List<Lesson>> getHomeworkLessons({int page, int perPage}) async {
     api.token = await token;
     return await api.getHomeworkLessons(page: page, perPage: perPage);
+  }
+
+  Future<LessonCancelInfo> cancelLessonInfo({int id}) async {
+    api.token = await token;
+    return await api.cancelLessonInfo(id: id);
+  }
+
+  Future<Lesson> cancelLesson({int id}) async {
+    api.token = await token;
+    return await api.cancelLesson(id: id);
   }
 }

@@ -33,6 +33,8 @@ ThemeData theme()
   //MaterialColor mmYellow = MaterialColor(mmColors[900].value, mmColors);
   ThemeData theme = ThemeData(
     brightness: Brightness.dark,
+    textSelectionColor: mmColors[400],
+    textSelectionHandleColor: mmColors[900],
     scaffoldBackgroundColor: Colors.black,
     accentColor: Colors.white, //mmColors[600],
     primaryColor: mmColors[900],

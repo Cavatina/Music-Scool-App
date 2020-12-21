@@ -36,6 +36,11 @@ class ApiTestService implements Api {
   }
 
   @override
+  Future<void> resetPassword({String username}) async {
+    throw Exception('Not implemented');
+  }
+
+  @override
   set token (String token) {
     _token = token;
   }

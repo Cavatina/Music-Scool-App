@@ -51,6 +51,10 @@ class AuthModel extends ChangeNotifier
     notifyListeners();
   }
 
+  Future<void> resetPassword({@required String username}) async {
+    return await api.resetPassword(username: username);
+  }
+
   void logout() {
     isLoggedIn = false;
     _token = '';

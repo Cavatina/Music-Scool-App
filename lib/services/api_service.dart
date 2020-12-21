@@ -63,6 +63,25 @@ class ApiService implements Api {
   }
 
   @override
+  Future<void> resetPassword({String username}) async {
+    String body = json.encode(
+        <String, dynamic> {
+          'email': username,
+        });
+    http.Response response = await client.post('${baseUrl}/requestPasswordReset',
+        headers: {
+          HttpHeaders.acceptHeader: 'application/json',
+          HttpHeaders.contentTypeHeader: 'application/json'
+        },
+        body: body
+    ).timeout(Duration(seconds: 20));
+    if (response.statusCode != 200) {
+      throw ApiError('Failed');
+    }
+    return;
+  }
+
+  @override
   set token (String token) {
     _token = token;
   }

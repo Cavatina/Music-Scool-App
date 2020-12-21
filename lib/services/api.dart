@@ -29,6 +29,8 @@ class AuthenticationFailed implements Exception {
 
 abstract class Api {
   Future<String> login({String username, String password});
+  Future<void> resetPassword({String username});
+
   set token (String token);
   Future<User> get user;
   Future<List<Lesson>> getHomeworkLessons({page = 0, perPage = 20});

@@ -13,6 +13,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import 'package:flutter/services.dart';
@@ -21,21 +23,48 @@ import 'package:musicscool/generated/l10n.dart';
 import 'package:musicscool/viewmodels/auth.dart';
 import 'package:provider/provider.dart';
 
-
-class LoginPage extends StatefulWidget {
+class LoginPage extends StatelessWidget {
   @override
-  _LoginPageState createState() => _LoginPageState();
+  Widget build(BuildContext context) {
+    return Scaffold(
+        body: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/background4.jpg'),
+              fit: BoxFit.cover,
+            ),
+          ),
+        child: LoginForm()
+    ));
+  }
 }
 
-class _LoginPageState extends State<LoginPage> {
+class LoginForm extends StatefulWidget {
+  @override
+  _LoginFormState createState() => _LoginFormState();
+}
+
+enum _FormType { signIn, resetPassword }
+
+class _LoginFormState extends State<LoginForm> {
+  _FormType formType = _FormType.signIn;
+  FocusNode passwordFocus;
   TextEditingController emailController, passwordController;
 
   @override
   void initState() {
     super.initState();
+    passwordFocus = FocusNode();
     emailController = TextEditingController();
     passwordController = TextEditingController();
   }
+
+  @override
+  void dispose() {
+    passwordFocus.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light.copyWith(
@@ -45,65 +74,109 @@ class _LoginPageState extends State<LoginPage> {
       print('lastUsername:${lastUsername}');
       if (lastUsername?.isNotEmpty == true) {
         emailController.value = TextEditingValue(text: lastUsername);
+        passwordFocus.requestFocus();
       }
     });
 
-    return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/background4.jpg'),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget> [
-            CircleAvatar(
-                minRadius: 24,
-                maxRadius: 48,
-                backgroundColor: Colors.black,
-                child: SvgPicture.asset('assets/images/Musicscool - Logo - Okergeel beeldmerk.svg',
-                    color: Theme.of(context).primaryColor)),
-            Text(''),
-            Text("Music'scool", textScaleFactor: 1.75),
-            Text(''),
-            userPwSection(),
-            buttonSection(context),
-          ],
+    return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget> [
+          CircleAvatar(
+              minRadius: 24,
+              maxRadius: 48,
+              backgroundColor: Colors.black,
+              child: SvgPicture.asset('assets/images/Musicscool - Logo - Okergeel beeldmerk.svg',
+                  color: Theme.of(context).primaryColor)),
+          Text(''),
+          Text("Music'scool", textScaleFactor: 1.75),
+          Text(''),
+          userPwSection(),
+          buttonSection(context),
+        ],
+      );
+  }
+
+  Container userPwSection() {
+    List<Widget> children = <Widget> [
+      TextFormField(
+        controller: emailController,
+        cursorColor: Colors.white,
+        autofocus: true,
+        style: TextStyle(color: Colors.white),
+        decoration: InputDecoration(
+          icon: Icon(Icons.email, color: Colors.white70),
+          hintText: S.of(context).email,
+          border: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white70)),
+          hintStyle: TextStyle(color: Colors.white70),
         ),
       ),
-    );
-  }
-  Container userPwSection() {
+    ];
+
+    if (formType == _FormType.signIn) {
+      children.add(SizedBox(height: 30.0));
+      children.add(TextFormField(
+        controller: passwordController,
+        focusNode: passwordFocus,
+        cursorColor: Colors.white,
+        obscureText: true,
+        style: TextStyle(color: Colors.white),
+        decoration: InputDecoration(
+          icon: Icon(Icons.lock, color: Colors.white70),
+          hintText: S.of(context).password,
+          border: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white70)),
+          hintStyle: TextStyle(color: Colors.white70),
+        ),
+      ));
+    }
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
       child: Column(
-        children: <Widget>[
-          TextFormField(
-            controller: emailController,
-            cursorColor: Colors.white,
+        children: children,
+      ),
+    );
+  }
 
-            style: TextStyle(color: Colors.white70),
-            decoration: InputDecoration(
-              icon: Icon(Icons.email, color: Colors.white70),
-              hintText: S.of(context).email,
-              border: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white70)),
-              hintStyle: TextStyle(color: Colors.white70),
-            ),
+  Container resetPasswordButtons(BuildContext context) {
+    final AuthModel _auth = Provider.of<AuthModel>(context, listen: true);
+    double buttonWidth = max(150, MediaQuery.of(context).size.width / 2.2);
+    return Container(
+//      width: MediaQuery.of(context).size.width,
+      height: 40.0,
+      padding: EdgeInsets.symmetric(horizontal: 15.0),
+      margin: EdgeInsets.only(top: 15.0),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          TextButton(
+              child: Text(S.of(context).cancel),
+              style: TextButton.styleFrom(backgroundColor: Colors.transparent),
+              onPressed: () {
+                setState(() {
+                  formType = _FormType.signIn;
+                });
+              }
           ),
-          SizedBox(height: 30.0),
-          TextFormField(
-            controller: passwordController,
-            cursorColor: Colors.white,
-            obscureText: true,
-            style: TextStyle(color: Colors.white70),
-            decoration: InputDecoration(
-              icon: Icon(Icons.lock, color: Colors.white70),
-              hintText: S.of(context).password,
-              border: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white70)),
-              hintStyle: TextStyle(color: Colors.white70),
+          SizedBox(
+            width: buttonWidth,
+            child: RaisedButton(
+              onPressed: () {
+                _auth.resetPassword(username: emailController.text).then((_) {
+                  Scaffold.of(context).showSnackBar(SnackBar(
+                      content: Text(S.of(context).passwordResetRequestSent(emailController.text)),
+                      duration: Duration(seconds: 5)
+                  )); // snapshot.error;
+
+                });
+                setState(() {
+                  formType = _FormType.signIn;
+                });
+              },
+              elevation: 0.0,
+              color: Theme.of(context).primaryColor,
+              child: Text(S.of(context).resetPassword, style: TextStyle(color: Colors.black)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
             ),
           ),
         ],
@@ -111,28 +184,70 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Container buttonSection(BuildContext context) {
+  Container signInButtons(BuildContext context) {
     final AuthModel _auth = Provider.of<AuthModel>(context, listen: true);
+    double buttonWidth = max(150, MediaQuery.of(context).size.width / 2.2);
     return Container(
-      width: MediaQuery.of(context).size.width,
+//      width: MediaQuery.of(context).size.width,
       height: 40.0,
       padding: EdgeInsets.symmetric(horizontal: 15.0),
       margin: EdgeInsets.only(top: 15.0),
-      child: RaisedButton(
-        onPressed: () {
-          _auth.login(username: emailController.text, password: passwordController.text);
-        },
-/*        onPressed: emailController.text == "" || passwordController.text == "" ? null : () {
-          setState(() {
-            _isLoading = true;
-          });
-          signIn(emailController.text, passwordController.text);
-        },*/
-        elevation: 0.0,
-        color: Theme.of(context).primaryColor,
-        child: Text(S.of(context).signIn, style: TextStyle(color: Colors.black)),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          TextButton(
+              child: Text(S.of(context).forgotPassword),
+              style: TextButton.styleFrom(backgroundColor: Colors.transparent),
+              onPressed: () {
+                setState(() {
+                  formType = _FormType.resetPassword;
+                });
+              }
+          ),
+          SizedBox(
+            width: buttonWidth,
+            child: RaisedButton(
+              onPressed: () {
+                if (emailController.text.isEmpty) {
+                  Scaffold.of(context).showSnackBar(SnackBar(
+                      content: Text(S.of(context).loginMissingEmail),
+                      duration: Duration(seconds: 5)
+                  )); // snapshot.error;
+                }
+                else if (passwordController.text.isEmpty) {
+                  Scaffold.of(context).showSnackBar(SnackBar(
+                      content: Text(S.of(context).loginMissingPassword),
+                      duration: Duration(seconds: 5)
+                  )); // snapshot.error;
+                }
+                else {
+                  _auth.login(
+                      username: emailController.text,
+                      password: passwordController.text).catchError((e) {
+                    Scaffold.of(context).showSnackBar(SnackBar(
+                        content: Text(e.toString()),
+                        duration: Duration(seconds: 5)
+                    )); // snapshot.error;
+                  });
+                }
+              },
+              elevation: 0.0,
+              color: Theme.of(context).primaryColor,
+              child: Text(S.of(context).signIn, style: TextStyle(color: Colors.black)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+            ),
+          ),
+        ],
       ),
     );
+  }
+  Container buttonSection(BuildContext context) {
+    switch (formType) {
+      case _FormType.resetPassword:
+        return resetPasswordButtons(context);
+      default:
+        return signInButtons(context);
+    }
   }
 }

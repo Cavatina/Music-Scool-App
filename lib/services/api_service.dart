@@ -40,6 +40,7 @@ class ApiService implements Api {
     });
     http.Response response = await client.post('${baseUrl}/login',
         headers: {
+          HttpHeaders.acceptHeader: 'application/json',
           HttpHeaders.contentTypeHeader: 'application/json'
         },
         body: body

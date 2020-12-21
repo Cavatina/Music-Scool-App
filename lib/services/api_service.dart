@@ -25,7 +25,7 @@ import 'package:musicscool/models/lesson.dart';
 
 
 class ApiService implements Api {
-  static const String baseUrl = 'http://rotten-apple.home:8000/api/v1';
+  static const String baseUrl = 'https://testscool.cavatina.no/api/v1';
   final http.BaseClient client = http.Client();
   String _token;
 

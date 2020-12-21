@@ -44,7 +44,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final List<Tab> _tabs = <Tab> [
     Tab(text: 'Info', icon: Icon(CupertinoIcons.info_circle_fill)), //Icons.info)),
     Tab(text: 'Homework', icon: Icon(CupertinoIcons.music_albums_fill)), //doc_on_doc_fill)),//Icons.book)),
-    Tab(text: 'Next', icon: Icon(CupertinoIcons.house_fill)), //Icons.home)),
+    Tab(text: 'Next', icon: Icon(CupertinoIcons.timer_fill)), //Icons.home)),
     Tab(text: 'Upcoming', icon: Icon(CupertinoIcons.calendar)), //Icons.fast_forward)),
   ];
 

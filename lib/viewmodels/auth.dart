@@ -97,4 +97,9 @@ class AuthModel extends ChangeNotifier
     api.token = await token;
     return await api.cancelLesson(id: id);
   }
+
+  Future<String> downloadHomework({String url, String name}) async {
+    api.token = await token;
+    return await api.downloadHomework(url: url, filename: name);
+  }
 }

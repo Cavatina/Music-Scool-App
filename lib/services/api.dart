@@ -36,4 +36,6 @@ abstract class Api {
 
   Future<LessonCancelInfo> cancelLessonInfo({int id});
   Future<Lesson> cancelLesson({int id});
+
+  Future<String> downloadHomework({String url, String filename});
 }

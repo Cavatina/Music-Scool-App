@@ -17,11 +17,14 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:musicscool/viewmodels/auth.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:musicscool/models/lesson.dart';
 import 'package:musicscool/models/homework.dart';
 //import 'package:musicscool/widgets/countdown_timer_widget.dart';
 import 'package:musicscool/generated/l10n.dart';
+import 'package:open_file/open_file.dart';
 
 class HomeworkWidget extends StatefulWidget {
   final Lesson lesson;
@@ -39,10 +42,17 @@ class _HomeworkWidgetState extends State<HomeworkWidget> {
   _HomeworkWidgetState({this.expanded});
 //  _HomeworkWidgetState({this.lesson, this.index}) : super(key: Key(lesson.from.toIso8601String()));
 
+  void downloadAndLaunch(AuthModel auth, String url, String fileName) {
+      auth.downloadHomework(url: url, name: fileName).then((String path) {
+        OpenFile.open(path);
+      });
+  }
+
   Widget homeworkIcons(BuildContext context, Homework homework) {
     List<Widget> icons = <Widget>[];
     var devSize = MediaQuery.of(context).size;
     double boxWidth = min(devSize.width / 2.6, 300.0);
+    AuthModel auth = Provider.of<AuthModel>(context, listen: false);
 
     if (homework.fileUrl != null) {
       icons.add(
@@ -51,7 +61,7 @@ class _HomeworkWidgetState extends State<HomeworkWidget> {
             child: OutlinedButton.icon(
                 label: Text(S.of(context).download),
                 onPressed: () {
-                  launch(homework.fileUrl);
+                  downloadAndLaunch(auth, homework.fileUrl, homework.fileName);
                 },
                 icon: Icon(CupertinoIcons.cloud_download_fill) //download_outlined)
             ),

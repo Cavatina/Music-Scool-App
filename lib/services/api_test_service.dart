@@ -111,6 +111,12 @@ class ApiTestService implements Api {
     }
     throw ApiError('Unknown lesson');
   }
+
+  @override
+  Future<String> downloadHomework({String url, String filename}) async {
+    return '';
+  }
+
   // @override
   // Future<List<Lesson>> getLessons({DateTime before, DateTime after}) async {
   //   return _cachedLessons().then((lessons) {

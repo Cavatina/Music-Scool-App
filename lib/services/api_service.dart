@@ -22,6 +22,7 @@ import 'package:musicscool/models/lesson_response.dart';
 import 'package:musicscool/services/api.dart';
 import 'package:musicscool/models/user.dart';
 import 'package:musicscool/models/lesson.dart';
+import 'package:path_provider/path_provider.dart';
 
 
 class ApiService implements Api {
@@ -134,6 +135,26 @@ class ApiService implements Api {
     }
 
     return Lesson.fromJson(json.decode(response.body)['data']);
+  }
+
+  @override
+  Future<String> downloadHomework({String url, String filename}) async {
+    String dir = (await getTemporaryDirectory()).path;
+    File file = File('$dir/$filename');
+    if (await file.exists()) return file.path;
+    await file.create(recursive: true);
+    print('Downloading:${filename} from ${url}');
+    var response = await client.get(url,
+      headers: {
+        HttpHeaders.authorizationHeader: 'Bearer ${_token}'
+      }).timeout(Duration(seconds: 60));
+    if (response.statusCode == 200) {
+      await file.writeAsBytes(response.bodyBytes);
+      return file.path;
+    }
+    print(response.statusCode);
+    print(response.body);
+    throw ApiError('Download ${filename} failed!');
   }
 
   static const pageSize = 25;

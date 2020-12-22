@@ -372,7 +372,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       leading: Icon(Icons.open_in_browser)
                   ),
                   onTap: () {
-                    launch('https://musicscool.dk/privacypolicy');
+                    launch('https://musicscool.dk/privacy-policy');
                   }
               ),
               InkWell(

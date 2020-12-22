@@ -2,6 +2,8 @@
   "@@locale": "en_US",
   "heyUser": "Hey {name}",
   "aboutToRock": "You're about to ROCK in:",
+  "youHaveNoUpcomingLessons": "You have no upcoming lessons.",
+  "youAreNotAStudent": "You are not a student.",
   "cancelLessonAt": "Cancel Lesson at {from}?",
   "cancelLessonNonRefundable": "This cancelled lesson will not be refundable.",
   "cancelLessonRefundable": "You are eligible for a replacement lesson.\n\nYou are about to cancel {totalCancelled} of {allowCancelled} lessons this year.",

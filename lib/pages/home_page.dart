@@ -83,7 +83,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             future: model.user,
             builder: (context, AsyncSnapshot<User> snapshot) {
               if (snapshot.hasData) {
-                return studentCountdownView(context, snapshot.data);
+                if (snapshot.data.student != null) {
+                  return studentCountdownView(context, snapshot.data);
+                }
+                else {
+                  return Column(
+                    children: <Widget> [
+                      Text(S.of(context).youAreNotAStudent)
+                    ]
+                  );
+                }
               }
               else if (snapshot.hasError) {
                 if (snapshot.error.runtimeType != AuthenticationFailed().runtimeType) {
@@ -103,12 +112,51 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
+  Widget studentCountdownTimer(BuildContext context, User user) {
+    if (user?.student?.nextLesson != null) {
+      var devSize = MediaQuery.of(context).size;
+      double boxWidth = min(devSize.width / 5.5, 100.0);
+      String start = DateFormat.yMMMEd().format(user.student.nextLesson.from) +
+          ' ' +
+          DateFormat.Hm().format(user.student.nextLesson.from);
+      return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget> [
+            Text(S.of(context).aboutToRock,
+                textScaleFactor: 1.25,
+                style: TextStyle(height: 4.0)
+            ),
+            Container(
+                decoration: BoxDecoration(
+                    border: Border.all(color: Theme.of(context).primaryColor, width:2.0),
+                    borderRadius: BorderRadius.circular(12)
+                ),
+                padding: EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+                child: Column(
+                    children: <Widget>[
+                      CountdownTimer(to: user.student.nextLesson.from, boxWidth: boxWidth),
+                      Text(''),
+                      Text(start, textScaleFactor: 1.25)
+                    ]
+                )
+            ),
+            Text('', textScaleFactor: 1.25,
+                style: TextStyle(height: 4.0)),
+            Text('', textScaleFactor: 1.25,
+                style: TextStyle(height: 4.0))
+          ]
+      );
+    }
+    else {
+      return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children:<Widget> [
+          Text(S.of(context).youHaveNoUpcomingLessons)
+          ]
+      );
+    }
+  }
   Widget studentCountdownView(BuildContext context, User user) {
-    var devSize = MediaQuery.of(context).size;
-    double boxWidth = min(devSize.width / 5.5, 100.0);
-    String start = DateFormat.yMMMEd().format(user.student.nextLesson.from) + ' ' +
-        DateFormat.Hm().format(user.student.nextLesson.from);
-
     return Container(
       // decoration: BoxDecoration(
       //     image: DecorationImage(
@@ -131,34 +179,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget> [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget> [
-                      Text(S.of(context).aboutToRock,
-                          textScaleFactor: 1.25,
-                        style: TextStyle(height: 4.0)
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Theme.of(context).primaryColor, width:2.0),
-                            borderRadius: BorderRadius.circular(12)
-                          ),
-                          padding: EdgeInsets.symmetric(vertical: 16, horizontal: 8),
-                          child: Column(
-
-                          children: <Widget> [
-                            CountdownTimer(to: user.student.nextLesson.from, boxWidth: boxWidth),
-                            Text(''),
-                            Text(start, textScaleFactor: 1.25)
-                          ]
-                        )
-                      ),
-                      Text('', textScaleFactor: 1.25,
-                      style: TextStyle(height: 4.0)),
-                      Text('', textScaleFactor: 1.25,
-                          style: TextStyle(height: 4.0))
-                    ]
-                  )
+                  studentCountdownTimer(context, user)
                 ]
               ),
             ),
@@ -280,24 +301,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget userInfo(BuildContext context, User user) {
-    return ListView(
-        padding: EdgeInsets.zero,
-        children: <Widget> [
-          ListTile(
-            title: Text(user.name),
-            subtitle: Text(user.email),
-            leading: Icon(CupertinoIcons.person_fill) //Icons.person)
+    List<Widget> items = <Widget>[
+      ListTile(
+          title: Text(user.name),
+          subtitle: Text(user.email),
+          leading: Icon(CupertinoIcons.person_fill) //Icons.person)
           ),
-          // SizedBox(
-          //   height: 140.0,
-          //   child: UserAccountsDrawerHeader(
-          //     accountName: Text(user.name),
-          //     accountEmail: Text(user.email),
-          //     //currentAccountPicture: CircleAvatar(child: Icon(Icons.person)) //Text('MS'))
-          //   ),
-          // ),
-          ListTile(),
-          ExpansionTile(
+    ];
+
+    if (user.student != null) {
+      items.addAll(<Widget>[
+        ExpansionTile(
             title: Text('Contact'),
             leading: Icon(CupertinoIcons.doc_person_fill),
             // CircleAvatar(
@@ -306,88 +320,105 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             //     color: Theme.of(context).primaryColor)),
             children: <Widget>[
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-                child: Column(
-                  children: <Widget> [
-                    CircleAvatar(
-                      minRadius: 24,
-                      maxRadius: 48,
-                      backgroundColor: Colors.black,
-                        child: SvgPicture.asset('assets/images/Musicscool - Logo - Okergeel beeldmerk.svg',
-                        color: Theme.of(context).primaryColor)),
-                    Text(''),
-                    Text("Music'scool", textScaleFactor: 1.75),
-                    Text(''),
-                    Text('Penselstrøget 56', textScaleFactor: 1.2),
-                    Text('4000 Roskilde', textScaleFactor: 1.2),
-                    Text('Danmark', textScaleFactor: 1.2),
-                    Text(''),
-                    Wrap(spacing: 12.0,
+                  padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                  child: Column(
                       children: <Widget> [
-                        contactButton(context: context,
-                            icon: CupertinoIcons.phone_fill,
-                            label: 'Call',
-                            url: 'tel://${user.student.schoolContact.phone}'
+                        CircleAvatar(
+                            minRadius: 24,
+                            maxRadius: 48,
+                            backgroundColor: Colors.black,
+                            child: SvgPicture.asset('assets/images/Musicscool - Logo - Okergeel beeldmerk.svg',
+                                color: Theme.of(context).primaryColor)),
+                        Text(''),
+                        Text("Music'scool", textScaleFactor: 1.75),
+                        Text(''),
+                        Text('Penselstrøget 56', textScaleFactor: 1.2),
+                        Text('4000 Roskilde', textScaleFactor: 1.2),
+                        Text('Danmark', textScaleFactor: 1.2),
+                        Text(''),
+                        Wrap(spacing: 12.0,
+                            children: <Widget> [
+                              contactButton(context: context,
+                                  icon: CupertinoIcons.phone_fill,
+                                  label: 'Call',
+                                  url: 'tel://${user.student.schoolContact.phone}'
+                              ),
+                              contactButton(context: context,
+                                  icon: CupertinoIcons.bubble_left_fill,
+                                  label: 'SMS',
+                                  url: 'sms://${user.student.schoolContact.phone}'
+                              ),
+                              contactButton(context: context,
+                                  icon: CupertinoIcons.envelope_fill,
+                                  label: 'Email',
+                                  url: 'mailto:${user.student.schoolContact.email}'
+                              ),
+                            ]
                         ),
-                        contactButton(context: context,
-                            icon: CupertinoIcons.bubble_left_fill,
-                            label: 'SMS',
-                            url: 'sms://${user.student.schoolContact.phone}'
-                        ),
-                        contactButton(context: context,
-                            icon: CupertinoIcons.envelope_fill,
-                            label: 'Email',
-                            url: 'mailto:${user.student.schoolContact.email}'
-                        ),
+                        //   TextButton.icon(icon: Icon(Icons.open_in_browser), label: Text('Privacy Policy'),
+                        //       onPressed: () {
+                        //         launch('https://musicscool.dk/privacypolicy');
+                        //       }
+                        //   )
                       ]
-                    ),
-                  //   TextButton.icon(icon: Icon(Icons.open_in_browser), label: Text('Privacy Policy'),
-                  //       onPressed: () {
-                  //         launch('https://musicscool.dk/privacypolicy');
-                  //       }
-                  //   )
-                  ]
-                )
+                  )
               ),
             ]
-          ),
-          ExpansionTile(
-              title: Text('Settings'),
-              leading: Column(mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget> [Icon(CupertinoIcons.gear_alt_fill)]),
-            children: <Widget> [
-              SwitchListTile(
-                  title: Text('Notifications'),
-                  value: _notifications,
-                  secondary: Icon(Icons.notifications),
-                  onChanged: (bool value) {
-                    setState(() {
-                      _notifications = value;
-                    });
-                  }
-              ),
-              InkWell(
-                  child: ListTile(
-                      title: Text(S.of(context).privacyPolicy),
-                      leading: Icon(Icons.open_in_browser)
-                  ),
-                  onTap: () {
-                    launch('https://musicscool.dk/privacy-policy');
-                  }
-              ),
-              InkWell(
-                  child: ListTile(
-                      title: Text('Logout'),
-                      leading: Icon(Icons.logout)
-                  ),
-                  onTap: () {
-                      Provider.of<AuthModel>(context, listen:false).logout();
-                  }
-              )
+        ),
+      ]);
+    }
 
-            ]
-          ),
-        ]
+    items.add(
+      ExpansionTile(
+          title: Text('Settings'),
+          leading: Column(mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget> [Icon(CupertinoIcons.gear_alt_fill)]),
+          children: <Widget> [
+            SwitchListTile(
+                title: Text('Notifications'),
+                value: _notifications,
+                secondary: Icon(Icons.notifications),
+                onChanged: (bool value) {
+                  setState(() {
+                    _notifications = value;
+                  });
+                }
+            ),
+            InkWell(
+                child: ListTile(
+                    title: Text(S.of(context).privacyPolicy),
+                    leading: Icon(Icons.open_in_browser)
+                ),
+                onTap: () {
+                  launch('https://musicscool.dk/privacy-policy');
+                }
+            ),
+            InkWell(
+                child: ListTile(
+                    title: Text('Logout'),
+                    leading: Icon(Icons.logout)
+                ),
+                onTap: () {
+                  Provider.of<AuthModel>(context, listen:false).logout();
+                }
+            )
+
+          ]
+      ),
+    );
+    return ListView(
+        padding: EdgeInsets.zero,
+        children: items
+          // SizedBox(
+          //   height: 140.0,
+          //   child: UserAccountsDrawerHeader(
+          //     accountName: Text(user.name),
+          //     accountEmail: Text(user.email),
+          //     //currentAccountPicture: CircleAvatar(child: Icon(Icons.person)) //Text('MS'))
+          //   ),
+          // ),
+          //ListTile(),
+        //]
     );
   }
 }

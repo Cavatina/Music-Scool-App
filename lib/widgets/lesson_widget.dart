@@ -16,6 +16,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:musicscool/models/lesson_cancel_info.dart';
 import 'package:musicscool/viewmodels/auth.dart';
@@ -131,9 +132,9 @@ class _LessonWidgetState extends State<LessonWidget> {
     else {
       textContent = S.of(context).cancelLessonNonRefundable;
     }
-    return await showDialog<bool>(
+    return await showCupertinoDialog<bool>(
         context: context,
-        builder: (context) => AlertDialog(
+        builder: (context) => CupertinoAlertDialog(
           title: Text(S.of(context).confirm),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -144,13 +145,13 @@ class _LessonWidgetState extends State<LessonWidget> {
             ],
           ),
           actions: <Widget>[
-            TextButton(
+            CupertinoDialogAction(
               child: Text(S.of(context).no),
               onPressed: () {
                 Navigator.of(context).pop(false);
               }
             ),
-            TextButton(
+            CupertinoDialogAction(
                 child: Text(S.of(context).yes),
                 onPressed: () {
                   auth.cancelLesson(id: lesson.id).then((Lesson l) {

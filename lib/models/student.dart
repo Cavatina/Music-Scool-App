@@ -15,16 +15,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
 import 'package:json_annotation/json_annotation.dart';
 import 'package:musicscool/models/lesson_ref.dart';
-import 'package:musicscool/models/school_contact.dart';
 
 part 'student.g.dart';
 
 @JsonSerializable()
 class Student {
-  final SchoolContact schoolContact;
   final LessonRef nextLesson;
 
-  Student(this.schoolContact, this.nextLesson);
+  Student(this.nextLesson);
 
   factory Student.fromJson(Map<String, dynamic> json) => _$StudentFromJson(json);
 
@@ -32,7 +30,6 @@ class Student {
 
   Student copyWith({LessonRef nextLesson}) {
     return Student(
-        schoolContact,
         nextLesson);
   }
 }

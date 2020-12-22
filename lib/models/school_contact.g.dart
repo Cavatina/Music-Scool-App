@@ -11,6 +11,7 @@ SchoolContact _$SchoolContactFromJson(Map<String, dynamic> json) {
     json['name'] as String,
     json['phone'] as String,
     json['email'] as String,
+    (json['address'] as List)?.map((e) => e as String)?.toList(),
   );
 }
 
@@ -19,4 +20,5 @@ Map<String, dynamic> _$SchoolContactToJson(SchoolContact instance) =>
       'name': instance.name,
       'phone': instance.phone,
       'email': instance.email,
+      'address': instance.address,
     };

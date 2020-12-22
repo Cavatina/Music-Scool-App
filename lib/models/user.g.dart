@@ -10,6 +10,9 @@ User _$UserFromJson(Map<String, dynamic> json) {
   return User(
     json['name'] as String,
     json['email'] as String,
+    json['schoolContact'] == null
+        ? null
+        : SchoolContact.fromJson(json['schoolContact'] as Map<String, dynamic>),
     json['student'] == null
         ? null
         : Student.fromJson(json['student'] as Map<String, dynamic>),
@@ -19,5 +22,6 @@ User _$UserFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'name': instance.name,
       'email': instance.email,
+      'schoolContact': instance.schoolContact,
       'student': instance.student,
     };

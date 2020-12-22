@@ -301,114 +301,109 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget userInfo(BuildContext context, User user) {
-    List<Widget> items = <Widget>[
-      ListTile(
-          title: Text(user.name),
-          subtitle: Text(user.email),
-          leading: Icon(CupertinoIcons.person_fill) //Icons.person)
-          ),
-    ];
-
-    if (user.student != null) {
-      items.addAll(<Widget>[
-        ExpansionTile(
-            title: Text('Contact'),
-            leading: Icon(CupertinoIcons.doc_person_fill),
-            // CircleAvatar(
-            //   backgroundColor: Colors.black,
-            //     child: SvgPicture.asset('assets/images/Musicscool - Logo - Okergeel beeldmerk.svg',
-            //     color: Theme.of(context).primaryColor)),
-            children: <Widget>[
-              Container(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-                  child: Column(
-                      children: <Widget> [
-                        CircleAvatar(
-                            minRadius: 24,
-                            maxRadius: 48,
-                            backgroundColor: Colors.black,
-                            child: SvgPicture.asset('assets/images/Musicscool - Logo - Okergeel beeldmerk.svg',
-                                color: Theme.of(context).primaryColor)),
-                        Text(''),
-                        Text("Music'scool", textScaleFactor: 1.75),
-                        Text(''),
-                        Text('Penselstrøget 56', textScaleFactor: 1.2),
-                        Text('4000 Roskilde', textScaleFactor: 1.2),
-                        Text('Danmark', textScaleFactor: 1.2),
-                        Text(''),
-                        Wrap(spacing: 12.0,
-                            children: <Widget> [
-                              contactButton(context: context,
-                                  icon: CupertinoIcons.phone_fill,
-                                  label: 'Call',
-                                  url: 'tel://${user.student.schoolContact.phone}'
-                              ),
-                              contactButton(context: context,
-                                  icon: CupertinoIcons.bubble_left_fill,
-                                  label: 'SMS',
-                                  url: 'sms://${user.student.schoolContact.phone}'
-                              ),
-                              contactButton(context: context,
-                                  icon: CupertinoIcons.envelope_fill,
-                                  label: 'Email',
-                                  url: 'mailto:${user.student.schoolContact.email}'
-                              ),
-                            ]
-                        ),
-                        //   TextButton.icon(icon: Icon(Icons.open_in_browser), label: Text('Privacy Policy'),
-                        //       onPressed: () {
-                        //         launch('https://musicscool.dk/privacypolicy');
-                        //       }
-                        //   )
-                      ]
-                  )
-              ),
-            ]
-        ),
-      ]);
-    }
-
-    items.add(
-      ExpansionTile(
-          title: Text('Settings'),
-          leading: Column(mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget> [Icon(CupertinoIcons.gear_alt_fill)]),
-          children: <Widget> [
-            SwitchListTile(
-                title: Text('Notifications'),
-                value: _notifications,
-                secondary: Icon(Icons.notifications),
-                onChanged: (bool value) {
-                  setState(() {
-                    _notifications = value;
-                  });
-                }
-            ),
-            InkWell(
-                child: ListTile(
-                    title: Text(S.of(context).privacyPolicy),
-                    leading: Icon(Icons.open_in_browser)
-                ),
-                onTap: () {
-                  launch('https://musicscool.dk/privacy-policy');
-                }
-            ),
-            InkWell(
-                child: ListTile(
-                    title: Text('Logout'),
-                    leading: Icon(Icons.logout)
-                ),
-                onTap: () {
-                  Provider.of<AuthModel>(context, listen:false).logout();
-                }
-            )
-
-          ]
-      ),
-    );
+    List<Text> address = user.schoolContact.address.map((String line) {
+      return Text(line, textScaleFactor: 1.2);
+    }).toList();
     return ListView(
         padding: EdgeInsets.zero,
-        children: items
+        children: <Widget>[
+          ListTile(
+              title: Text(user.name),
+              subtitle: Text(user.email),
+              leading: Icon(CupertinoIcons.person_fill) //Icons.person)
+          ),
+          ExpansionTile(
+              title: Text('Contact'),
+              leading: Icon(CupertinoIcons.doc_person_fill),
+              // CircleAvatar(
+              //   backgroundColor: Colors.black,
+              //     child: SvgPicture.asset('assets/images/Musicscool - Logo - Okergeel beeldmerk.svg',
+              //     color: Theme.of(context).primaryColor)),
+              children: <Widget>[
+                Container(
+                    padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                    child: Column(
+                        children: <Widget> [
+                          CircleAvatar(
+                              minRadius: 24,
+                              maxRadius: 48,
+                              backgroundColor: Colors.black,
+                              child: SvgPicture.asset('assets/images/Musicscool - Logo - Okergeel beeldmerk.svg',
+                                  color: Theme.of(context).primaryColor)),
+                          Text(''),
+                          Text("Music'scool", textScaleFactor: 1.75),
+                          Text(''),
+                          ...address,
+                          // Text('Penselstrøget 56', textScaleFactor: 1.2),
+                          // Text('4000 Roskilde', textScaleFactor: 1.2),
+                          // Text('Danmark', textScaleFactor: 1.2),
+                          Text(''),
+                          Wrap(spacing: 12.0,
+                              children: <Widget> [
+                                contactButton(context: context,
+                                    icon: CupertinoIcons.phone_fill,
+                                    label: 'Call',
+                                    url: 'tel://${user.schoolContact.phone}'
+                                ),
+                                contactButton(context: context,
+                                    icon: CupertinoIcons.bubble_left_fill,
+                                    label: 'SMS',
+                                    url: 'sms://${user.schoolContact.phone}'
+                                ),
+                                contactButton(context: context,
+                                    icon: CupertinoIcons.envelope_fill,
+                                    label: 'Email',
+                                    url: 'mailto:${user.schoolContact.email}'
+                                ),
+                              ]
+                          ),
+                          //   TextButton.icon(icon: Icon(Icons.open_in_browser), label: Text('Privacy Policy'),
+                          //       onPressed: () {
+                          //         launch('https://musicscool.dk/privacypolicy');
+                          //       }
+                          //   )
+                        ]
+                    )
+                ),
+              ]
+          ),
+          ExpansionTile(
+              title: Text('Settings'),
+              leading: Column(mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget> [Icon(CupertinoIcons.gear_alt_fill)]),
+              children: <Widget> [
+                SwitchListTile(
+                    title: Text('Notifications'),
+                    value: _notifications,
+                    secondary: Icon(Icons.notifications),
+                    onChanged: (bool value) {
+                      setState(() {
+                        _notifications = value;
+                      });
+                    }
+                ),
+                InkWell(
+                    child: ListTile(
+                        title: Text(S.of(context).privacyPolicy),
+                        leading: Icon(Icons.open_in_browser)
+                    ),
+                    onTap: () {
+                      launch('https://musicscool.dk/privacy-policy');
+                    }
+                ),
+                InkWell(
+                    child: ListTile(
+                        title: Text('Logout'),
+                        leading: Icon(Icons.logout)
+                    ),
+                    onTap: () {
+                      Provider.of<AuthModel>(context, listen:false).logout();
+                    }
+                )
+
+              ]
+          ),
+        ]
           // SizedBox(
           //   height: 140.0,
           //   child: UserAccountsDrawerHeader(

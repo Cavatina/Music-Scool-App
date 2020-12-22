@@ -22,8 +22,9 @@ class SchoolContact {
   final String name;
   final String phone;
   final String email;
+  final List<String> address;
 
-  SchoolContact(this.name, this.phone, this.email);
+  SchoolContact(this.name, this.phone, this.email, this.address);
 
   factory SchoolContact.fromJson(Map<String, dynamic> json) => _$SchoolContactFromJson(json);
 

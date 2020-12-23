@@ -22,6 +22,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:musicscool/generated/l10n.dart';
 import 'package:musicscool/viewmodels/auth.dart';
 import 'package:provider/provider.dart';
+import 'package:musicscool/helpers.dart';
+import 'package:musicscool/services/api.dart';
 
 class LoginPage extends StatelessWidget {
   @override
@@ -166,9 +168,8 @@ class _LoginFormState extends State<LoginForm> {
                   Scaffold.of(context).showSnackBar(SnackBar(
                       content: Text(S.of(context).passwordResetRequestSent(emailController.text)),
                       duration: Duration(seconds: 5)
-                  )); // snapshot.error;
-
-                });
+                  ));
+                }).catchError((_) => showUnexpectedError(context));
                 setState(() {
                   formType = _FormType.signIn;
                 });
@@ -212,13 +213,13 @@ class _LoginFormState extends State<LoginForm> {
                 if (emailController.text.isEmpty) {
                   Scaffold.of(context).showSnackBar(SnackBar(
                       content: Text(S.of(context).loginMissingEmail),
-                      duration: Duration(seconds: 5)
+                      duration: Duration(seconds: 2)
                   )); // snapshot.error;
                 }
                 else if (passwordController.text.isEmpty) {
                   Scaffold.of(context).showSnackBar(SnackBar(
                       content: Text(S.of(context).loginMissingPassword),
-                      duration: Duration(seconds: 5)
+                      duration: Duration(seconds: 2)
                   )); // snapshot.error;
                 }
                 else {
@@ -226,10 +227,11 @@ class _LoginFormState extends State<LoginForm> {
                       username: emailController.text,
                       password: passwordController.text).catchError((e) {
                     Scaffold.of(context).showSnackBar(SnackBar(
-                        content: Text(e.toString()),
-                        duration: Duration(seconds: 5)
+                        content: Text(S.of(context).loginFailed),
+                        duration: Duration(seconds: 2)
                     )); // snapshot.error;
-                  });
+                  }, test: (e) => e is AuthenticationFailed,
+                  ).catchError((_) => showUnexpectedError(context));
                 }
               },
               elevation: 0.0,

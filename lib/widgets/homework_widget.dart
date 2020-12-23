@@ -24,6 +24,7 @@ import 'package:musicscool/models/lesson.dart';
 import 'package:musicscool/models/homework.dart';
 //import 'package:musicscool/widgets/countdown_timer_widget.dart';
 import 'package:musicscool/generated/l10n.dart';
+import 'package:musicscool/helpers.dart';
 import 'package:open_file/open_file.dart';
 
 class HomeworkWidget extends StatefulWidget {
@@ -45,6 +46,9 @@ class _HomeworkWidgetState extends State<HomeworkWidget> {
   void downloadAndLaunch(AuthModel auth, String url, String fileName) {
       auth.downloadHomework(url: url, name: fileName).then((String path) {
         OpenFile.open(path);
+      }).catchError((e) {
+        print('downloadAndLaunch(${url}) failed: ${e}');
+        showUnexpectedError(context);
       });
   }
 

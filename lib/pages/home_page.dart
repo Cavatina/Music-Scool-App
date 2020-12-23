@@ -30,6 +30,7 @@ import 'package:musicscool/models/lesson.dart';
 import 'package:musicscool/models/user.dart';
 import 'package:musicscool/widgets/lesson_widget.dart';
 import 'package:musicscool/generated/l10n.dart';
+import 'package:musicscool/helpers.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -95,11 +96,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 }
               }
               else if (snapshot.hasError) {
-                if (snapshot.error.runtimeType != AuthenticationFailed().runtimeType) {
-                  Scaffold.of(context).showSnackBar(SnackBar(
-                      content: Text(snapshot.error.toString()),
-                      duration: Duration(seconds: 20)
-                  )); // snapshot.error;
+                if (!(snapshot.error is AuthenticationFailed)) {
+                  showUnexpectedError(context);
                 }
                 return Container();
               }
@@ -222,6 +220,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           builder: (context, AsyncSnapshot<User> snapshot) {
             if (snapshot.hasData) {
               return userInfo(context, snapshot.data);
+            }
+            else if (snapshot.hasError && !(snapshot.error is AuthenticationFailed)) {
+              showUnexpectedError(context);
+              return Container();
             }
             else {
               return waiting();

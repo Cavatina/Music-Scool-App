@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:musicscool/models/lesson.dart';
+import 'package:musicscool/generated/l10n.dart';
 
 
 typedef LessonListItemBuilder = void Function(BuildContext context, Lesson item, int index);
@@ -31,6 +32,10 @@ class _LessonListViewState extends State<LessonListView> {
   Future<void> _fetchPage(int pageKey) async {
     try {
       final List<Lesson> lessons = await widget.itemGetter(pageKey, _pageSize);
+      if (lessons == null) {
+        _pagingController.error = S.of(context).unexpectedErrorMessage;
+        return;
+      }
       final bool isLastPage = lessons.length < _pageSize;
       if (!mounted) return;
       if (isLastPage) {
@@ -43,7 +48,7 @@ class _LessonListViewState extends State<LessonListView> {
     catch (error, stacktrace) {
       print(error.toString());
       print(stacktrace);
-      _pagingController.error = error.toString();
+      _pagingController.error = S.of(context).unexpectedErrorMessage;
     }
   }
 

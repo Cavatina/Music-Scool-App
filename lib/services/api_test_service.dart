@@ -102,7 +102,7 @@ class ApiTestService implements Api {
         return LessonCancelInfo(id, lessons[i].from, true, 0, 3);
       }
     }
-    throw ApiError('Unknown lesson');
+    throw ServerError();
   }
 
   @override
@@ -114,7 +114,7 @@ class ApiTestService implements Api {
         return lessons[i];
       }
     }
-    throw ApiError('Unknown lesson');
+    throw ServerError();
   }
 
   @override

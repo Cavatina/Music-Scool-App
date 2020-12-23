@@ -25,6 +25,15 @@ import 'package:musicscool/models/lesson.dart';
 import 'package:path_provider/path_provider.dart';
 
 
+ApiError httpStatusError(int statusCode) {
+  if (<int>[401, 403, 422].contains(statusCode)) {
+    return AuthenticationFailed();
+  }
+  else {
+    return ServerError();
+  }
+}
+
 class ApiService implements Api {
   static const String baseUrl = 'https://testscool.cavatina.no/api/v1';
   final http.BaseClient client = http.Client();
@@ -32,7 +41,6 @@ class ApiService implements Api {
 
   @override
   Future<String> login({String username, String password}) async {
-    print('${baseUrl}/login');
     String body = json.encode(
         <String, dynamic> {
           'email': username,
@@ -57,9 +65,8 @@ class ApiService implements Api {
     else if (js.containsKey('message')) {
       print(body);
       print(response.body);
-      throw Exception(js['message']);
     }
-    throw Exception('Illegal login');
+    throw httpStatusError(response.statusCode);
   }
 
   @override
@@ -76,7 +83,7 @@ class ApiService implements Api {
         body: body
     ).timeout(Duration(seconds: 20));
     if (response.statusCode != 200) {
-      throw ApiError('Failed');
+      throw ServerError();
     }
     return;
   }
@@ -88,17 +95,14 @@ class ApiService implements Api {
 
   @override
   Future<User> get user async {
-    print(baseUrl);
     http.Response response = await client.get('${baseUrl}/profile',
         headers: {
           HttpHeaders.acceptHeader: 'application/json',
           HttpHeaders.authorizationHeader: 'Bearer ${_token}'
         }).timeout(Duration(seconds: 20));
     Map<String, dynamic> js = json.decode(response.body);
-    print(js.toString());
     if (js == null || !js.containsKey('data')) {
-      print('AuthenticationFailed!');
-      throw AuthenticationFailed();
+      throw httpStatusError(response.statusCode);
     }
     return User.fromJson(js['data']);
   }
@@ -149,8 +153,7 @@ class ApiService implements Api {
         }).timeout(Duration(seconds: 20));
     if (response.statusCode != 200) {
       print(response.statusCode);
-      // @todo Error handling!!
-      throw ApiError(response.body);
+      throw ServerError();
     }
 
     return Lesson.fromJson(json.decode(response.body)['data']);
@@ -172,8 +175,7 @@ class ApiService implements Api {
       return file.path;
     }
     print(response.statusCode);
-    print(response.body);
-    throw ApiError('Download ${filename} failed!');
+    throw ServerError();
   }
 
   static const pageSize = 25;

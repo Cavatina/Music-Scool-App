@@ -18,14 +18,14 @@ import 'package:musicscool/models/user.dart';
 import 'package:musicscool/models/lesson.dart';
 import 'dart:async';
 
-class ApiError implements Exception {
-  final String message;
+class ApiError implements Exception {}
 
-  ApiError(this.message);
-}
+// Generic server related errors.
+class ServerError implements ApiError {}
 
-class AuthenticationFailed implements Exception {
-}
+// Method specific errors. Usually a problem of invalid input.
+class AuthenticationFailed implements ApiError {}
+class ResetPasswordFailed implements ApiError {}
 
 abstract class Api {
   Future<String> login({String username, String password});

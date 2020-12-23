@@ -18,6 +18,7 @@
   "loginMissingEmail": "Missing email!",
   "loginMissingPassword": "Missing password!",
   "loginFailed": "Login failed!",
+  "unexpectedErrorMessage": "Whoops! Something unexpected happened. Please try again later.",
   "passwordResetRequestSent": "A password reset request was sent to {email}",
   "passwordResetRequestFail": "Password reset request failed!",
   "yes": "Yes",

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:musicscool/generated/l10n.dart';
 
 class CountdownTimer extends StatefulWidget
 {
@@ -75,13 +76,13 @@ class _CountdownTimerState extends State<CountdownTimer>
   Widget build(BuildContext context) {
     return Wrap(
       children: <Widget>[
-        clockBox(widget.boxWidth, remaining.days, 'days'),
+        clockBox(widget.boxWidth, remaining.days, S.of(context).days),
         clockDiv(widget.boxWidth),
-        clockBox(widget.boxWidth, remaining.hours, 'hours'),
+        clockBox(widget.boxWidth, remaining.hours, S.of(context).hours),
         clockDiv(widget.boxWidth),
-        clockBox(widget.boxWidth, remaining.minutes, 'minutes'),
+        clockBox(widget.boxWidth, remaining.minutes, S.of(context).minutes),
         clockDiv(widget.boxWidth),
-        clockBox(widget.boxWidth, remaining.seconds, 'seconds'),
+        clockBox(widget.boxWidth, remaining.seconds, S.of(context).seconds),
       ]
     );
   }

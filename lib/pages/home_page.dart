@@ -42,12 +42,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   bool _notifications = true;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   TabController _tabController;
-  final List<Tab> _tabs = <Tab> [
-    Tab(text: 'Info', icon: Icon(CupertinoIcons.info_circle_fill)), //Icons.info)),
-    Tab(text: 'Homework', icon: Icon(CupertinoIcons.music_albums_fill)), //doc_on_doc_fill)),//Icons.book)),
-    Tab(text: 'Next', icon: Icon(CupertinoIcons.timer_fill)), //Icons.home)),
-    Tab(text: 'Upcoming', icon: Icon(CupertinoIcons.calendar)), //Icons.fast_forward)),
-  ];
+  static const _tabCount = 4;
 
   final _scrollController = ScrollController();
 
@@ -55,7 +50,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _tabController = TabController(
-         length: _tabs.length,
+         length: _tabCount,
          initialIndex: 2,
          vsync: this);
   }
@@ -250,7 +245,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             bottom: TabBar(
                 controller: _tabController,
                 labelStyle: TextStyle(fontSize: 10),
-                tabs: _tabs
+                tabs: [
+                  Tab(text: S.of(context).info, icon: Icon(CupertinoIcons.info_circle_fill)), //Icons.info)),
+                  Tab(text: S.of(context).homework, icon: Icon(CupertinoIcons.music_albums_fill)), //doc_on_doc_fill)),//Icons.book)),
+                  Tab(text: S.of(context).next, icon: Icon(CupertinoIcons.timer_fill)), //Icons.home)),
+                  Tab(text: S.of(context).upcoming, icon: Icon(CupertinoIcons.calendar)), //Icons.fast_forward)),
+                ]
             )
         ),
         body: Container(
@@ -315,7 +315,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               leading: Icon(CupertinoIcons.person_fill) //Icons.person)
           ),
           ExpansionTile(
-              title: Text('Contact'),
+              title: Text(S.of(context).contact),
               leading: Icon(CupertinoIcons.doc_person_fill),
               // CircleAvatar(
               //   backgroundColor: Colors.black,
@@ -344,17 +344,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               children: <Widget> [
                                 contactButton(context: context,
                                     icon: CupertinoIcons.phone_fill,
-                                    label: 'Call',
+                                    label: S.of(context).call,
                                     url: 'tel://${user.schoolContact.phone}'
                                 ),
                                 contactButton(context: context,
                                     icon: CupertinoIcons.bubble_left_fill,
-                                    label: 'SMS',
+                                    label: S.of(context).sms,
                                     url: 'sms://${user.schoolContact.phone}'
                                 ),
                                 contactButton(context: context,
                                     icon: CupertinoIcons.envelope_fill,
-                                    label: 'Email',
+                                    label: S.of(context).email,
                                     url: 'mailto:${user.schoolContact.email}'
                                 ),
                               ]
@@ -370,12 +370,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               ]
           ),
           ExpansionTile(
-              title: Text('Settings'),
+              title: Text(S.of(context).settings),
               leading: Column(mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget> [Icon(CupertinoIcons.gear_alt_fill)]),
               children: <Widget> [
                 SwitchListTile(
-                    title: Text('Notifications'),
+                    title: Text(S.of(context).notifications),
                     value: _notifications,
                     secondary: Icon(Icons.notifications),
                     onChanged: (bool value) {
@@ -395,7 +395,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 ),
                 InkWell(
                     child: ListTile(
-                        title: Text('Logout'),
+                        title: Text(S.of(context).logout),
                         leading: Icon(Icons.logout)
                     ),
                     onTap: () {

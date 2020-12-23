@@ -31,7 +31,7 @@ import 'package:musicscool/models/user.dart';
 import 'package:musicscool/widgets/lesson_widget.dart';
 import 'package:musicscool/generated/l10n.dart';
 import 'package:musicscool/helpers.dart';
-
+import 'package:musicscool/strings.dart' show privacyPolicyUrl, appName;
 
 class HomePage extends StatefulWidget {
   @override
@@ -333,7 +333,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               child: SvgPicture.asset('assets/images/Musicscool - Logo - Okergeel beeldmerk.svg',
                                   color: Theme.of(context).primaryColor)),
                           Text(''),
-                          Text("Music'scool", textScaleFactor: 1.75),
+                          Text(appName, textScaleFactor: 1.75),
                           Text(''),
                           ...address,
                           // Text('Penselstrøget 56', textScaleFactor: 1.2),
@@ -390,7 +390,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         leading: Icon(Icons.open_in_browser)
                     ),
                     onTap: () {
-                      launch('https://musicscool.dk/privacy-policy');
+                      launch(privacyPolicyUrl);
                     }
                 ),
                 InkWell(

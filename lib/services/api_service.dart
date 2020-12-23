@@ -23,6 +23,7 @@ import 'package:musicscool/services/api.dart';
 import 'package:musicscool/models/user.dart';
 import 'package:musicscool/models/lesson.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:musicscool/strings.dart' show apiUrl;
 
 
 ApiError httpStatusError(int statusCode) {
@@ -35,7 +36,7 @@ ApiError httpStatusError(int statusCode) {
 }
 
 class ApiService implements Api {
-  static const String baseUrl = 'https://testscool.cavatina.no/api/v1';
+  static const String baseUrl = apiUrl;
   final http.BaseClient client = http.Client();
   String _token;
 

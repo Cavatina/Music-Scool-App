@@ -24,6 +24,7 @@ import 'package:musicscool/viewmodels/auth.dart';
 import 'package:provider/provider.dart';
 import 'package:musicscool/helpers.dart';
 import 'package:musicscool/services/api.dart';
+import 'package:musicscool/strings.dart' show appName;
 
 class LoginPage extends StatelessWidget {
   @override
@@ -91,7 +92,7 @@ class _LoginFormState extends State<LoginForm> {
               child: SvgPicture.asset('assets/images/Musicscool - Logo - Okergeel beeldmerk.svg',
                   color: Theme.of(context).primaryColor)),
           Text(''),
-          Text("Music'scool", textScaleFactor: 1.75),
+          Text(appName, textScaleFactor: 1.75),
           Text(''),
           userPwSection(),
           buttonSection(context),

@@ -20,6 +20,7 @@ import 'package:musicscool/pages/root_page.dart';
 import 'package:musicscool/services/api.dart';
 import 'package:musicscool/services/api_service.dart';
 import 'package:musicscool/theme.dart';
+import 'package:musicscool/strings.dart' show appName;
 
 void main() {
   runApp(MusicScoolApp(ApiService()));
@@ -32,7 +33,7 @@ class MusicScoolApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Music\'scool',
+      title: appName,
       theme: theme(),
       home: RootPage(api),
       localizationsDelegates: [

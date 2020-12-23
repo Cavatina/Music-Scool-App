@@ -17,7 +17,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:intl/intl.dart';
+import 'package:musicscool/locale_strings.dart';
 import 'package:musicscool/models/lesson_cancel_info.dart';
 import 'package:musicscool/viewmodels/auth.dart';
 import 'package:provider/provider.dart';
@@ -37,41 +37,11 @@ class _LessonWidgetState extends State<LessonWidget> {
 
   Lesson lesson;
 
-  String cancelledText(BuildContext context, String statusKey) {
-    switch(statusKey) {
-      case 'STUDENT_CANCELLED': return S.of(context).statusStudentCancelled; break;
-      case 'STUDENT_CANCELLED_LATE': return S.of(context).statusStudentCancelledLate; break;
-      case 'TEACHER_CANCELLED': return S.of(context).statusTeacherCancelled; break;
-      case 'STUDENT_ABSENT': return S.of(context).statusStudentAbsent; break;
-      default:
-        return '';
-    }
-  }
-
-  String instrumentText(BuildContext context, String instrumentKey) {
-    switch (instrumentKey) {
-      case 'Bass guitar': return S.of(context).bassGuitar; break;
-      case 'Guitar': return S.of(context).guitar; break;
-      case 'Piano': return S.of(context).piano; break;
-      case 'Vocal': return S.of(context).vocals; break;
-      case 'Vocals': return S.of(context).vocals; break;
-      case 'Drums': return S.of(context).drums; break;
-      case 'Songwriting': return S.of(context).songwriting; break;
-      case 'EDM': return S.of(context).EDM; break;
-      default:
-        return instrumentKey;
-    }
-  }
-
-  static String formattedDate(DateTime time) {
-    return DateFormat.yMMMEd().format(time) + ' ' +
-        DateFormat.Hm().format(time);
-  }
-
   Widget header(BuildContext context, bool expand, {List<Widget> children}) {
     String subtitle;
     if (lesson.instrument != null && lesson.teacher != null) {
-      subtitle = S.of(context).instrumentWithTeacher(lesson.instrument.name,
+      subtitle = S.of(context).instrumentWithTeacher(
+          instrumentText(context, lesson.instrument.name),
           lesson.teacher.name);
     }
     else if (lesson.teacher != null) {

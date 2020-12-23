@@ -17,6 +17,7 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:musicscool/locale_strings.dart';
 import 'package:musicscool/viewmodels/auth.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -89,27 +90,13 @@ class _HomeworkWidgetState extends State<HomeworkWidget> {
     return Wrap(direction: Axis.horizontal, spacing: 16.0, children: icons);
   }
 
-  String instrumentText(BuildContext context, String instrumentKey) {
-    switch (instrumentKey) {
-      case 'Bass guitar': return S.of(context).bassGuitar; break;
-      case 'Guitar': return S.of(context).guitar; break;
-      case 'Piano': return S.of(context).piano; break;
-      case 'Vocal': return S.of(context).vocals; break;
-      case 'Vocals': return S.of(context).vocals; break;
-      case 'Drums': return S.of(context).drums; break;
-      case 'Songwriting': return S.of(context).songwriting; break;
-      case 'EDM': return S.of(context).EDM; break;
-      default:
-        return instrumentKey;
-    }
-  }
-
   Widget header(BuildContext context, {List<Widget> children}) {
     String start = DateFormat.yMMMEd().format(widget.lesson.from) + ' ' +
         DateFormat.Hm().format(widget.lesson.from);
     String subtitle;
     if (widget.lesson.instrument != null && widget.lesson.teacher != null) {
-      subtitle = S.of(context).instrumentWithTeacher(widget.lesson.instrument.name,
+      subtitle = S.of(context).instrumentWithTeacher(
+          instrumentText(context, widget.lesson.instrument.name),
           widget.lesson.teacher.name);
     }
     else if (widget.lesson.teacher != null) {

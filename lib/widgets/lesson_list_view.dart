@@ -20,7 +20,7 @@ class _LessonListViewState extends State<LessonListView> {
   static const _pageSize = 20;
 
   final PagingController<int, Lesson> _pagingController =
-      PagingController(firstPageKey: 0);
+      PagingController(firstPageKey: 1);
 
   @override
   void initState() {

@@ -44,8 +44,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   TabController _tabController;
   static const _tabCount = 4;
 
-  final _scrollController = ScrollController();
-
   @override
   void initState() {
     super.initState();
@@ -57,7 +55,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    _scrollController.dispose();
     super.dispose();
   }
 

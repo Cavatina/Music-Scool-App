@@ -18,6 +18,7 @@ dependencies:
   open_file: ^3.0.3
   flutter_local_notifications: ^3.0.2
   timezone: ^0.5.9
+  flutter_native_timezone: ^1.0.4
   flutter_secure_storage: ^3.3.5
   flutter_svg: ^0.19.0
   flutter:

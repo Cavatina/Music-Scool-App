@@ -1,4 +1,3 @@
-
 import 'package:test/test.dart';
 import 'package:musicscool/services/api_test_service.dart';
 
@@ -14,8 +13,12 @@ void main() {
   test('student returned from logged in api', () async {
     var api = ApiTestService();
     await api.login(username: 'someone@acme.com', password: 'password');
-    expect(await api.user, isNotNull);
-    expect((await api.user).email, isNotEmpty);
+    var user = await api.user;
+    expect(user, isNotNull);
+    expect(user.email, isNotEmpty);
+    expect(user.student, isNotNull);
+    expect(user.student.nextLesson, isNotNull);
+    expect(user.student.nextLesson.from.isUtc, isTrue);
   });
 /*
   test('lessons browse after/before works', () async {

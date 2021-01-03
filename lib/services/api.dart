@@ -33,8 +33,8 @@ abstract class Api {
 
   set token (String token);
   Future<User> get user;
-  Future<List<Lesson>> getHomeworkLessons({page = 0, perPage = 20});
-  Future<List<Lesson>> getUpcomingLessons({page = 0, perPage = 20});
+  Future<List<Lesson>> getHomeworkLessons({int page = 0, int perPage = 20});
+  Future<List<Lesson>> getUpcomingLessons({int page = 0, int perPage = 20, bool withCancelled = true});
 
   Future<LessonCancelInfo> cancelLessonInfo({int id});
   Future<Lesson> cancelLesson({int id});

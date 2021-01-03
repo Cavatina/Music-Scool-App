@@ -58,7 +58,7 @@ class ApiTestService implements Api {
   }
 
   @override
-  Future<List<Lesson>> getUpcomingLessons({page = 0, perPage = 20}) async {
+  Future<List<Lesson>> getUpcomingLessons({int page = 0, int perPage = 20, withCancelled = true}) async {
     DateTime now = DateTime.now();
     List<Lesson> lessons = await allLessons();
     int firstOffset = 0;

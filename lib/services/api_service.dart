@@ -108,12 +108,18 @@ class ApiService implements Api {
     return User.fromJson(js['data']);
   }
 
-  Future<Map<String, dynamic>> jsonGet(String path, {int page, int perPage, bool withHomework}) async {
-    print(path);
+  Future<Map<String, dynamic>> jsonGet(
+    String path, {
+      int page,
+      int perPage,
+      bool withHomework,
+      bool withCancelled = true
+      }) async {
     Map<String, String> params = <String, String>{};
     if (page != null && page != 0) params['page'] = page.toString();
     if (perPage != null && perPage != 0) params['per_page'] = perPage.toString();
     if (withHomework == true) params['with_homework'] = 'true';
+    if (withCancelled == false) params['with_cancelled'] = 'false';
     Uri url = Uri.parse(baseUrl + path).replace(queryParameters: params);
     print(url);
     http.Response response = await client.get(url,
@@ -127,14 +133,14 @@ class ApiService implements Api {
   }
 
   @override
-  Future<List<Lesson>> getUpcomingLessons({page = 0, perPage = 20}) async {
+  Future<List<Lesson>> getUpcomingLessons({int page = 0, int perPage = 20, bool withCancelled = true}) async {
     LessonResponse response = LessonResponse.fromJson(await jsonGet('/student/lessons/upcoming',
-        page: page, perPage: perPage));
+        page: page, perPage: perPage, withCancelled: withCancelled));
     return response.data;
   }
 
   @override
-  Future<List<Lesson>> getHomeworkLessons({page = 0, perPage = 20}) async {
+  Future<List<Lesson>> getHomeworkLessons({int page = 0, int perPage = 20}) async {
     LessonResponse response = LessonResponse.fromJson(await jsonGet('/student/lessons/past',
         page: page, perPage: perPage, withHomework: true));
     return response.data;

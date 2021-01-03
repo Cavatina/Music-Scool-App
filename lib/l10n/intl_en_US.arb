@@ -1,7 +1,7 @@
 {
   "@@locale": "en_US",
-  "heyUser": "Hey {name}",
-  "aboutToRock": "You're about to ROCK in:",
+  "heyUser": "Hey {name},",
+  "aboutToRock": "you're about to ROCK in;",
   "days": "days",
   "hours": "hours",
   "minutes": "minutes",
@@ -24,7 +24,6 @@
   "cancelLessonRefundable": "You are eligible for a replacement lesson.\n\nYou are about to cancel {totalCancelled} of {allowCancelled} lessons this year.",
   "privacyPolicy": "Privacy Policy",
   "signIn": "Sign In",
-  "email": "Email",
   "password": "Password",
   "cancel": "Cancel",
   "confirm": "Confirm",

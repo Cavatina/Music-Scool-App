@@ -28,4 +28,8 @@ class IntlService {
     currentLocation = getLocation(currentTimeZone);
     return this;
   }
+
+  TZDateTime localDateTime(DateTime when) {
+    return TZDateTime.from(when, currentLocation);
+  }
 }

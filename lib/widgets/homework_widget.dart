@@ -16,14 +16,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:musicscool/locale_strings.dart';
 import 'package:musicscool/viewmodels/auth.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:musicscool/models/lesson.dart';
 import 'package:musicscool/models/homework.dart';
-//import 'package:musicscool/widgets/countdown_timer_widget.dart';
 import 'package:musicscool/generated/l10n.dart';
 import 'package:musicscool/helpers.dart';
 import 'package:open_file/open_file.dart';
@@ -91,8 +89,6 @@ class _HomeworkWidgetState extends State<HomeworkWidget> {
   }
 
   Widget header(BuildContext context, {List<Widget> children}) {
-    String start = DateFormat.yMMMEd().format(widget.lesson.from) + ' ' +
-        DateFormat.Hm().format(widget.lesson.from);
     String subtitle;
     if (widget.lesson.instrument != null && widget.lesson.teacher != null) {
       subtitle = S.of(context).instrumentWithTeacher(
@@ -110,7 +106,7 @@ class _HomeworkWidgetState extends State<HomeworkWidget> {
         subtitle = widget.lesson.homework.first.message;
     }
     return ExpansionTile(
-        title: Text(start),
+        title: Text(formattedDate(widget.lesson.from)),
         subtitle: Text(subtitle, style: TextStyle(color: Colors.white60),
         overflow: TextOverflow.ellipsis),
         initiallyExpanded: widget.expanded,

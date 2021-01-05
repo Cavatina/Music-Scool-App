@@ -18,7 +18,6 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:intl/intl.dart';
 import 'package:musicscool/services/api.dart';
 import 'package:musicscool/viewmodels/auth.dart';
 import 'package:musicscool/widgets/countdown_timer_widget.dart';
@@ -32,6 +31,7 @@ import 'package:musicscool/widgets/lesson_widget.dart';
 import 'package:musicscool/generated/l10n.dart';
 import 'package:musicscool/helpers.dart';
 import 'package:musicscool/strings.dart' show privacyPolicyUrl, appName;
+import 'package:musicscool/locale_strings.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -107,9 +107,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     if (user?.student?.nextLesson != null) {
       var devSize = MediaQuery.of(context).size;
       double boxWidth = min(devSize.width / 5.5, 100.0);
-      String start = DateFormat.yMMMEd().format(user.student.nextLesson.from) +
-          ' ' +
-          DateFormat.Hm().format(user.student.nextLesson.from);
       return Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget> [
@@ -127,7 +124,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     children: <Widget>[
                       CountdownTimer(to: user.student.nextLesson.from, boxWidth: boxWidth),
                       Text(''),
-                      Text(start, textScaleFactor: 1.25)
+                      Text(formattedDate(user.student.nextLesson.from), textScaleFactor: 1.25)
                     ]
                 )
             ),

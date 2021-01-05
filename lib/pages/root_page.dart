@@ -21,12 +21,7 @@ import 'package:musicscool/service_locator.dart';
 import 'login_page.dart';
 import 'home_page.dart';
 
-class RootPage extends StatefulWidget {
-  @override
-  _RootPageState createState() => _RootPageState();
-}
-
-class _RootPageState extends State<RootPage> {
+class RootPage extends StatelessWidget {
   Widget _waitingPage() {
     return Scaffold(
       body: Container(
@@ -34,11 +29,6 @@ class _RootPageState extends State<RootPage> {
         child: CircularProgressIndicator(),
       ),
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
   }
 
   @override

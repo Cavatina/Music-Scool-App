@@ -18,15 +18,15 @@ import 'package:flutter/material.dart';
 import 'package:musicscool/services/api.dart';
 import 'package:musicscool/viewmodels/auth.dart';
 import 'package:provider/provider.dart';
+import 'package:musicscool/service_locator.dart';
 
 import 'login_page.dart';
 import 'home_page.dart';
 
 class RootPage extends StatefulWidget {
-  final Api api;
   final AuthModel auth;
 
-  RootPage(this.api) : auth = AuthModel(api);
+  RootPage() : auth = AuthModel(locator<Api>());
 
   @override
   _RootPageState createState() => _RootPageState();

@@ -45,6 +45,7 @@ class _RootPageState extends State<RootPage> {
 
   @override
   void initState() {
+    widget.auth.init();
     initializeDateFormatting().then((obj){});
     super.initState();
   }

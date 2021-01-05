@@ -6,28 +6,27 @@ import 'package:musicscool/models/user.dart';
 import 'package:musicscool/services/api.dart';
 import 'dart:async';
 
-class AuthModel extends ChangeNotifier
-{
+class AuthModel extends ChangeNotifier {
   final Api api;
   final storage = FlutterSecureStorage();
 
-  bool isLoading = false;
+  bool isLoading = true;
   bool isLoggedIn = false;
   String _token;
 
-  AuthModel(this.api) {
-    isLoading = true;
-    token.then((value) {
-      if (value?.isNotEmpty == true) {
-        print('reading token from storage:${value}');
-        isLoggedIn = true;
-      }
-      else {
-        print('token empty!');
-      }
-      isLoading = false;
-      notifyListeners();
-    });
+  AuthModel(this.api);
+
+  Future<AuthModel> init() async {
+    String value = await token;
+    if (value?.isNotEmpty == true) {
+      print('reading token from storage:${value}');
+      isLoggedIn = true;
+    } else {
+      print('token empty!');
+    }
+    isLoading = false;
+    notifyListeners();
+    return this;
   }
 
   Future<String> get token async {

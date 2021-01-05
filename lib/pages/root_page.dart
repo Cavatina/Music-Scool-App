@@ -56,7 +56,6 @@ class RootPage extends StatelessWidget {
 
   Widget choosePage(BuildContext context) {
     return Consumer<AuthModel>(builder: (context, model, child) {
-      if (model?.isLoading == true) return _waitingPage();
       if (model.isLoggedIn) {
         return HomePage();
       }

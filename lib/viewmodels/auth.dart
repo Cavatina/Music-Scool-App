@@ -10,7 +10,6 @@ class AuthModel extends ChangeNotifier {
   final Api api;
   final storage = FlutterSecureStorage();
 
-  bool isLoading = true;
   bool isLoggedIn = false;
   String _token;
 
@@ -24,7 +23,6 @@ class AuthModel extends ChangeNotifier {
     } else {
       print('token empty!');
     }
-    isLoading = false;
     notifyListeners();
     return this;
   }
@@ -38,7 +36,6 @@ class AuthModel extends ChangeNotifier {
     @required String username,
     @required String password}) async {
 
-    isLoading = true;
     _token = await api.login(username: username, password: password);
     if (_token?.isNotEmpty == true) {
       api.token = _token;
@@ -46,7 +43,6 @@ class AuthModel extends ChangeNotifier {
       await storage.write(key: 'lastUsername', value: username);
     }
     isLoggedIn = true;
-    isLoading = false;
     notifyListeners();
   }
 

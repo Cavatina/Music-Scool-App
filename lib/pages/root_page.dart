@@ -13,7 +13,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
-import 'package:intl/date_symbol_data_local.dart';  //for date locale
 import 'package:flutter/material.dart';
 import 'package:musicscool/viewmodels/auth.dart';
 import 'package:provider/provider.dart';
@@ -39,7 +38,6 @@ class _RootPageState extends State<RootPage> {
 
   @override
   void initState() {
-    initializeDateFormatting().then((obj) {});
     super.initState();
   }
 

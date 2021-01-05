@@ -13,18 +13,19 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
-import 'package:get_it/get_it.dart';
-import 'services/api.dart';
-import 'services/api_service.dart';
-import 'services/intl_service.dart';
-import 'viewmodels/auth.dart';
+import 'package:intl/date_symbol_data_local.dart'; //for date locale
+import 'package:timezone/timezone.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
-GetIt locator = GetIt.instance;
+import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 
-void setupServiceLocator() {
-  locator.registerSingleton<Api>(ApiService());
-  locator.registerSingletonAsync<IntlService>(
-      () async => IntlService().init());
-  locator.registerSingletonAsync<AuthModel>(
-      () async => AuthModel(locator<Api>()).init());
+class IntlService {
+  Location currentLocation;
+  Future<IntlService> init() async {
+    await initializeDateFormatting();
+    tz.initializeTimeZones();
+    String currentTimeZone = await FlutterNativeTimezone.getLocalTimezone();
+    currentLocation = getLocation(currentTimeZone);
+    return this;
+  }
 }

@@ -15,7 +15,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
 import 'package:intl/date_symbol_data_local.dart';  //for date locale
 import 'package:flutter/material.dart';
-import 'package:musicscool/services/api.dart';
 import 'package:musicscool/viewmodels/auth.dart';
 import 'package:provider/provider.dart';
 import 'package:musicscool/service_locator.dart';
@@ -24,19 +23,14 @@ import 'login_page.dart';
 import 'home_page.dart';
 
 class RootPage extends StatefulWidget {
-  final AuthModel auth;
-
-  RootPage() : auth = AuthModel(locator<Api>());
-
   @override
   _RootPageState createState() => _RootPageState();
 }
 
 class _RootPageState extends State<RootPage> {
-
   Widget _waitingPage() {
     return Scaffold(
-        body: Container(
+      body: Container(
         alignment: Alignment.center,
         child: CircularProgressIndicator(),
       ),
@@ -45,18 +39,30 @@ class _RootPageState extends State<RootPage> {
 
   @override
   void initState() {
-    widget.auth.init();
-    initializeDateFormatting().then((obj){});
+    initializeDateFormatting().then((obj) {});
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    return FutureBuilder(
+        future: locator.allReady(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.hasData) {
+            return provider(context);
+          }
+          else {
+            return _waitingPage();
+          }
+        });
+  }
+
+  Widget provider(BuildContext context) {
     return MultiProvider(
-        providers: [
-          ChangeNotifierProvider<AuthModel>.value(value: widget.auth)
-        ],
-        child: choosePage(context)
+      providers: [
+        ChangeNotifierProvider<AuthModel>.value(value: locator<AuthModel>())
+      ],
+      child: choosePage(context)
     );
   }
 

@@ -232,9 +232,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         //   child:
         // ),
         appBar: AppBar(
-//          toolbarHeight: 160,
+          toolbarHeight: 150,
             title: SvgPicture.asset('assets/images/Musicscool - Logo - Zwart beeld- en woordmerk.svg',
-                height: 48 /* @todo Size dynamically */ //),
+                height: 75 /* @todo Size dynamically */ //),
             ),
             centerTitle: true,
             bottom: TabBar(

@@ -14,21 +14,18 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
 import 'package:json_annotation/json_annotation.dart';
-import 'package:musicscool/models/school_contact.dart';
-import 'package:musicscool/models/student.dart';
 
-part 'user.g.dart';
+part 'pagination_meta.g.dart';
 
 @JsonSerializable()
-class User {
-  final String name;
-  final String email;
-  final SchoolContact schoolContact;
-  final Student student;
+class PaginationMeta {
+  final int current_page;
+  final int from;
+  final String path;
+  final int to;
 
-  User(this.name, this.email, this.schoolContact, this.student);
+  PaginationMeta(this.current_page, this.from, this.path, this.to);
+  factory PaginationMeta.fromJson(Map<String, dynamic> json) => _$PaginationMetaFromJson(json);
 
-  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
-
-  Map<String, dynamic> toJson() => _$UserToJson(this);
+  Map<String, dynamic> toJson() => _$PaginationMetaToJson(this);
 }

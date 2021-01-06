@@ -14,21 +14,19 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
 import 'package:json_annotation/json_annotation.dart';
-import 'package:musicscool/models/school_contact.dart';
-import 'package:musicscool/models/student.dart';
 
-part 'user.g.dart';
+part 'lesson_cancel_info.g.dart';
 
 @JsonSerializable()
-class User {
-  final String name;
-  final String email;
-  final SchoolContact schoolContact;
-  final Student student;
+class LessonCancelInfo {
+  final int id;
+  final DateTime from;
+  final bool canGetReplacement;
+  final int countCancelled;
+  final int allowCancelled;
 
-  User(this.name, this.email, this.schoolContact, this.student);
+  LessonCancelInfo(this.id, this.from, this.canGetReplacement, this.countCancelled, this.allowCancelled);
+  factory LessonCancelInfo.fromJson(Map<String, dynamic> json) => _$LessonCancelInfoFromJson(json);
 
-  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
-
-  Map<String, dynamic> toJson() => _$UserToJson(this);
+  Map<String, dynamic> toJson() => _$LessonCancelInfoToJson(this);
 }

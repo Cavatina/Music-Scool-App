@@ -13,12 +13,31 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
+import 'package:musicscool/models/lesson_cancel_info.dart';
 import 'package:musicscool/models/user.dart';
 import 'package:musicscool/models/lesson.dart';
 import 'dart:async';
 
+class ApiError implements Exception {}
+
+// Generic server related errors.
+class ServerError implements ApiError {}
+
+// Method specific errors. Usually a problem of invalid input.
+class AuthenticationFailed implements ApiError {}
+class ResetPasswordFailed implements ApiError {}
+
 abstract class Api {
   Future<String> login({String username, String password});
+  Future<void> resetPassword({String username});
+
+  set token (String token);
   Future<User> get user;
-  Future<List<Lesson>> getLessons({DateTime before, DateTime after});
+  Future<List<Lesson>> getHomeworkLessons({int page = 0, int perPage = 20});
+  Future<List<Lesson>> getUpcomingLessons({int page = 0, int perPage = 20, bool withCancelled = true});
+
+  Future<LessonCancelInfo> cancelLessonInfo({int id});
+  Future<Lesson> cancelLesson({int id});
+
+  Future<String> downloadHomework({String url, String filename});
 }

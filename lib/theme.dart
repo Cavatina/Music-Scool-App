@@ -14,26 +14,41 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 ThemeData theme()
 {
   Map<int, Color> mmColors = {
-    50: Color.fromRGBO(255, 187, 0, .1),
-    100: Color.fromRGBO(255, 187, 0, .2),
-    200: Color.fromRGBO(255, 187, 0, .3),
-    300: Color.fromRGBO(255, 187, 0, .4),
-    400: Color.fromRGBO(255, 187, 0, .5),
-    500: Color.fromRGBO(255, 187, 0, .6),
-    600: Color.fromRGBO(255, 187, 0, .7),
-    700: Color.fromRGBO(255, 187, 0, .8),
-    800: Color.fromRGBO(255, 187, 0, .9),
-    900: Color.fromRGBO(255, 187, 0, 1),
+    50: Color.fromRGBO(255, 186, 0, .1),
+    100: Color.fromRGBO(255, 186, 0, .2),
+    200: Color.fromRGBO(255, 186, 0, .3),
+    300: Color.fromRGBO(255, 186, 0, .4),
+    400: Color.fromRGBO(255, 186, 0, .5),
+    500: Color.fromRGBO(255, 186, 0, .6),
+    600: Color.fromRGBO(255, 186, 0, .7),
+    700: Color.fromRGBO(255, 186, 0, .8),
+    800: Color.fromRGBO(255, 186, 0, .9),
+    900: Color.fromRGBO(255, 186, 0, 1),
   };
   //MaterialColor mmYellow = MaterialColor(mmColors[900].value, mmColors);
-  return ThemeData(
+  ThemeData theme = ThemeData(
     brightness: Brightness.dark,
+    textSelectionColor: mmColors[400],
+    textSelectionHandleColor: mmColors[900],
+    scaffoldBackgroundColor: Colors.black,
+    accentColor: Colors.white, //mmColors[600],
     primaryColor: mmColors[900],
     visualDensity: VisualDensity.adaptivePlatformDensity,
     cardTheme: CardTheme(color: Color.fromRGBO(21, 21, 21, 0.3))
+  );
+  return theme.copyWith(
+      textTheme: GoogleFonts.robotoTextTheme(theme.textTheme),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        primary: theme.primaryColor, // Colors.white,
+        //backgroundColor: Colors.white24,
+        backgroundColor: Colors.black
+      )
+    )
   );
 }

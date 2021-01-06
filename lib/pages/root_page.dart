@@ -13,53 +13,55 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
-import 'package:intl/date_symbol_data_local.dart';  //for date locale
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:musicscool/viewmodels/auth.dart';
+import 'package:provider/provider.dart';
+import 'package:musicscool/service_locator.dart';
 
-//import 'package:musicscool/pages/login_page.dart';
-import 'package:musicscool/pages/home_page.dart';
+import 'login_page.dart';
+import 'home_page.dart';
 
-class RootPage extends StatefulWidget {
-  @override
-  _RootPageState createState() => _RootPageState();
-}
-
-class _RootPageState extends State<RootPage> {
-  bool _isLoading = true;
-//  bool _isLoggedIn = true;
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-
+class RootPage extends StatelessWidget {
   Widget _waitingPage() {
     return Scaffold(
-        body: Container(
+      body: Container(
         alignment: Alignment.center,
         child: CircularProgressIndicator(),
       ),
     );
   }
 
-  @override void initState() {
-    super.initState();
-    _prefs.then((SharedPreferences prefs) {
-      initializeDateFormatting().then((_) {
-        setState(() {
-//        _isLoggedIn = prefs.containsKey('token') && prefs.getString('token').isNotEmpty;
-          _isLoading = false;
-        });
-      });
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) return _waitingPage();
-    //   if (_isLoggedIn) {
-      return HomePage();
-//    }
-    // else {
-    //   return LoginPage();
-    // }
+    return FutureBuilder(
+        future: locator.allReady(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.hasData) {
+            return provider(context);
+          }
+          else {
+            return _waitingPage();
+          }
+        });
+  }
+
+  Widget provider(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<AuthModel>.value(value: locator<AuthModel>())
+      ],
+      child: choosePage(context)
+    );
+  }
+
+  Widget choosePage(BuildContext context) {
+    return Consumer<AuthModel>(builder: (context, model, child) {
+      if (model.isLoggedIn) {
+        return HomePage();
+      }
+      else {
+        return LoginPage();
+      }
+    });
   }
 }
-

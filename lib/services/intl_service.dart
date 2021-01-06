@@ -13,22 +13,23 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
-import 'package:json_annotation/json_annotation.dart';
-import 'package:musicscool/models/school_contact.dart';
-import 'package:musicscool/models/student.dart';
+import 'package:intl/date_symbol_data_local.dart'; //for date locale
+import 'package:timezone/timezone.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
-part 'user.g.dart';
+import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 
-@JsonSerializable()
-class User {
-  final String name;
-  final String email;
-  final SchoolContact schoolContact;
-  final Student student;
+class IntlService {
+  Location currentLocation;
+  Future<IntlService> init() async {
+    await initializeDateFormatting();
+    tz.initializeTimeZones();
+    String currentTimeZone = await FlutterNativeTimezone.getLocalTimezone();
+    currentLocation = getLocation(currentTimeZone);
+    return this;
+  }
 
-  User(this.name, this.email, this.schoolContact, this.student);
-
-  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
-
-  Map<String, dynamic> toJson() => _$UserToJson(this);
+  TZDateTime localDateTime(DateTime when) {
+    return TZDateTime.from(when, currentLocation);
+  }
 }

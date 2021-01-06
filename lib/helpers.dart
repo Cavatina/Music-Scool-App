@@ -13,22 +13,14 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
-import 'package:json_annotation/json_annotation.dart';
-import 'package:musicscool/models/school_contact.dart';
-import 'package:musicscool/models/student.dart';
+import 'package:flutter/material.dart';
+import 'package:musicscool/generated/l10n.dart';
 
-part 'user.g.dart';
-
-@JsonSerializable()
-class User {
-  final String name;
-  final String email;
-  final SchoolContact schoolContact;
-  final Student student;
-
-  User(this.name, this.email, this.schoolContact, this.student);
-
-  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
-
-  Map<String, dynamic> toJson() => _$UserToJson(this);
+void showUnexpectedError(BuildContext context)
+{
+  WidgetsBinding.instance.addPostFrameCallback((_) =>
+    Scaffold.of(context).showSnackBar(SnackBar(
+        content: Text(S.of(context).unexpectedErrorMessage),
+//      duration: Duration(seconds: 5)
+    )));
 }

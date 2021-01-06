@@ -18,23 +18,26 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:musicscool/generated/l10n.dart';
 import 'package:musicscool/pages/root_page.dart';
 import 'package:musicscool/theme.dart';
+import 'package:musicscool/strings.dart' show appName;
+import 'service_locator.dart';
 
 void main() {
+  setupServiceLocator();
   runApp(MusicScoolApp());
 }
 
 class MusicScoolApp extends StatelessWidget {
+  MusicScoolApp();
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Music\'Scool',
+      title: appName,
       theme: theme(),
       home: RootPage(),
       localizationsDelegates: [
         S.delegate,
-        GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: S.delegate.supportedLocales,
     );

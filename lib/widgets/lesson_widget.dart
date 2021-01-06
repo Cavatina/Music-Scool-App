@@ -13,119 +13,107 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
-import 'dart:math';
-import 'package:flutter/cupertino.dart';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:musicscool/locale_strings.dart';
+import 'package:musicscool/models/lesson_cancel_info.dart';
+import 'package:musicscool/viewmodels/auth.dart';
+import 'package:provider/provider.dart';
 import 'package:musicscool/models/lesson.dart';
-import 'package:musicscool/models/homework.dart';
-import 'package:musicscool/widgets/countdown_timer_widget.dart';
 import 'package:musicscool/generated/l10n.dart';
 
-class LessonWidget extends StatelessWidget {
-  LessonWidget({this.lesson}) : super(key: Key(lesson.from.toIso8601String()));
-
+class LessonWidget extends StatefulWidget {
   final Lesson lesson;
+  LessonWidget({this.lesson});
 
-  Widget homeworkIcons(BuildContext context, Homework homework) {
-    List<Widget> icons = <Widget>[];
-    var devSize = MediaQuery.of(context).size;
-    double boxWidth = min(devSize.width / 2.6, 300.0);
+  @override
+  _LessonWidgetState createState() => _LessonWidgetState(lesson: lesson);
+}
 
-    if (homework.fileUrl != null) {
-      icons.add(
-          SizedBox(
-            width: boxWidth,
-            child: OutlinedButton.icon(
-                label: Text(S.of(context).download),
-                onPressed: () {
-                  launch(homework.fileUrl);
-                },
-                icon: Icon(Icons.download_outlined)
-            ),
-          )
-          );
+class _LessonWidgetState extends State<LessonWidget> {
+  _LessonWidgetState({this.lesson});
+
+  Lesson lesson;
+
+  Widget header(BuildContext context, bool expand, {List<Widget> children}) {
+    String subtitle;
+    if (lesson.instrument != null && lesson.teacher != null) {
+      subtitle = S.of(context).instrumentWithTeacher(
+          instrumentText(context, lesson.instrument.name),
+          lesson.teacher.name);
     }
-    if (homework.linkUrl != null) {
-      icons.add(
-        SizedBox(
-          width: boxWidth,
-          child: OutlinedButton.icon(
-            label: Text(S.of(context).view),
-            onPressed: () {
-              launch(homework.linkUrl);
-            },
-              icon: Icon(Icons.ondemand_video_outlined)
-          ),
-        )
-      );
+    else if (lesson.teacher != null) {
+      subtitle = S.of(context).withTeacher(lesson.teacher.name);
     }
-    return Wrap(direction: Axis.horizontal, spacing: 16.0, children: icons);
+    else {
+      subtitle = '';
+    }
+    if (expand) {
+      return ExpansionTile(
+          title: Text(formattedDate(lesson.from)),
+          subtitle: Text(subtitle, style: TextStyle(color: Colors.white60),
+          overflow: TextOverflow.ellipsis),
+          children: children);
+    }
+    return(ListTile(
+        title: Text(formattedDate(lesson.from)),
+        subtitle: Text(subtitle)));
+  }
+  List<Widget> body(BuildContext context) {
+    List<Widget> out = <Widget>[];
+   if (lesson.cancelled == true) {
+     out.add(ListTile(subtitle: Text(cancelledText(context, lesson.status))));
+   }
+    return out;
   }
 
-  String cancelledText(BuildContext context, String statusKey) {
-    switch(statusKey) {
-      case 'STUDENT_CANCELLED': return S.of(context).statusStudentCancelled; break;
-      case 'STUDENT_CANCELLED_LATE': return S.of(context).statusStudentCancelledLate; break;
-      case 'TEACHER_CANCELLED': return S.of(context).statusTeacherCancelled; break;
-      case 'STUDENT_ABSENT': return S.of(context).statusStudentAbsent; break;
-      default:
-        return '';
-    }
-  }
   List<Widget> rows(BuildContext context) {
     List<Widget> out = <Widget>[];
-    if (lesson.isNext) {
-      var devSize = MediaQuery.of(context).size;
-      double boxWidth = min(devSize.width / 5.5, 100.0);
-      out.add(Container(
-        padding: EdgeInsets.symmetric(vertical: devSize.height / 6),
-        child: Column(
-          children: <Widget> [
-            Text(S.of(context).aboutToRock),
-            CountdownTimer(to: lesson.from, boxWidth: boxWidth)
-          ]
-        ),
-      ));
-    }
-    String start = DateFormat.yMMMEd().format(lesson.from);
-    out.add(ListTile(
-              title: Text(start),
-              subtitle: Text(lesson.teacher.name)));
-    if (lesson.cancelled == true) {
-      out.add(ListTile(subtitle: Text(cancelledText(context, lesson.status))));
-    }
-    if (lesson.homework != null) {
-//      out.add(ListTile(subtitle: Text('Homework')/*, tileColor: Color.fromRGBO(64, 64, 64, 0.5)*/));
-      lesson.homework.forEach((Homework homework) =>
-          out.add(
-              Container(
-                color: Color.fromRGBO(64, 64, 64, 0.3),
-//                margin: EdgeInsets.symmetric(vertical: 16.0),
-                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(homework.message),
-                    Padding(padding: EdgeInsets.symmetric(vertical: 8.0)),
-                    homeworkIcons(context, homework),
-//                    Padding(padding: EdgeInsets.symmetric(vertical: 8.0)),
-                  ]
-                ),
-              )
-          )
-      );
-    }
+    // if (lesson.isNext) {
+    //   var devSize = MediaQuery.of(context).size;
+    //   double boxWidth = min(devSize.width / 5.5, 100.0);
+    //   out.add(Container(
+    //     padding: EdgeInsets.symmetric(vertical: devSize.height / 6),
+    //     child: Column(
+    //       children: <Widget> [
+    //         Text(S.of(context).aboutToRock),
+    //         CountdownTimer(to: lesson.from, boxWidth: boxWidth)
+    //       ]
+    //     ),
+    //   ));
+    // }
+    out.add(header(context, false));
+    out.addAll(body(context));
     return out;
   }
 
   Future<bool> confirmCancel(BuildContext context) async {
+    AuthModel auth = Provider.of<AuthModel>(context, listen: false);
+    LessonCancelInfo cancelInfo = await auth.cancelLessonInfo(id: lesson.id);
+    String textContent;
+    print(jsonEncode(cancelInfo.toJson()));
+    if (cancelInfo.canGetReplacement) {
+      textContent = S.of(context).cancelLessonRefundable(
+          cancelInfo.countCancelled+1,  // Total: include this cancellation.
+          cancelInfo.allowCancelled);
+    }
+    else {
+      textContent = S.of(context).cancelLessonNonRefundable;
+    }
     return await showCupertinoDialog<bool>(
         context: context,
         builder: (context) => CupertinoAlertDialog(
-          content: Text(S.of(context).cancelLesson),
+          title: Text(S.of(context).confirm),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(S.of(context).cancelLessonAt(formattedDate(lesson.from))),
+              Text(''),
+              Text(textContent),
+            ],
+          ),
           actions: <Widget>[
             CupertinoDialogAction(
               child: Text(S.of(context).no),
@@ -136,7 +124,12 @@ class LessonWidget extends StatelessWidget {
             CupertinoDialogAction(
                 child: Text(S.of(context).yes),
                 onPressed: () {
-                  Navigator.of(context).pop(true);
+                  auth.cancelLesson(id: lesson.id).then((Lesson l) {
+                    setState(() {
+                      lesson = l;
+                    });
+                    Navigator.of(context).pop(true);
+                  });
                 }
             )
           ]
@@ -179,23 +172,37 @@ class LessonWidget extends StatelessWidget {
     else if (lesson.pending != true) {
       border = Border(left: BorderSide(width: 2.0, color: Theme.of(context).primaryColor));
     }
-    else if (lesson.isNext != true) {
+    else { //if (lesson.isNext != true) {
       border = Border(right: BorderSide(width: 2.0, color: Colors.white));
     }
-    else {
-      border = Border(right: BorderSide(width: 2.0, color: Colors.black));
-    }
-    return Card(
-      child: cancellableIfPending(context,
-          Container(
-            decoration: BoxDecoration(
-              border: border
-            ),
-            child: Column(
-              children: rows(context)
-            ),
+    // else {
+    //   border = Border(right: BorderSide(width: 2.0, color: Colors.black));
+    // }
+    if (lesson.pending == true) {
+      return Card(
+          child: cancellableIfPending(context,
+              Container(
+                decoration: BoxDecoration(
+                    border: border
+                ),
+                child: Column(
+                    children: rows(context)
+                ),
+              )
           )
-      )
-    );
+      );
+    }
+    else {
+      return Card(
+        child: Container(
+          decoration: BoxDecoration(
+              border: border
+          ),
+          child: header(context, true,
+            children: body(context)
+          ),
+        )
+      );
+    }
   }
 }

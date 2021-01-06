@@ -13,22 +13,18 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
-import 'package:json_annotation/json_annotation.dart';
-import 'package:musicscool/models/school_contact.dart';
-import 'package:musicscool/models/student.dart';
+import 'package:get_it/get_it.dart';
+import 'services/api.dart';
+import 'services/api_service.dart';
+import 'services/intl_service.dart';
+import 'viewmodels/auth.dart';
 
-part 'user.g.dart';
+GetIt locator = GetIt.instance;
 
-@JsonSerializable()
-class User {
-  final String name;
-  final String email;
-  final SchoolContact schoolContact;
-  final Student student;
-
-  User(this.name, this.email, this.schoolContact, this.student);
-
-  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
-
-  Map<String, dynamic> toJson() => _$UserToJson(this);
+void setupServiceLocator() {
+  locator.registerSingleton<Api>(ApiService());
+  locator.registerSingletonAsync<IntlService>(
+      () async => IntlService().init());
+  locator.registerSingletonAsync<AuthModel>(
+      () async => AuthModel(locator<Api>()).init());
 }

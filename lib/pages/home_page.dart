@@ -13,207 +13,404 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
+import 'dart:math';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:musicscool/services/api.dart';
+import 'package:musicscool/viewmodels/auth.dart';
+import 'package:musicscool/widgets/countdown_timer_widget.dart';
+import 'package:musicscool/widgets/homework_widget.dart';
+import 'package:musicscool/widgets/lesson_list_view.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:musicscool/models/lesson.dart';
 import 'package:musicscool/models/user.dart';
-import 'package:musicscool/services/api_test_service.dart';
 import 'package:musicscool/widgets/lesson_widget.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:musicscool/generated/l10n.dart';
-
+import 'package:musicscool/helpers.dart';
+import 'package:musicscool/strings.dart' show privacyPolicyUrl, appName;
+import 'package:musicscool/locale_strings.dart';
 
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  final ApiTestService _api = ApiTestService();
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   bool _notifications = true;
-  List<Lesson> _lessons = <Lesson>[];
-  bool _initial = true;
-  final ValueNotifier<int> _initialScrollIndex = ValueNotifier<int>(0);
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  TabController _tabController;
+  static const _tabCount = 4;
 
-  final _scrollController = ScrollController();
-
-  /// Controller to scroll or jump to a particular item.
-  final ItemScrollController itemScrollController = ItemScrollController();
-
-  /// Listener that reports the position of items when the list is scrolled.
-  final ItemPositionsListener itemPositionsListener = ItemPositionsListener.create();
-
-  void scrollTo(int index) => itemScrollController.scrollTo(
-      index: index,
-      duration: Duration(seconds: 2),
-      curve: Curves.easeInOutCubic,
-      alignment: 0.0);
-
-  void jumpTo(int index) =>
-      itemScrollController.jumpTo(index: index, alignment: 0.0);
-
-  _HomePageState() {
-    _api.allLessons().then((lessons) {
-      int i = 0;
-      for (; i<lessons.length; ++i) {
-        if (lessons[i].isNext) {
-          break;
-        }
-      }
-      setState(() {
-        _lessons = lessons;
-      });
-      if (_initialScrollIndex.value == 0) {
-          _initialScrollIndex.value = i;
-      }
-    });
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(
+         length: _tabCount,
+         initialIndex: 2,
+         vsync: this);
   }
+
   @override
   void dispose() {
-    _scrollController.dispose();
+    _tabController.dispose();
     super.dispose();
+  }
+
+  Widget waiting() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget> [
+        CircularProgressIndicator()
+      ]
+    );
+  }
+
+  Widget countdownView(BuildContext context) {
+    return Consumer<AuthModel>(
+        builder: (context, model, child) {
+          if (model == null) return waiting();
+          return FutureBuilder<User>(
+            future: model.user,
+            builder: (context, AsyncSnapshot<User> snapshot) {
+              if (snapshot.hasData) {
+                if (snapshot.data.student != null) {
+                  return studentCountdownView(context, snapshot.data);
+                }
+                else {
+                  return Column(
+                    children: <Widget> [
+                      Text(S.of(context).youAreNotAStudent)
+                    ]
+                  );
+                }
+              }
+              else if (snapshot.hasError) {
+                if (!(snapshot.error is AuthenticationFailed)) {
+                  showUnexpectedError(context);
+                }
+                return Container();
+              }
+              else {
+                return waiting();
+              }
+            }
+          );
+      }
+    );
+  }
+
+  Widget studentCountdownTimer(BuildContext context, User user) {
+    if (user?.student?.nextLesson != null) {
+      var devSize = MediaQuery.of(context).size;
+      double boxWidth = min(devSize.width / 5.5, 100.0);
+      return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget> [
+            Text(S.of(context).aboutToRock,
+                textScaleFactor: 1.25,
+                style: TextStyle(height: 4.0)
+            ),
+            Container(
+                decoration: BoxDecoration(
+                    border: Border.all(color: Theme.of(context).primaryColor, width:2.0),
+                    borderRadius: BorderRadius.circular(12)
+                ),
+                padding: EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+                child: Column(
+                    children: <Widget>[
+                      CountdownTimer(to: user.student.nextLesson.from, boxWidth: boxWidth),
+                      Text(''),
+                      Text(formattedDate(user.student.nextLesson.from), textScaleFactor: 1.25)
+                    ]
+                )
+            ),
+            Text('', textScaleFactor: 1.25,
+                style: TextStyle(height: 4.0)),
+            Text('', textScaleFactor: 1.25,
+                style: TextStyle(height: 4.0))
+          ]
+      );
+    }
+    else {
+      return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children:<Widget> [
+          Text(S.of(context).youHaveNoUpcomingLessons)
+          ]
+      );
+    }
+  }
+  Widget studentCountdownView(BuildContext context, User user) {
+    return Container(
+      // decoration: BoxDecoration(
+      //     image: DecorationImage(
+      //         image:
+      //         AssetImage('assets/images/background4.jpg'),
+      //         fit: BoxFit.cover)),
+      padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+      //EdgeInsets.symmetric(vertical: devSize.height / 6),
+      child: Column(
+          children: <Widget> [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget> [
+                Text(S.of(context).heyUser(user.name))
+              ]
+            ),
+            Expanded(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget> [
+                  studentCountdownTimer(context, user)
+                ]
+              ),
+            ),
+          ]
+      ),
+    );
+  }
+
+  Widget homeworkLessonsView(BuildContext context) {
+    return LessonListView(
+        itemGetter: (int page, int perPage) {
+          AuthModel auth = Provider.of<AuthModel>(context, listen:false);
+          return auth.getHomeworkLessons(
+              page: page,
+              perPage: perPage);
+        },
+        itemBuilder: (BuildContext context, Lesson item, int index) =>
+            HomeworkWidget(lesson: item, expanded: index == 0)
+    );
+  }
+
+  Widget upcomingLessonsView(BuildContext context) {
+    return LessonListView(
+        itemGetter: (int page, int perPage) {
+          AuthModel auth = Provider.of<AuthModel>(context, listen: false);
+          return auth.getUpcomingLessons(
+              page: page,
+              perPage: perPage);
+          },
+        itemBuilder: (BuildContext context, Lesson item, int index) =>
+            LessonWidget(lesson: item)
+    );
+  }
+
+  Widget settingsView(BuildContext context) {
+    return Consumer<AuthModel>(builder: (context, model, child) {
+      if (model == null) return waiting();
+      return FutureBuilder<User>(
+          future: model?.user,
+          builder: (context, AsyncSnapshot<User> snapshot) {
+            if (snapshot.hasData) {
+              return userInfo(context, snapshot.data);
+            }
+            else if (snapshot.hasError && !(snapshot.error is AuthenticationFailed)) {
+              showUnexpectedError(context);
+              return Container();
+            }
+            else {
+              return waiting();
+            }
+          }
+      );
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.menu),
-          onPressed: () => _scaffoldKey.currentState.openDrawer()
+        key: _scaffoldKey,
+        // bottomNavigationBar: BottomAppBar(
+        //   color: Theme.of(context).primaryColor,
+        //   child:
+        // ),
+        appBar: AppBar(
+          toolbarHeight: 150,
+            title: SvgPicture.asset('assets/images/Musicscool - Logo - Zwart beeld- en woordmerk.svg',
+                height: 75 /* @todo Size dynamically */ //),
+            ),
+            centerTitle: true,
+            bottom: TabBar(
+                controller: _tabController,
+                labelStyle: TextStyle(fontSize: 10),
+                tabs: [
+                  Tab(text: S.of(context).info, icon: Icon(CupertinoIcons.info_circle_fill)), //Icons.info)),
+                  Tab(text: S.of(context).homework, icon: Icon(CupertinoIcons.music_albums_fill)), //doc_on_doc_fill)),//Icons.book)),
+                  Tab(text: S.of(context).next, icon: Icon(CupertinoIcons.timer_fill)), //Icons.home)),
+                  Tab(text: S.of(context).upcoming, icon: Icon(CupertinoIcons.calendar)), //Icons.fast_forward)),
+                ]
+            )
         ),
-        title: SvgPicture.asset('assets/images/Musicscool - Logo - Zwart beeld- en woordmerk.svg',
-        height: 48 /* @todo Size dynamically */),
-        centerTitle: true,
-      ),
         body: Container(
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                    image:
-                    AssetImage('assets/images/background4.jpg'),
-                    fit: BoxFit.cover)),
-            child: ValueListenableBuilder(
-              builder: (BuildContext context, int value, Widget child) {
-                if (_initial && _initialScrollIndex.value != 0) {
-                  WidgetsBinding.instance.addPostFrameCallback((_){
-                    scrollTo(_initialScrollIndex.value);
-                    setState(() {
-                      _initial = false;
-                    });
-                  });
-                }
-                return ScrollablePositionedList.separated(
-                    padding: const EdgeInsets.all(8),
-                    initialScrollIndex: value,
-                    itemCount: _lessons != null ? _lessons.length : 0,
-                    itemScrollController: itemScrollController,
-                    itemPositionsListener: itemPositionsListener,
-                    itemBuilder: (BuildContext context, int index) =>
-                    index > 0 ? LessonWidget(lesson: _lessons[index]) : null,
-                    separatorBuilder: (BuildContext context, int index) =>
-                    const Divider());
-                },
-                valueListenable: _initialScrollIndex
-                )),
-        drawer: Drawer(
-            child: FutureBuilder<User>(
-                future: _api.user,
-
-          builder: (context, AsyncSnapshot<User> snapshot) {
-            if (snapshot.hasData) {
-              return userInfo(context, snapshot.data);
-            }
-            else {
-              return CircularProgressIndicator();
-            }
-          }
+          decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage('assets/images/background4.jpg'),
+                  fit: BoxFit.cover)),
+          child: TabBarView(
+              controller: _tabController,
+              children: <Widget> [
+                settingsView(context),
+                homeworkLessonsView(context),
+                countdownView(context),
+                upcomingLessonsView(context),
+              ]
+          ),
         )
-      )
     );
   }
 
+  Widget contactButton({BuildContext context, IconData icon, String label, String url}) {
+    // return TextButton.icon(icon: Icon(icon), label: Text(label),
+    //     onPressed: () {
+    //       launch(url);
+    //     }
+    // );
+    return FlatButton(
+      onPressed: () {
+        launch(url);
+      },
+      color: Colors.black, //Theme.of(context).primaryColor,
+        textColor: Theme.of(context).primaryColor,
+      padding: EdgeInsets.all(12.0),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
+//            side: BorderSide(color: Colors.white10)
+        ),
+      child: Column(
+        children: <Widget> [
+          Icon(icon, size: 36),
+          Text(label)
+        ]
+      )
+    );
+    // return TextButton.icon(icon: Icon(Icons.sms), label: Text('SMS'),
+    //     onPressed: () {
+    //       launch('sms://${user.student.schoolContact.phone}');
+    //     }
+    // );
+  }
+
   Widget userInfo(BuildContext context, User user) {
+    List<Text> address = user.schoolContact.address.map((String line) {
+      return Text(line, textScaleFactor: 1.2);
+    }).toList();
     return ListView(
         padding: EdgeInsets.zero,
-        children: <Widget> [
-          SizedBox(
-            height: 120.0,
-            child: UserAccountsDrawerHeader(
-              accountName: Text(user.name),
-              accountEmail: Text(user.email),
-              //currentAccountPicture: CircleAvatar(child: Text('MS'))
-            ),
-          ),
+        children: <Widget>[
           ListTile(
-            title: Text("Music'scool"),
-            leading: SvgPicture.asset('assets/images/Musicscool - Logo - Wit beeldmerk.svg')
+              title: Text(user.name),
+              subtitle: Text(user.email),
+              leading: Icon(CupertinoIcons.person_fill) //Icons.person)
           ),
-          Divider(),
-          InkWell(
-              child: ListTile(
-                  title: Text(user.student.schoolContact.name),
-                  leading: Icon(Icons.sms)
-              ),
-              onTap: () {
-                launch('sms:${user.student.schoolContact.phone}');
-              }
+          ExpansionTile(
+              title: Text(S.of(context).contact),
+              leading: Icon(CupertinoIcons.doc_person_fill),
+              // CircleAvatar(
+              //   backgroundColor: Colors.black,
+              //     child: SvgPicture.asset('assets/images/Musicscool - Logo - Okergeel beeldmerk.svg',
+              //     color: Theme.of(context).primaryColor)),
+              children: <Widget>[
+                Container(
+                    padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                    child: Column(
+                        children: <Widget> [
+                          CircleAvatar(
+                              minRadius: 24,
+                              maxRadius: 48,
+                              backgroundColor: Colors.black,
+                              child: SvgPicture.asset('assets/images/Musicscool - Logo - Okergeel beeldmerk.svg',
+                                  color: Theme.of(context).primaryColor)),
+                          Text(''),
+                          Text(appName, textScaleFactor: 1.75),
+                          Text(''),
+                          ...address,
+                          // Text('Penselstrøget 56', textScaleFactor: 1.2),
+                          // Text('4000 Roskilde', textScaleFactor: 1.2),
+                          // Text('Danmark', textScaleFactor: 1.2),
+                          Text(''),
+                          Wrap(spacing: 12.0,
+                              children: <Widget> [
+                                contactButton(context: context,
+                                    icon: CupertinoIcons.phone_fill,
+                                    label: S.of(context).call,
+                                    url: 'tel://${user.schoolContact.phone}'
+                                ),
+                                contactButton(context: context,
+                                    icon: CupertinoIcons.bubble_left_fill,
+                                    label: S.of(context).sms,
+                                    url: 'sms://${user.schoolContact.phone}'
+                                ),
+                                contactButton(context: context,
+                                    icon: CupertinoIcons.envelope_fill,
+                                    label: S.of(context).email,
+                                    url: 'mailto:${user.schoolContact.email}'
+                                ),
+                              ]
+                          ),
+                          //   TextButton.icon(icon: Icon(Icons.open_in_browser), label: Text('Privacy Policy'),
+                          //       onPressed: () {
+                          //         launch('https://musicscool.dk/privacypolicy');
+                          //       }
+                          //   )
+                        ]
+                    )
+                ),
+              ]
           ),
-          InkWell(
-              child: ListTile(
-                  title: Text(user.student.schoolContact.phone),
-                  leading: Icon(Icons.call)
-              ),
-              onTap: () {
-                launch('tel:${user.student.schoolContact.phone}');
-              }
-          ),
-          InkWell(
-              child: ListTile(
-                  title: Text(user.student.schoolContact.email),
-                  leading: Icon(Icons.email)
-              ),
-              onTap: () {
-                launch('mailto:${user.student.schoolContact.email}');
-              }
-          ),
-          InkWell(
-              child: ListTile(
-                  title: Text(S.of(context).privacyPolicy),
-                  leading: Icon(Icons.open_in_browser)
-              ),
-              onTap: () {
-                launch('https://musicscool.dk/privacypolicy');
-              }
-          ),
-          ListTile(),
-          ListTile(
-              title: Text('Settings'),
-              leading: Icon(Icons.settings)
-          ),
-          Divider(),
-          SwitchListTile(
-            title: Text('Notifications'),
-            value: _notifications,
-            secondary: Icon(Icons.notifications),
-            onChanged: (bool value) {
-              setState(() {
-                _notifications = value;
-              });
-            }
-          ),
-          InkWell(
-            child: ListTile(
-              title: Text('Logout'),
-              leading: Icon(Icons.logout)
-            ),
-            onTap: () {
+          ExpansionTile(
+              title: Text(S.of(context).settings),
+              leading: Column(mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget> [Icon(CupertinoIcons.gear_alt_fill)]),
+              children: <Widget> [
+                SwitchListTile(
+                    title: Text(S.of(context).notifications),
+                    value: _notifications,
+                    secondary: Icon(Icons.notifications),
+                    onChanged: (bool value) {
+                      setState(() {
+                        _notifications = value;
+                      });
+                    }
+                ),
+                InkWell(
+                    child: ListTile(
+                        title: Text(S.of(context).privacyPolicy),
+                        leading: Icon(Icons.open_in_browser)
+                    ),
+                    onTap: () {
+                      launch(privacyPolicyUrl);
+                    }
+                ),
+                InkWell(
+                    child: ListTile(
+                        title: Text(S.of(context).logout),
+                        leading: Icon(Icons.logout)
+                    ),
+                    onTap: () {
+                      Provider.of<AuthModel>(context, listen:false).logout();
+                    }
+                )
 
-            }
-          )
+              ]
+          ),
         ]
+          // SizedBox(
+          //   height: 140.0,
+          //   child: UserAccountsDrawerHeader(
+          //     accountName: Text(user.name),
+          //     accountEmail: Text(user.email),
+          //     //currentAccountPicture: CircleAvatar(child: Icon(Icons.person)) //Text('MS'))
+          //   ),
+          // ),
+          //ListTile(),
+        //]
     );
   }
 }

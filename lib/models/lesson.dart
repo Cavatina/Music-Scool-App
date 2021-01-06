@@ -14,6 +14,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
 import 'package:musicscool/models/homework.dart';
+import 'package:musicscool/models/instrument.dart';
 import 'package:musicscool/models/teacher.dart';
 import 'package:musicscool/models/lesson_ref.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -27,6 +28,7 @@ class Lesson {
   final DateTime until;
   final String status;
   final Teacher teacher;
+  final Instrument instrument;
   final bool pending;
   final bool cancelled;
   final bool relocated;
@@ -38,7 +40,8 @@ class Lesson {
   @JsonKey(ignore: true)
   bool isNext = false;
 
-  Lesson(this.id, this.from, this.until, this.status, this.teacher,
+  Lesson(this.id, this.from, this.until, this.status,
+      this.teacher, this.instrument,
       this.pending, this.cancelled, this.relocated, this.requested,
       this.replacesLesson, this.replacementLesson, this.homework);
   Lesson copyWith({DateTime from, DateTime until, String status,
@@ -49,6 +52,7 @@ class Lesson {
         until ?? this.until,
         status ?? this.status,
         teacher,
+        instrument,
         pending ?? this.pending,
         cancelled ?? this.cancelled,
         relocated ?? this.relocated,

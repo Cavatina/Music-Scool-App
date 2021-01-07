@@ -4,6 +4,9 @@ import 'package:musicscool/models/lesson_cancel_info.dart';
 import 'package:musicscool/models/lesson.dart';
 import 'package:musicscool/models/user.dart';
 import 'package:musicscool/services/api.dart';
+import 'package:musicscool/service_locator.dart';
+import 'package:musicscool/services/local_notifications.dart';
+import 'package:musicscool/services/intl_service.dart';
 import 'dart:async';
 
 class AuthModel extends ChangeNotifier {
@@ -12,6 +15,7 @@ class AuthModel extends ChangeNotifier {
 
   bool isLoggedIn = false;
   String _token;
+  DateTime _nextLesson;
 
   AuthModel(this.api);
 
@@ -53,16 +57,23 @@ class AuthModel extends ChangeNotifier {
   void logout() {
     isLoggedIn = false;
     _token = '';
-    storage.write(key: 'token', value: '').then((value){});
+    _nextLesson = null;
+    storage.write(key: 'token', value: '').then((value) {});
     notifyListeners();
   }
 
   Future<User> get user async {
     try {
       api.token = await token;
-      return await api.user;
-    }
-    on AuthenticationFailed catch (_) {
+      User user = await api.user;
+      if (user.student?.nextLesson?.from != _nextLesson) {
+        List<Lesson> nextLessons = await api.getUpcomingLessons(
+            page: 1, perPage: 1, withCancelled: false);
+        locator<LocalNotifications>().scheduleNotifications(
+            nextLessons, locator<IntlService>().currentLocation);
+      }
+      return user;
+    } on AuthenticationFailed catch (_) {
       print('AuthenticationFailed');
       logout();
       rethrow;

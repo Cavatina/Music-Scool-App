@@ -17,14 +17,16 @@ import 'package:get_it/get_it.dart';
 import 'services/api.dart';
 import 'services/api_service.dart';
 import 'services/intl_service.dart';
+import 'services/local_notifications.dart';
 import 'viewmodels/auth.dart';
 
 GetIt locator = GetIt.instance;
 
 void setupServiceLocator() {
   locator.registerSingleton<Api>(ApiService());
-  locator.registerSingletonAsync<IntlService>(
-      () async => IntlService().init());
+  locator.registerSingletonAsync<IntlService>(() async => IntlService().init());
+  locator.registerSingletonAsync<LocalNotifications>(
+      () async => LocalNotifications().init());
   locator.registerSingletonAsync<AuthModel>(
       () async => AuthModel(locator<Api>()).init());
 }

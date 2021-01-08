@@ -169,6 +169,15 @@ class ApiTestService implements Api {
     return _allLessons;
   }
 
+  @override
+  Future<void> cacheClear() async {}
+
+  @override
+  Future<void> cacheClearUpcoming() async {}
+
+  @override
+  Future<void> cacheClearPast() async {}
+
   List<Lesson> _allLessons;
   int _lessonIndex = -1;
   static const pageSize = 25;

@@ -40,4 +40,8 @@ abstract class Api {
   Future<Lesson> cancelLesson({int id});
 
   Future<String> downloadHomework({String url, String filename});
+
+  Future<void> cacheClear();
+  Future<void> cacheClearPast();
+  Future<void> cacheClearUpcoming();
 }

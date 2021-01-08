@@ -31,6 +31,9 @@ class AuthModel extends ChangeNotifier {
     value = await storage.read(key: 'notificationsEnabled');
     print('notificationsEnabled:${value}');
     if (value != null && value == 'false') _notificationsEnabled = false;
+    value = await storage.read(key: 'nextLesson');
+    print('nextLesson:${value}');
+    if (value != null && value != '') _nextLesson = DateTime.parse(value);
     notifyListeners();
     return this;
   }
@@ -88,7 +91,9 @@ class AuthModel extends ChangeNotifier {
     isLoggedIn = false;
     _token = '';
     _nextLesson = null;
-    storage.write(key: 'token', value: '').then((value) {});
+    api.cacheClear().then((_) {});
+    storage.write(key: 'token', value: '').then((_) {});
+    storage.write(key: 'nextLesson', value: '').then((_) {});
     notifyListeners();
   }
 
@@ -96,12 +101,16 @@ class AuthModel extends ChangeNotifier {
     try {
       api.token = await token;
       User user = await api.user;
-      if (notificationsEnabled && user.student != null &&
-          user.student.nextLesson != null &&
-          user.student.nextLesson.from != _nextLesson) {
-        _nextLesson = user.student.nextLesson.from;
+      DateTime newNextLesson = user?.student?.nextLesson?.from;
+      if (newNextLesson != _nextLesson) {
+        await storage.write(key: 'nextLesson', value: _nextLesson.toString());
+        await api.cacheClearPast();
+        await api.cacheClearUpcoming();
+      }
+      if (notificationsEnabled && newNextLesson != null && newNextLesson != _nextLesson) {
         scheduleNotifications();
       }
+      _nextLesson = newNextLesson;
       return user;
     } on AuthenticationFailed catch (_) {
       print('AuthenticationFailed');

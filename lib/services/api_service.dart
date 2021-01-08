@@ -260,11 +260,18 @@ class ApiService implements Api {
     }
   }
 
-  void cacheClearUpcoming() async {
+  @override
+  Future<void> cacheClear() async {
+    await _cache.clearAll();
+  }
+
+  @override
+  Future<void> cacheClearUpcoming() async {
     await _cache.deleteByPrimaryKey('/student/lessons/upcoming');
   }
 
-  void cacheClearPast() async {
+  @override
+  Future<void> cacheClearPast() async {
     await _cache.deleteByPrimaryKey('/student/lessons/past');
   }
 

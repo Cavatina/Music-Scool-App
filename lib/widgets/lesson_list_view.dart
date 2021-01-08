@@ -6,12 +6,15 @@ import 'package:musicscool/generated/l10n.dart';
 
 typedef LessonListItemBuilder = void Function(BuildContext context, Lesson item, int index);
 typedef LessonListGetter = Future<List<Lesson>> Function(int page, int perPage);
+typedef LessonListRefresh = Future<void> Function();
 
 class LessonListView extends StatefulWidget {
   final LessonListItemBuilder itemBuilder;
   final LessonListGetter itemGetter;
+  final LessonListRefresh itemRefresh;
 
-  LessonListView({@required this.itemBuilder, @required this.itemGetter});
+  LessonListView({@required this.itemBuilder, @required this.itemGetter,
+                  @required this.itemRefresh});
 
   @override
   _LessonListViewState createState() => _LessonListViewState();
@@ -54,13 +57,19 @@ class _LessonListViewState extends State<LessonListView> {
 
   @override
   Widget build(BuildContext build) =>
-    PagedListView<int, Lesson>.separated(
-      padding: EdgeInsets.all(8),
-      separatorBuilder: (BuildContext context, int index) => const Divider(),
-      pagingController: _pagingController,
-      builderDelegate: PagedChildBuilderDelegate<Lesson>(
-        itemBuilder: widget.itemBuilder
-      ),
+    RefreshIndicator(
+      onRefresh: () async {
+        await widget.itemRefresh();
+        _pagingController.refresh();
+      },
+      child: PagedListView<int, Lesson>.separated(
+        padding: EdgeInsets.all(8),
+        separatorBuilder: (BuildContext context, int index) => const Divider(),
+        pagingController: _pagingController,
+        builderDelegate: PagedChildBuilderDelegate<Lesson>(
+          itemBuilder: widget.itemBuilder
+        ),
+      )
     );
 
   @override

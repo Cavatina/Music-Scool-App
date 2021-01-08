@@ -39,7 +39,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
-  bool _notifications = true;
+  bool _notificationsEnabled;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   TabController _tabController;
   static const _tabCount = 4;
@@ -51,6 +51,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
          length: _tabCount,
          initialIndex: 2,
          vsync: this);
+    AuthModel auth = Provider.of<AuthModel>(context, listen: false);
+    _notificationsEnabled = auth.notificationsEnabled;
   }
 
   @override
@@ -300,6 +302,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     List<Text> address = user.schoolContact.address.map((String line) {
       return Text(line, textScaleFactor: 1.2);
     }).toList();
+    AuthModel auth = Provider.of<AuthModel>(context, listen: false);
     return ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
@@ -370,12 +373,18 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               children: <Widget> [
                 SwitchListTile(
                     title: Text(S.of(context).notifications),
-                    value: _notifications,
+                    value: _notificationsEnabled,
                     secondary: Icon(Icons.notifications),
                     onChanged: (bool value) {
                       setState(() {
-                        _notifications = value;
+                        _notificationsEnabled = value;
                       });
+                      if (value == true) {
+                        auth.enableNotifications().catchError((_) => showUnexpectedError(context));
+                      }
+                      else {
+                        auth.disableNotifications();
+                      }
                     }
                 ),
                 InkWell(

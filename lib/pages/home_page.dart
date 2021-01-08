@@ -207,7 +207,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return Consumer<AuthModel>(builder: (context, model, child) {
       if (model == null) return waiting();
       return FutureBuilder<User>(
-          future: model?.user,
+          future: model.user,
           builder: (context, AsyncSnapshot<User> snapshot) {
             if (snapshot.hasData) {
               return userInfo(context, snapshot.data);

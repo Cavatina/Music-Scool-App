@@ -33,7 +33,14 @@ class AuthModel extends ChangeNotifier {
     if (value != null && value == 'false') _notificationsEnabled = false;
     value = await storage.read(key: 'nextLesson');
     print('nextLesson:${value}');
-    if (value != null && value != '') _nextLesson = DateTime.parse(value);
+    if (value != null && value != '') {
+      try {
+        _nextLesson = DateTime.parse(value);
+      }
+      on FormatException {
+        _nextLesson = null;
+      }
+    }
     notifyListeners();
     return this;
   }
@@ -104,7 +111,14 @@ class AuthModel extends ChangeNotifier {
       User user = await api.user;
       DateTime newNextLesson = user?.student?.nextLesson?.from;
       if (newNextLesson != _nextLesson) {
-        await storage.write(key: 'nextLesson', value: _nextLesson.toString());
+        String nextLesson;
+        if (newNextLesson != null) {
+          nextLesson = newNextLesson.toIso8601String();
+        }
+        else {
+          nextLesson = '';
+        }
+        await storage.write(key: 'nextLesson', value: nextLesson);
         await api.cacheClearPast();
         await api.cacheClearUpcoming();
       }

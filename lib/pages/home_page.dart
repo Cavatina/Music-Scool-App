@@ -222,7 +222,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             }
             else if (snapshot.hasError && !(snapshot.error is AuthenticationFailed)) {
               showUnexpectedError(context);
-              return Container();
+              return InkWell(
+                child: ListTile(
+                    title: Text(S.of(context).logout),
+                    leading: Icon(Icons.logout)
+                ),
+                onTap: () {
+                  Provider.of<AuthModel>(context, listen:false).logout();
+                }
+              );
             }
             else {
               return waiting();

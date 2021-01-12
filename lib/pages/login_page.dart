@@ -164,9 +164,9 @@ class _LoginFormState extends State<LoginForm> {
             width: buttonWidth,
             child: RaisedButton(
               onPressed: () {
-                _auth.resetPassword(username: emailController.text).then((_) {
+                _auth.resetPassword(username: emailController.text).then((String email) {
                   Scaffold.of(context).showSnackBar(SnackBar(
-                      content: Text(S.of(context).passwordResetRequestSent(emailController.text)),
+                      content: Text(S.of(context).passwordResetRequestSent(email)),
                       duration: Duration(seconds: 5)
                   ));
                 }).catchError((_) => showUnexpectedError(context));

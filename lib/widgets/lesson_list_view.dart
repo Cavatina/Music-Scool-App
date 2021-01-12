@@ -36,7 +36,7 @@ class _LessonListViewState extends State<LessonListView> {
     try {
       final List<Lesson> lessons = await widget.itemGetter(pageKey, _pageSize);
       if (lessons == null) {
-        _pagingController.error = S.of(context).unexpectedErrorMessage;
+        _pagingController.error = S.current.unexpectedErrorMessage;
         return;
       }
       final bool isLastPage = lessons.length < _pageSize;
@@ -51,7 +51,7 @@ class _LessonListViewState extends State<LessonListView> {
     catch (error, stacktrace) {
       print(error.toString());
       print(stacktrace);
-      _pagingController.error = S.of(context).unexpectedErrorMessage;
+      _pagingController.error = S.current.unexpectedErrorMessage;
     }
   }
 

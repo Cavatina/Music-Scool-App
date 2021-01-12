@@ -110,9 +110,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       return Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget> [
-            Text(S.of(context).aboutToRock,
-                textScaleFactor: 1.25,
-                style: TextStyle(height: 4.0)
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget> [
+                Text(S.of(context).heyUser(user.firstName),
+                    textScaleFactor: 1.25),
+                Text(S.of(context).aboutToRock,
+                    textScaleFactor: 1.25)
+              ],
             ),
             Container(
                 decoration: BoxDecoration(
@@ -155,13 +161,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       //EdgeInsets.symmetric(vertical: devSize.height / 6),
       child: Column(
           children: <Widget> [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget> [
-                Text(S.of(context).heyUser(user.name))
-              ]
-            ),
             Expanded(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,

@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:musicscool/models/lesson_cancel_info.dart';
@@ -7,7 +8,9 @@ import 'package:musicscool/services/api.dart';
 import 'package:musicscool/service_locator.dart';
 import 'package:musicscool/services/local_notifications.dart';
 import 'package:musicscool/services/intl_service.dart';
+import 'package:musicscool/strings.dart' show apiUrl;
 import 'dart:async';
+import 'package:dio_http_cache/dio_http_cache.dart';
 
 class AuthModel extends ChangeNotifier {
   final Api api;
@@ -17,6 +20,9 @@ class AuthModel extends ChangeNotifier {
   String _token;
   bool _notificationsEnabled = true;
   DateTime _nextLesson;
+  final DioCacheManager _cache = DioCacheManager(CacheConfig(
+    baseUrl: apiUrl,
+    defaultRequestMethod: 'GET'));
 
   AuthModel(this.api);
 
@@ -41,6 +47,17 @@ class AuthModel extends ChangeNotifier {
         _nextLesson = null;
       }
     }
+    api.dio.interceptors.add(InterceptorsWrapper(
+      onError: (DioError e) {
+        if (<int>[401, 403, 422].contains(e?.response?.statusCode)) {
+          print('status:${e.response.statusCode}: logout!');
+          logout();
+        }
+        return e;
+      }
+    ));
+    api.dio.interceptors.add(_cache.interceptor);
+
     notifyListeners();
     return this;
   }
@@ -99,42 +116,33 @@ class AuthModel extends ChangeNotifier {
     isLoggedIn = false;
     _token = '';
     _nextLesson = null;
-    api.cacheClear().then((_) {});
+    cacheClear().then((_) {});
     storage.write(key: 'token', value: '').then((_) {});
     storage.write(key: 'nextLesson', value: '').then((_) {});
     notifyListeners();
   }
 
   Future<User> get user async {
-    try {
-      api.token = await token;
-      User user = await api.user;
-      DateTime newNextLesson = user?.student?.nextLesson?.from;
-      if (newNextLesson != _nextLesson) {
-        String nextLesson;
-        if (newNextLesson != null) {
-          nextLesson = newNextLesson.toIso8601String();
-        }
-        else {
-          nextLesson = '';
-        }
-        await storage.write(key: 'nextLesson', value: nextLesson);
-        await api.cacheClearPast();
-        await api.cacheClearUpcoming();
+    api.token = await token;
+    User user = await api.user;
+    DateTime newNextLesson = user?.student?.nextLesson?.from;
+    if (newNextLesson != _nextLesson) {
+      String nextLesson;
+      if (newNextLesson != null) {
+        nextLesson = newNextLesson.toIso8601String();
       }
-      if (notificationsEnabled && newNextLesson != null && newNextLesson != _nextLesson) {
-        scheduleNotifications();
+      else {
+        nextLesson = '';
       }
-      _nextLesson = newNextLesson;
-      return user;
-    } on AuthenticationFailed catch (_) {
-      print('AuthenticationFailed');
-      logout();
-      rethrow;
-    } catch (error) {
-      print(error);
-      rethrow;
+      await storage.write(key: 'nextLesson', value: nextLesson);
+      await cacheClearPast();
+      await cacheClearUpcoming();
     }
+    if (notificationsEnabled && newNextLesson != null && newNextLesson != _nextLesson) {
+      scheduleNotifications();
+    }
+    _nextLesson = newNextLesson;
+    return user;
   }
 
   Future<String> get lastUsername async {
@@ -158,11 +166,25 @@ class AuthModel extends ChangeNotifier {
 
   Future<Lesson> cancelLesson({int id}) async {
     api.token = await token;
-    return await api.cancelLesson(id: id);
+    Lesson lesson = await api.cancelLesson(id: id);
+    await cacheClearUpcoming();
+    return lesson;
   }
 
   Future<String> downloadHomework({String url, String name}) async {
     api.token = await token;
     return await api.downloadHomework(url: url, filename: name);
+  }
+
+  Future<void> cacheClear() async {
+    await _cache.clearAll();
+  }
+
+  Future<void> cacheClearUpcoming() async {
+    await _cache.deleteByPrimaryKey('/student/lessons/upcoming');
+  }
+
+  Future<void> cacheClearPast() async {
+    await _cache.deleteByPrimaryKey('/student/lessons/past');
   }
 }

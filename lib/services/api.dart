@@ -17,6 +17,7 @@ import 'package:musicscool/models/lesson_cancel_info.dart';
 import 'package:musicscool/models/user.dart';
 import 'package:musicscool/models/lesson.dart';
 import 'dart:async';
+import 'package:dio/dio.dart';
 
 class ApiError implements Exception {}
 
@@ -28,6 +29,8 @@ class AuthenticationFailed implements ApiError {}
 class ResetPasswordFailed implements ApiError {}
 
 abstract class Api {
+  Dio get dio;
+
   Future<String> login({String username, String password});
   Future<void> resetPassword({String username});
 
@@ -40,8 +43,4 @@ abstract class Api {
   Future<Lesson> cancelLesson({int id});
 
   Future<String> downloadHomework({String url, String filename});
-
-  Future<void> cacheClear();
-  Future<void> cacheClearPast();
-  Future<void> cacheClearUpcoming();
 }

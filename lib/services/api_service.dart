@@ -36,11 +36,7 @@ ApiError httpStatusError(int statusCode) {
 }
 
 class ApiService implements Api {
-  static const String baseUrl = apiUrl;
   final Dio _dio = Dio();
-  final DioCacheManager _cache = DioCacheManager(CacheConfig(
-    baseUrl: baseUrl,
-    defaultRequestMethod: 'GET'));
   String _token;
 
   ApiService() {
@@ -48,7 +44,11 @@ class ApiService implements Api {
     _dio.options.connectTimeout = 5000;
     _dio.options.receiveTimeout = 3000;
     _dio.options.headers[HttpHeaders.acceptHeader] = 'application/json';
-    _dio.interceptors.add(_cache.interceptor);
+  }
+
+  @override
+  Dio get dio {
+    return _dio;
   }
 
   @override
@@ -217,7 +217,6 @@ class ApiService implements Api {
           }
         )
       );
-      await cacheClearUpcoming();
       return Lesson.fromJson(response.data['data']);
     }
     catch (e) {
@@ -258,21 +257,6 @@ class ApiService implements Api {
     catch (_) {
       throw ServerError();
     }
-  }
-
-  @override
-  Future<void> cacheClear() async {
-    await _cache.clearAll();
-  }
-
-  @override
-  Future<void> cacheClearUpcoming() async {
-    await _cache.deleteByPrimaryKey('/student/lessons/upcoming');
-  }
-
-  @override
-  Future<void> cacheClearPast() async {
-    await _cache.deleteByPrimaryKey('/student/lessons/past');
   }
 
   static const pageSize = 25;

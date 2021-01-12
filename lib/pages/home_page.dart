@@ -187,7 +187,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         },
         itemRefresh: () async {
           AuthModel auth = Provider.of<AuthModel>(context, listen:false);
-          await auth.api.cacheClearPast();
+          await auth.cacheClearPast();
         },
         itemBuilder: (BuildContext context, Lesson item, int index) =>
             HomeworkWidget(lesson: item, expanded: index == 0)
@@ -204,7 +204,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         },
         itemRefresh: () async {
           AuthModel auth = Provider.of<AuthModel>(context, listen:false);
-          await auth.api.cacheClearUpcoming();
+          await auth.cacheClearUpcoming();
         },
         itemBuilder: (BuildContext context, Lesson item, int index) =>
             LessonWidget(lesson: item)

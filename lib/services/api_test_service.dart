@@ -20,10 +20,16 @@ import 'package:musicscool/models/lesson_cancel_info.dart';
 import 'package:musicscool/services/api.dart';
 import 'package:musicscool/models/user.dart';
 import 'package:musicscool/models/lesson.dart';
-
+import 'package:dio/dio.dart';
 
 class ApiTestService implements Api {
   String _token;
+  final Dio _dio = Dio();
+
+  @override
+  Dio get dio {
+    return _dio;
+  }
 
   @override
   Future<String> login({String username, String password}) async {
@@ -168,15 +174,6 @@ class ApiTestService implements Api {
     }
     return _allLessons;
   }
-
-  @override
-  Future<void> cacheClear() async {}
-
-  @override
-  Future<void> cacheClearUpcoming() async {}
-
-  @override
-  Future<void> cacheClearPast() async {}
 
   List<Lesson> _allLessons;
   int _lessonIndex = -1;

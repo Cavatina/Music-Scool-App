@@ -17,6 +17,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
 import 'package:timezone/timezone.dart';
 import 'package:musicscool/models/lesson.dart';
+import 'package:musicscool/generated/l10n.dart';
 
 class LocalNotifications {
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
@@ -58,8 +59,8 @@ class LocalNotifications {
     if (oneHourBefore.isAfter(startOfDay)) {
       await _flutterLocalNotificationsPlugin.zonedSchedule(
           lesson.id,
-          "Yes! You're about to ROCK today!",
-          "You're on at ${localHourMinute}.",
+          S.current.notificationDayReminderTitle,
+          S.current.notificationDayReminderBody(localHourMinute),
           startOfDay,
           const NotificationDetails(
               android: AndroidNotificationDetails(
@@ -74,8 +75,8 @@ class LocalNotifications {
     if (oneHourBefore.isAfter(now)) {
       await _flutterLocalNotificationsPlugin.zonedSchedule(
           -lesson.id,
-          "You're about to ROCK!",
-          "Only 1 hour left.\nYou're on at ${localHourMinute}.",
+          S.current.notificationHourReminderTitle,
+          S.current.notificationHourReminderBody(localHourMinute),
           oneHourBefore,
           const NotificationDetails(
               android: AndroidNotificationDetails(

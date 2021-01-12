@@ -22,6 +22,7 @@ import 'package:musicscool/models/lesson_cancel_info.dart';
 import 'package:musicscool/viewmodels/auth.dart';
 import 'package:provider/provider.dart';
 import 'package:musicscool/models/lesson.dart';
+import 'package:musicscool/helpers.dart';
 import 'package:musicscool/generated/l10n.dart';
 
 class LessonWidget extends StatefulWidget {
@@ -91,7 +92,15 @@ class _LessonWidgetState extends State<LessonWidget> {
 
   Future<bool> confirmCancel(BuildContext context) async {
     AuthModel auth = Provider.of<AuthModel>(context, listen: false);
-    LessonCancelInfo cancelInfo = await auth.cancelLessonInfo(id: lesson.id);
+    LessonCancelInfo cancelInfo;
+    try {
+      cancelInfo = await auth.cancelLessonInfo(id: lesson.id);
+    }
+    catch (e) {
+      showUnexpectedError(context);
+      print(e);
+      return false;
+    }
     String textContent;
     print(jsonEncode(cancelInfo.toJson()));
     if (cancelInfo.canGetReplacement) {
@@ -104,7 +113,7 @@ class _LessonWidgetState extends State<LessonWidget> {
     }
     return await showCupertinoDialog<bool>(
         context: context,
-        builder: (context) => CupertinoAlertDialog(
+        builder: (dialogContext) => CupertinoAlertDialog(
           title: Text(S.of(context).confirm),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -128,7 +137,10 @@ class _LessonWidgetState extends State<LessonWidget> {
                     setState(() {
                       lesson = l;
                     });
-                    Navigator.of(context).pop(true);
+                    Navigator.of(dialogContext).pop(true);
+                  }).catchError((e) {
+                    showUnexpectedError(context);
+                    Navigator.of(dialogContext).pop(true);
                   });
                 }
             )

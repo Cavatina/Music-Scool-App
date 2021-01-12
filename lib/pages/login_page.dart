@@ -74,7 +74,6 @@ class _LoginFormState extends State<LoginForm> {
         statusBarColor: Colors.transparent));
     final AuthModel _auth = Provider.of<AuthModel>(context, listen: true);
     _auth.lastUsername.then((String lastUsername) {
-      print('lastUsername:${lastUsername}');
       if (lastUsername?.isNotEmpty == true) {
         emailController.value = TextEditingValue(text: lastUsername);
         passwordFocus.requestFocus();

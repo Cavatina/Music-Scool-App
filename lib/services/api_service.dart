@@ -14,9 +14,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
 import 'dart:async';
-import 'dart:convert' show json;
 import 'dart:io';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
+import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:musicscool/models/lesson_cancel_info.dart';
 import 'package:musicscool/models/lesson_response.dart';
 import 'package:musicscool/services/api.dart';
@@ -37,53 +37,67 @@ ApiError httpStatusError(int statusCode) {
 
 class ApiService implements Api {
   static const String baseUrl = apiUrl;
-  final http.BaseClient client = http.Client();
+  final Dio _dio = Dio();
+  final DioCacheManager _cache = DioCacheManager(CacheConfig(
+    baseUrl: baseUrl,
+    defaultRequestMethod: 'GET'));
   String _token;
+
+  ApiService() {
+    _dio.options.baseUrl = apiUrl;
+    _dio.options.connectTimeout = 5000;
+    _dio.options.receiveTimeout = 3000;
+    _dio.options.headers[HttpHeaders.acceptHeader] = 'application/json';
+    _dio.interceptors.add(_cache.interceptor);
+  }
 
   @override
   Future<String> login({String username, String password}) async {
-    String body = json.encode(
-        <String, dynamic> {
+    try {
+      Response response = await _dio.post(
+        '/login',
+        data: <String, String> {
           'email': username,
           'password': password,
-          'deviceName': 'test123'
-    });
-    http.Response response = await client.post('${baseUrl}/login',
-        headers: {
-          HttpHeaders.acceptHeader: 'application/json',
-          HttpHeaders.contentTypeHeader: 'application/json'
-        },
-        body: body
-    ).timeout(Duration(seconds: 20));
-    if (response.statusCode != 200) {
-
+          'deviceName': 'test123',
+        }
+      );
+      if (response.data.containsKey('data') && response.data['data'].containsKey('token')) {
+        _token = response.data['data']['token'];
+        return _token;
+      }
+      else if (response.data.containsKey('message')) {
+        print(response.data);
+      }
+      throw httpStatusError(response.statusCode);
     }
-    Map<String, dynamic> js = json.decode(response.body);
-    if (js.containsKey('data') && js['data'].containsKey('token')) {
-      _token = js['data']['token'];
-      return _token;
+    catch (e) {
+      if (e is DioError) {
+        print(e.request);
+        print(e.message);
+        if (e.response != null) {
+          print(e.response.data);
+          throw httpStatusError(e.response.statusCode);
+        }
+      }
+      else {
+        print('login error:${e}');
+      }
+      throw ServerError();
     }
-    else if (js.containsKey('message')) {
-      print(body);
-      print(response.body);
-    }
-    throw httpStatusError(response.statusCode);
   }
 
   @override
   Future<void> resetPassword({String username}) async {
-    String body = json.encode(
-        <String, dynamic> {
+    try {
+      await _dio.post(
+        '/requestPasswordReset',
+        data: <String, String> {
           'email': username,
-        });
-    http.Response response = await client.post('${baseUrl}/requestPasswordReset',
-        headers: {
-          HttpHeaders.acceptHeader: 'application/json',
-          HttpHeaders.contentTypeHeader: 'application/json'
-        },
-        body: body
-    ).timeout(Duration(seconds: 20));
-    if (response.statusCode != 200) {
+        }
+      );
+    }
+    catch (_) {
       throw ServerError();
     }
     return;
@@ -96,16 +110,33 @@ class ApiService implements Api {
 
   @override
   Future<User> get user async {
-    http.Response response = await client.get('${baseUrl}/profile',
-        headers: {
-          HttpHeaders.acceptHeader: 'application/json',
-          HttpHeaders.authorizationHeader: 'Bearer ${_token}'
-        }).timeout(Duration(seconds: 20));
-    Map<String, dynamic> js = json.decode(response.body);
-    if (js == null || !js.containsKey('data')) {
-      throw httpStatusError(response.statusCode);
+    try {
+      Response response = await _dio.get(
+        '/profile',
+        options: buildCacheOptions(Duration(seconds: 30),
+          maxStale: Duration(days:30),
+          options: Options(
+            headers: <String, String> {
+              HttpHeaders.authorizationHeader: 'Bearer ${_token}'
+            }
+          ),
+        )
+      );
+      if (null != response.headers.value(DIO_CACHE_HEADER_KEY_DATA_SOURCE)) {
+        print('/profile: Using cache');
+      }
+      else {
+        print('/profile: Loaded fresh.');
+      }
+      if (!response.data.containsKey('data')) {
+        print(response.data);
+        throw httpStatusError(response.statusCode);
+      }
+      return User.fromJson(response.data['data']);
     }
-    return User.fromJson(js['data']);
+    catch (_) {
+      throw ServerError();
+    }
   }
 
   Future<Map<String, dynamic>> jsonGet(
@@ -120,16 +151,40 @@ class ApiService implements Api {
     if (perPage != null && perPage != 0) params['per_page'] = perPage.toString();
     if (withHomework == true) params['with_homework'] = 'true';
     if (withCancelled == false) params['with_cancelled'] = 'false';
-    Uri url = Uri.parse(baseUrl + path).replace(queryParameters: params);
-    print(url);
-    http.Response response = await client.get(url,
-        headers: {
-          HttpHeaders.acceptHeader: 'application/json',
-          HttpHeaders.authorizationHeader: 'Bearer ${_token}'
-        }).timeout(Duration(seconds: 30));
-    print(response.body);
-    print(response.statusCode);
-    return json.decode(response.body);
+
+    try {
+      Response response = await _dio.get(
+        path,
+        options: buildCacheOptions(Duration(hours:8),
+          maxStale: Duration(days:30),
+          options: Options(
+            headers: <String, String> {
+              HttpHeaders.authorizationHeader: 'Bearer ${_token}'
+            }
+          ),
+        ),
+        queryParameters: params,
+      );
+      if (null != response.headers.value(DIO_CACHE_HEADER_KEY_DATA_SOURCE)) {
+        print('${path}: Using cache');
+      }
+      else {
+        print('${path}: Loaded fresh.');
+      }
+      return response.data;
+    }
+    catch (e) {
+      if (e is DioError) {
+        if (e.response != null) {
+          print(e.response.data);
+          throw httpStatusError(e.response.statusCode);
+        }
+        else {
+          print(e.message);
+        }
+      }
+      throw ServerError();
+    }
   }
 
   @override
@@ -153,36 +208,64 @@ class ApiService implements Api {
 
   @override
   Future<Lesson> cancelLesson({int id}) async {
-    http.Response response = await client.post('${baseUrl}/student/lessons/${id}/cancel',
-        headers: {
-          HttpHeaders.acceptHeader: 'application/json',
-          HttpHeaders.authorizationHeader: 'Bearer ${_token}'
-        }).timeout(Duration(seconds: 20));
-    if (response.statusCode != 200) {
-      print(response.statusCode);
+    try {
+      Response response = await _dio.post(
+        '/student/lessons/${id}/cancel',
+        options: Options(
+          headers: <String, String> {
+            HttpHeaders.authorizationHeader: 'Bearer ${_token}'
+          }
+        )
+      );
+      await cacheClearUpcoming();
+      return Lesson.fromJson(response.data['data']);
+    }
+    catch (e) {
+      if (e is DioError) {
+        if (e.response != null) {
+          print(e.response.data);
+          throw httpStatusError(e.response.statusCode);
+        }
+        else {
+          print(e.message);
+        }
+      }
+      else {
+        print(e);
+      }
       throw ServerError();
     }
-
-    return Lesson.fromJson(json.decode(response.body)['data']);
   }
 
   @override
   Future<String> downloadHomework({String url, String filename}) async {
     String dir = (await getTemporaryDirectory()).path;
-    File file = File('$dir/$filename');
-    if (await file.exists()) return file.path;
-    await file.create(recursive: true);
-    print('Downloading:${filename} from ${url}');
-    var response = await client.get(url,
-      headers: {
-        HttpHeaders.authorizationHeader: 'Bearer ${_token}'
-      }).timeout(Duration(seconds: 60));
-    if (response.statusCode == 200) {
-      await file.writeAsBytes(response.bodyBytes);
-      return file.path;
+    String filepath = '$dir/$filename';
+    try {
+      await _dio.download(url, filepath,
+        options: buildCacheOptions(Duration(hours:8),
+          maxStale: Duration(days:30),
+          options: Options(
+            headers: <String, String> {
+              HttpHeaders.authorizationHeader: 'Bearer ${_token}'
+            }
+          ),
+        )
+      );
+      print('Downloaded homework from ${url}');
+      return filepath;
     }
-    print(response.statusCode);
-    throw ServerError();
+    catch (_) {
+      throw ServerError();
+    }
+  }
+
+  void cacheClearUpcoming() async {
+    await _cache.deleteByPrimaryKey('/student/lessons/upcoming');
+  }
+
+  void cacheClearPast() async {
+    await _cache.deleteByPrimaryKey('/student/lessons/past');
   }
 
   static const pageSize = 25;

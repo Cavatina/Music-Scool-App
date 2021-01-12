@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:musicscool/models/lesson.dart';
 import 'package:musicscool/generated/l10n.dart';
+import 'package:musicscool/services/api.dart' show AuthenticationFailed;
 
 
 typedef LessonListItemBuilder = void Function(BuildContext context, Lesson item, int index);
@@ -23,7 +24,7 @@ class LessonListView extends StatefulWidget {
 class _LessonListViewState extends State<LessonListView> {
   static const _pageSize = 20;
 
-  final PagingController<int, Lesson> _pagingController =
+  PagingController<int, Lesson> _pagingController =
       PagingController(firstPageKey: 1);
 
   @override
@@ -35,12 +36,12 @@ class _LessonListViewState extends State<LessonListView> {
   Future<void> _fetchPage(int pageKey) async {
     try {
       final List<Lesson> lessons = await widget.itemGetter(pageKey, _pageSize);
+      if (!mounted || _pagingController == null) return;
       if (lessons == null) {
         _pagingController.error = S.current.unexpectedErrorMessage;
         return;
       }
       final bool isLastPage = lessons.length < _pageSize;
-      if (!mounted) return;
       if (isLastPage) {
         _pagingController.appendLastPage(lessons);
       }
@@ -48,10 +49,15 @@ class _LessonListViewState extends State<LessonListView> {
         _pagingController.appendPage(lessons, pageKey + 1);
       }
     }
+    on AuthenticationFailed {
+      // AuthModel will trigger a global refresh back to LoginPage.
+    }
     catch (error, stacktrace) {
       print(error.toString());
       print(stacktrace);
-      _pagingController.error = S.current.unexpectedErrorMessage;
+      if (mounted && _pagingController != null) {
+        _pagingController.error = S.current.unexpectedErrorMessage;
+      }
     }
   }
 
@@ -75,6 +81,7 @@ class _LessonListViewState extends State<LessonListView> {
   @override
   void dispose() {
     _pagingController.dispose();
+    _pagingController = null;
     super.dispose();
   }
 }

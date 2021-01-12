@@ -37,6 +37,8 @@ class MusicScoolApp extends StatelessWidget {
       home: RootPage(),
       localizationsDelegates: [
         S.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
       ],
       supportedLocales: S.delegate.supportedLocales,

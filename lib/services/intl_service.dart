@@ -13,7 +13,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
-import 'package:intl/date_symbol_data_local.dart'; //for date locale
 import 'package:timezone/timezone.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
@@ -22,7 +21,9 @@ import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 class IntlService {
   Location currentLocation;
   Future<IntlService> init() async {
-    await initializeDateFormatting();
+    // MaterialLocalizations call initializeDateFormattingCustom,
+    // which is incompatible with this function:
+    //    await initializeDateFormatting();
     tz.initializeTimeZones();
     String currentTimeZone = await FlutterNativeTimezone.getLocalTimezone();
     currentLocation = getLocation(currentTimeZone);

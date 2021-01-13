@@ -119,7 +119,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 Text(S.of(context).heyUser(user.firstName),
                     textScaleFactor: 1.25),
                 Text(S.of(context).aboutToRock,
-                    textScaleFactor: 1.25)
+                    textScaleFactor: 1.25),
+                Text(''),
               ],
             ),
             Container(

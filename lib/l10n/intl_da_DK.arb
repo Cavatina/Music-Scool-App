@@ -18,6 +18,8 @@
   "@confirm": {},
   "contact": "Kontakt",
   "@contact": {},
+  "dateAtTime": "{date} kl. {time}",
+  "@dateAtTime": {},
   "days": "dage",
   "@days": {},
   "download": "Download",

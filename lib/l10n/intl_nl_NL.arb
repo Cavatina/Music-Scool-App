@@ -18,6 +18,8 @@
   "@confirm": {},
   "contact": "Contact",
   "@contact": {},
+  "dateAtTime": "{date} om {time} uur",
+  "@dateAtTime": {},
   "days": "dagen",
   "@days": {},
   "download": "Download",

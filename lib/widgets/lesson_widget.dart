@@ -53,13 +53,13 @@ class _LessonWidgetState extends State<LessonWidget> {
     }
     if (expand) {
       return ExpansionTile(
-          title: Text(formattedDate(lesson.from)),
+          title: Text(formattedDate(context, lesson.from)),
           subtitle: Text(subtitle, style: TextStyle(color: Colors.white60),
           overflow: TextOverflow.ellipsis),
           children: children);
     }
     return(ListTile(
-        title: Text(formattedDate(lesson.from)),
+        title: Text(formattedDate(context, lesson.from)),
         subtitle: Text(subtitle)));
   }
   List<Widget> body(BuildContext context) {
@@ -118,7 +118,7 @@ class _LessonWidgetState extends State<LessonWidget> {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(S.of(context).cancelLessonAt(formattedDate(lesson.from))),
+              Text(S.of(context).cancelLessonAt(formattedDate(context, lesson.from))),
               Text(''),
               Text(textContent),
             ],

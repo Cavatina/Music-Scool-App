@@ -144,7 +144,8 @@ class ApiService implements Api {
       int page,
       int perPage,
       bool withHomework,
-      bool withCancelled = true
+      bool withCancelled = true,
+      bool useCache = false,
       }) async {
     Map<String, String> params = <String, String>{};
     if (page != null && page != 0) params['page'] = page.toString();
@@ -152,17 +153,21 @@ class ApiService implements Api {
     if (withHomework == true) params['with_homework'] = 'true';
     if (withCancelled == false) params['with_cancelled'] = 'false';
 
+    Options options = Options(
+      headers: <String, String> {
+        HttpHeaders.authorizationHeader: 'Bearer ${_token}'
+      }
+    );
+    if (useCache == true) {
+      options = buildCacheOptions(Duration(hours:8),
+          maxStale: Duration(days:30),
+          options: options
+      );
+    }
     try {
       Response response = await _dio.get(
         path,
-        options: buildCacheOptions(Duration(hours:8),
-          maxStale: Duration(days:30),
-          options: Options(
-            headers: <String, String> {
-              HttpHeaders.authorizationHeader: 'Bearer ${_token}'
-            }
-          ),
-        ),
+        options: options,
         queryParameters: params,
       );
       if (null != response.headers.value(DIO_CACHE_HEADER_KEY_DATA_SOURCE)) {
@@ -190,14 +195,14 @@ class ApiService implements Api {
   @override
   Future<List<Lesson>> getUpcomingLessons({int page = 0, int perPage = 20, bool withCancelled = true}) async {
     LessonResponse response = LessonResponse.fromJson(await jsonGet('/student/lessons/upcoming',
-        page: page, perPage: perPage, withCancelled: withCancelled));
+        page: page, perPage: perPage, withCancelled: withCancelled, useCache: true));
     return response.data;
   }
 
   @override
   Future<List<Lesson>> getHomeworkLessons({int page = 0, int perPage = 20}) async {
     LessonResponse response = LessonResponse.fromJson(await jsonGet('/student/lessons/past',
-        page: page, perPage: perPage, withHomework: true));
+        page: page, perPage: perPage, withHomework: true, useCache: true));
     return response.data;
   }
 

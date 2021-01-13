@@ -243,23 +243,33 @@ class ApiService implements Api {
 
   @override
   Future<String> downloadHomework({String url, String filename}) async {
+    List<String> urlParts = url.split('/');
     String dir = (await getTemporaryDirectory()).path;
-    String filepath = '$dir/$filename';
+    String filePath = '$dir/${urlParts.last}/$filename';
+    File file = File(filePath);
+    if (await file.exists()) return file.path;
     try {
-      await _dio.download(url, filepath,
-        options: buildCacheOptions(Duration(hours:8),
-          maxStale: Duration(days:30),
-          options: Options(
-            headers: <String, String> {
-              HttpHeaders.authorizationHeader: 'Bearer ${_token}'
-            }
-          ),
+      await _dio.download(url, filePath,
+        options: Options(
+          headers: <String, String> {
+            HttpHeaders.authorizationHeader: 'Bearer ${_token}'
+          }
         )
       );
-      print('Downloaded homework from ${url}');
-      return filepath;
+      print('Downloaded homework from ${url} into ${filePath}');
+      return filePath;
     }
-    catch (_) {
+    catch (e) {
+      print(e);
+      if (e is DioError) {
+        if (e.request != null) {
+          print (e.request.responseType);
+        }
+        if (e.response != null) {
+          print (e.response.statusCode);
+        }
+        print (e.message);
+      }
       throw ServerError();
     }
   }

@@ -12,7 +12,7 @@
   "@cancelLessonAt": {},
   "cancelLessonNonRefundable": "Deze afgemelde les kan niet ingehaald worden.",
   "@cancelLessonNonRefundable": {},
-  "cancelLessonRefundable": "Je hebt recht op een inhaalles.\n\nJe staat op het punt om les {totalCancelled} van {allowCancelled} lessen dit jaar af te zeggen.",
+  "cancelLessonRefundable": "Je hebt recht op een inhaalles.\n\nJe staat op het punt les {totalCancelled}, van {allowCancelled} toegestane afmeldingen dit jaar, af te zeggen.",
   "@cancelLessonRefundable": {},
   "confirm": "BEVESTIG",
   "@confirm": {},

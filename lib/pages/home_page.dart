@@ -304,7 +304,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       child: Column(
         children: <Widget> [
           Icon(icon, size: 36),
-          Text(label)
+          Text(label, strutStyle: StrutStyle(height: 1.5))
         ]
       )
     );

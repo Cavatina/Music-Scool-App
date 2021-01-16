@@ -50,5 +50,5 @@ String instrumentText(BuildContext context, String instrumentKey) {
 String formattedDate(BuildContext context, DateTime time) {
     TZDateTime local = locator<IntlService>().localDateTime(time);
     return S.of(context).dateAtTime(DateFormat.yMMMEd().format(local),
-      DateFormat.Hm().format(local));
+      DateFormat.jm().format(local));
 }

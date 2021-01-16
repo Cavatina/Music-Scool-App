@@ -47,7 +47,7 @@ android {
     defaultConfig {
         applicationId "dk.musicscool.musicscool"
         minSdkVersion 18
-        targetSdkVersion 28
+        targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }

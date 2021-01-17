@@ -102,6 +102,7 @@ class _LoginFormState extends State<LoginForm> {
   Container userPwSection() {
     List<Widget> children = <Widget> [
       TextFormField(
+        keyboardType: TextInputType.emailAddress,
         controller: emailController,
         cursorColor: Colors.white,
         autofocus: true,

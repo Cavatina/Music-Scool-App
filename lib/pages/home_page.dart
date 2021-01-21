@@ -39,7 +39,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
-  bool _notifications = true;
+  bool _notificationsEnabled;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   TabController _tabController;
   static const _tabCount = 4;
@@ -51,6 +51,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
          length: _tabCount,
          initialIndex: 2,
          vsync: this);
+    AuthModel auth = Provider.of<AuthModel>(context, listen: false);
+    _notificationsEnabled = auth.notificationsEnabled;
   }
 
   @override
@@ -110,9 +112,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       return Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget> [
-            Text(S.of(context).aboutToRock,
-                textScaleFactor: 1.25,
-                style: TextStyle(height: 4.0)
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget> [
+                Text(S.of(context).heyUser(user.firstName),
+                    textScaleFactor: 1.25),
+                Text(S.of(context).aboutToRock,
+                    textScaleFactor: 1.25),
+                Text(''),
+              ],
             ),
             Container(
                 decoration: BoxDecoration(
@@ -124,7 +133,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     children: <Widget>[
                       CountdownTimer(to: user.student.nextLesson.from, boxWidth: boxWidth),
                       Text(''),
-                      Text(formattedDate(user.student.nextLesson.from), textScaleFactor: 1.25)
+                      Text(formattedDate(context, user.student.nextLesson.from), textScaleFactor: 1.25)
                     ]
                 )
             ),
@@ -155,13 +164,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       //EdgeInsets.symmetric(vertical: devSize.height / 6),
       child: Column(
           children: <Widget> [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget> [
-                Text(S.of(context).heyUser(user.name))
-              ]
-            ),
             Expanded(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -184,6 +186,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               page: page,
               perPage: perPage);
         },
+        itemRefresh: () async {
+          AuthModel auth = Provider.of<AuthModel>(context, listen:false);
+          await auth.cacheClearPast();
+        },
         itemBuilder: (BuildContext context, Lesson item, int index) =>
             HomeworkWidget(lesson: item, expanded: index == 0)
     );
@@ -196,7 +202,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           return auth.getUpcomingLessons(
               page: page,
               perPage: perPage);
-          },
+        },
+        itemRefresh: () async {
+          AuthModel auth = Provider.of<AuthModel>(context, listen:false);
+          await auth.cacheClearUpcoming();
+        },
         itemBuilder: (BuildContext context, Lesson item, int index) =>
             LessonWidget(lesson: item)
     );
@@ -206,14 +216,22 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return Consumer<AuthModel>(builder: (context, model, child) {
       if (model == null) return waiting();
       return FutureBuilder<User>(
-          future: model?.user,
+          future: model.user,
           builder: (context, AsyncSnapshot<User> snapshot) {
             if (snapshot.hasData) {
               return userInfo(context, snapshot.data);
             }
             else if (snapshot.hasError && !(snapshot.error is AuthenticationFailed)) {
               showUnexpectedError(context);
-              return Container();
+              return InkWell(
+                child: ListTile(
+                    title: Text(S.of(context).logout),
+                    leading: Icon(Icons.logout)
+                ),
+                onTap: () {
+                  Provider.of<AuthModel>(context, listen:false).logout();
+                }
+              );
             }
             else {
               return waiting();
@@ -286,7 +304,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       child: Column(
         children: <Widget> [
           Icon(icon, size: 36),
-          Text(label)
+          Text(label, strutStyle: StrutStyle(height: 1.5))
         ]
       )
     );
@@ -301,6 +319,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     List<Text> address = user.schoolContact.address.map((String line) {
       return Text(line, textScaleFactor: 1.2);
     }).toList();
+    AuthModel auth = Provider.of<AuthModel>(context, listen: false);
     return ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
@@ -371,12 +390,18 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               children: <Widget> [
                 SwitchListTile(
                     title: Text(S.of(context).notifications),
-                    value: _notifications,
+                    value: _notificationsEnabled,
                     secondary: Icon(Icons.notifications),
                     onChanged: (bool value) {
                       setState(() {
-                        _notifications = value;
+                        _notificationsEnabled = value;
                       });
+                      if (value == true) {
+                        auth.enableNotifications().catchError((_) => showUnexpectedError(context));
+                      }
+                      else {
+                        auth.disableNotifications();
+                      }
                     }
                 ),
                 InkWell(

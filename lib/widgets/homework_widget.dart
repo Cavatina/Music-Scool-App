@@ -106,7 +106,7 @@ class _HomeworkWidgetState extends State<HomeworkWidget> {
         subtitle = widget.lesson.homework.first.message;
     }
     return ExpansionTile(
-        title: Text(formattedDate(widget.lesson.from)),
+        title: Text(formattedDate(context, widget.lesson.from)),
         subtitle: Text(subtitle, style: TextStyle(color: Colors.white60),
         overflow: TextOverflow.ellipsis),
         initiallyExpanded: widget.expanded,

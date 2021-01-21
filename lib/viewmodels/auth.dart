@@ -1,10 +1,16 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:musicscool/models/lesson_cancel_info.dart';
 import 'package:musicscool/models/lesson.dart';
 import 'package:musicscool/models/user.dart';
 import 'package:musicscool/services/api.dart';
+import 'package:musicscool/service_locator.dart';
+import 'package:musicscool/services/local_notifications.dart';
+import 'package:musicscool/services/intl_service.dart';
+import 'package:musicscool/strings.dart' show apiUrl;
 import 'dart:async';
+import 'package:dio_http_cache/dio_http_cache.dart';
 
 class AuthModel extends ChangeNotifier {
   final Api api;
@@ -12,6 +18,11 @@ class AuthModel extends ChangeNotifier {
 
   bool isLoggedIn = false;
   String _token;
+  bool _notificationsEnabled = true;
+  DateTime _nextLesson;
+  final DioCacheManager _cache = DioCacheManager(CacheConfig(
+    baseUrl: apiUrl,
+    defaultRequestMethod: 'GET'));
 
   AuthModel(this.api);
 
@@ -23,6 +34,30 @@ class AuthModel extends ChangeNotifier {
     } else {
       print('token empty!');
     }
+    value = await storage.read(key: 'notificationsEnabled');
+    print('notificationsEnabled:${value}');
+    if (value != null && value == 'false') _notificationsEnabled = false;
+    value = await storage.read(key: 'nextLesson');
+    print('nextLesson:${value}');
+    if (value != null && value != '') {
+      try {
+        _nextLesson = DateTime.parse(value);
+      }
+      on FormatException {
+        _nextLesson = null;
+      }
+    }
+    api.dio.interceptors.add(InterceptorsWrapper(
+      onError: (DioError e) {
+        if (<int>[401, 403, 422].contains(e?.response?.statusCode)) {
+          print('status:${e.response.statusCode}: logout!');
+          logout();
+        }
+        return e;
+      }
+    ));
+    api.dio.interceptors.add(_cache.interceptor);
+
     notifyListeners();
     return this;
   }
@@ -32,10 +67,36 @@ class AuthModel extends ChangeNotifier {
     return _token;
   }
 
-  Future<void> login({
-    @required String username,
-    @required String password}) async {
+  bool get notificationsEnabled {
+    return _notificationsEnabled;
+  }
 
+  Future<void> enableNotifications() async {
+    _notificationsEnabled = true;
+    print('Notifications enabled');
+    await storage.write(key: 'notificationsEnabled', value: 'true');
+    await scheduleNotifications();
+  }
+  Future<void> disableNotifications() async {
+    _notificationsEnabled = false;
+    print('Notifications disabled');
+    await storage.write(key: 'notificationsEnabled', value: 'false');
+    await cancelNotifications();
+  }
+
+  void scheduleNotifications() async {
+    List<Lesson> nextLessons =
+        await api.getUpcomingLessons(page: 1, perPage: 10, withCancelled: false);
+    await locator<LocalNotifications>().scheduleNotifications(
+        nextLessons, locator<IntlService>().currentLocation);
+  }
+
+  void cancelNotifications() async {
+    await locator<LocalNotifications>().cancelNotifications();
+  }
+
+  Future<void> login(
+      {@required String username, @required String password}) async {
     _token = await api.login(username: username, password: password);
     if (_token?.isNotEmpty == true) {
       api.token = _token;
@@ -46,31 +107,42 @@ class AuthModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> resetPassword({@required String username}) async {
-    return await api.resetPassword(username: username);
+  Future<String> resetPassword({@required String username}) async {
+    await api.resetPassword(username: username);
+    return username;
   }
 
   void logout() {
     isLoggedIn = false;
     _token = '';
-    storage.write(key: 'token', value: '').then((value){});
+    _nextLesson = null;
+    cacheClear().then((_) {});
+    storage.write(key: 'token', value: '').then((_) {});
+    storage.write(key: 'nextLesson', value: '').then((_) {});
     notifyListeners();
   }
 
   Future<User> get user async {
-    try {
-      api.token = await token;
-      return await api.user;
+    api.token = await token;
+    User user = await api.user;
+    DateTime newNextLesson = user?.student?.nextLesson?.from;
+    if (newNextLesson != _nextLesson) {
+      String nextLesson;
+      if (newNextLesson != null) {
+        nextLesson = newNextLesson.toIso8601String();
+      }
+      else {
+        nextLesson = '';
+      }
+      await storage.write(key: 'nextLesson', value: nextLesson);
+      await cacheClearPast();
+      await cacheClearUpcoming();
     }
-    on AuthenticationFailed catch (_) {
-      print('AuthenticationFailed');
-      logout();
-      rethrow;
+    if (notificationsEnabled && newNextLesson != null && newNextLesson != _nextLesson) {
+      scheduleNotifications();
     }
-    catch (error) {
-      print(error);
-      rethrow;
-    }
+    _nextLesson = newNextLesson;
+    return user;
   }
 
   Future<String> get lastUsername async {
@@ -94,11 +166,25 @@ class AuthModel extends ChangeNotifier {
 
   Future<Lesson> cancelLesson({int id}) async {
     api.token = await token;
-    return await api.cancelLesson(id: id);
+    Lesson lesson = await api.cancelLesson(id: id);
+    await cacheClearUpcoming();
+    return lesson;
   }
 
   Future<String> downloadHomework({String url, String name}) async {
     api.token = await token;
     return await api.downloadHomework(url: url, filename: name);
+  }
+
+  Future<void> cacheClear() async {
+    await _cache.clearAll();
+  }
+
+  Future<void> cacheClearUpcoming() async {
+    await _cache.deleteByPrimaryKey('/student/lessons/upcoming');
+  }
+
+  Future<void> cacheClearPast() async {
+    await _cache.deleteByPrimaryKey('/student/lessons/past');
   }
 }

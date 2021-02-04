@@ -36,6 +36,7 @@ String instrumentText(BuildContext context, String instrumentKey) {
   switch (instrumentKey) {
     case 'Bass guitar': return S.of(context).bassGuitar; break;
     case 'Guitar': return S.of(context).guitar; break;
+    case 'Rhythm Class': return S.of(context).rhythmClass; break;
     case 'Piano': return S.of(context).piano; break;
     case 'Vocal': return S.of(context).vocals; break;
     case 'Vocals': return S.of(context).vocals; break;

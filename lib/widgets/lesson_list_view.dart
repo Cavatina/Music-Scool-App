@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:infinite_scroll_pagination/src/ui/default_indicators/first_page_exception_indicator.dart';
 import 'package:musicscool/models/lesson.dart';
 import 'package:musicscool/generated/l10n.dart';
 import 'package:musicscool/services/api.dart' show AuthenticationFailed;
@@ -73,6 +74,16 @@ class _LessonListViewState extends State<LessonListView> {
         separatorBuilder: (BuildContext context, int index) => const Divider(),
         pagingController: _pagingController,
         builderDelegate: PagedChildBuilderDelegate<Lesson>(
+          firstPageErrorIndicatorBuilder: (BuildContext context)
+           => FirstPageExceptionIndicator(
+             title: S.of(context).unexpectedErrorMessage,
+             message: '')
+          ,
+          noItemsFoundIndicatorBuilder: (BuildContext context) =>
+            FirstPageExceptionIndicator(
+              title: S.of(context).noLessonsFound,
+              message: '')
+          ,
           itemBuilder: widget.itemBuilder
         ),
       )

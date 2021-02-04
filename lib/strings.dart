@@ -15,6 +15,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
 const String appName = "Music'scool";
 
-const String apiUrl = 'https://testscool.cavatina.no/api/v1';
+const String apiUrl = 'https://musicscool.dk/my/public/api/v1';
 
 const String privacyPolicyUrl = 'https://musicscool.dk/privacy-policy';

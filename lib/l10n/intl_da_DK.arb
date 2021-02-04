@@ -10,7 +10,7 @@
   "@cancel": {},
   "cancelLessonAt": "Vil du aflyse din lektion {from}?",
   "@cancelLessonAt": {},
-  "cancelLessonNonRefundable": "Denne lektion kan ikke indhentes.",
+  "cancelLessonNonRefundable": "Denne lektion kan ikke erstattes.",
   "@cancelLessonNonRefundable": {},
   "cancelLessonRefundable": "Du har ret til en erstatningslektion.\n\nDu er ved at aflyse lektion {totalCancelled} af {allowCancelled} tilladte aflysninger dette år.",
   "@cancelLessonRefundable": {},

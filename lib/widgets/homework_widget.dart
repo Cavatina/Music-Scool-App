@@ -103,7 +103,7 @@ class _HomeworkWidgetState extends State<HomeworkWidget> {
     }
 
     if (widget.lesson.homework != null && widget.lesson.homework.isNotEmpty && expanded == false) {
-        subtitle = widget.lesson.homework.first.message;
+        subtitle = widget.lesson.homework.first.message ?? '';
     }
     return ExpansionTile(
         title: Text(formattedDate(context, widget.lesson.from)),
@@ -132,7 +132,7 @@ class _HomeworkWidgetState extends State<HomeworkWidget> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(homework.message),
+                      Text(homework.message ?? ''),
                       Padding(padding: EdgeInsets.symmetric(vertical: 8.0)),
                       homeworkIcons(context, homework),
 //                    Padding(padding: EdgeInsets.symmetric(vertical: 8.0)),

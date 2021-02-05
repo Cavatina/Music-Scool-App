@@ -42,7 +42,7 @@ class ApiService implements Api {
   ApiService() {
     _dio.options.baseUrl = apiUrl;
     _dio.options.connectTimeout = 5000;
-    _dio.options.receiveTimeout = 3000;
+    _dio.options.receiveTimeout = 10000;
     _dio.options.headers[HttpHeaders.acceptHeader] = 'application/json';
   }
 
@@ -242,7 +242,8 @@ class ApiService implements Api {
   }
 
   @override
-  Future<String> downloadHomework({String url, String filename}) async {
+  Future<String> downloadHomework({String url, String filename,
+                                   void Function(int, int) onReceiveProgress}) async {
     List<String> urlParts = url.split('/');
     String dir = (await getTemporaryDirectory()).path;
     String filePath = '$dir/${urlParts.last}/$filename';
@@ -250,7 +251,9 @@ class ApiService implements Api {
     if (await file.exists()) return file.path;
     try {
       await _dio.download(url, filePath,
+        onReceiveProgress: onReceiveProgress,
         options: Options(
+          receiveTimeout: 3*60000,
           headers: <String, String> {
             HttpHeaders.authorizationHeader: 'Bearer ${_token}'
           }

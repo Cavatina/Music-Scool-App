@@ -25,6 +25,92 @@ import 'package:musicscool/models/homework.dart';
 import 'package:musicscool/generated/l10n.dart';
 import 'package:musicscool/helpers.dart';
 import 'package:open_file/open_file.dart';
+import 'package:musicscool/service_locator.dart';
+
+class HomeworkDownloadIcon extends StatefulWidget {
+  final String url;
+  final String fileName;
+
+  HomeworkDownloadIcon({this.url, this.fileName});
+
+  @override
+  _HomeworkDownloadIconState createState() => _HomeworkDownloadIconState();
+}
+
+class _HomeworkDownloadIconState extends State<HomeworkDownloadIcon> {
+  bool downloading = false;
+  double progress = 0.0;
+  String filePath;
+
+  @override
+  void initState() {
+    super.initState();
+    locator<AuthModel>().homeworkPath(
+      url: widget.url,
+      name: widget.fileName).then((String path) {
+        print(path);
+        setState(() {
+          filePath = path;
+        });
+    });
+  }
+
+  void downloadAndLaunch(BuildContext context, String url, String fileName) {
+    AuthModel auth = Provider.of<AuthModel>(context, listen: false);
+    setState((){
+      downloading = true;
+    });
+    auth.downloadHomework(url: url, name: fileName,
+      onReceiveProgress: (int count, int total) {
+        setState(() {
+          progress = count / total;
+        });
+      }
+    ).then((String path) {
+      setState((){
+        filePath = path;
+        downloading = false;
+      });
+      OpenFile.open(path);
+    }).catchError((e) {
+      print('downloadAndLaunch(${url}) failed: ${e}');
+      setState((){
+        downloading = false;
+      });
+      showUnexpectedError(context);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (downloading) {
+      return OutlinedButton(
+        onPressed: null,
+        child:
+        LinearProgressIndicator(
+          value: progress,
+          minHeight:24
+        )
+      );
+    }
+    else if (filePath != null) {
+      return OutlinedButton.icon(
+      label: Text(S.of(context).view),
+      onPressed: () {
+        OpenFile.open(filePath);
+      },
+      icon: Icon(CupertinoIcons.cloud_download_fill)
+    );
+    }
+    return OutlinedButton.icon(
+      label: Text(S.of(context).download),
+      onPressed: () {
+        downloadAndLaunch(context, widget.url, widget.fileName);
+      },
+      icon: Icon(CupertinoIcons.cloud_download_fill) //download_outlined)
+    );
+  }
+}
 
 class HomeworkWidget extends StatefulWidget {
   final Lesson lesson;
@@ -42,33 +128,20 @@ class _HomeworkWidgetState extends State<HomeworkWidget> {
   _HomeworkWidgetState({this.expanded});
 //  _HomeworkWidgetState({this.lesson, this.index}) : super(key: Key(lesson.from.toIso8601String()));
 
-  void downloadAndLaunch(AuthModel auth, String url, String fileName) {
-      auth.downloadHomework(url: url, name: fileName).then((String path) {
-        OpenFile.open(path);
-      }).catchError((e) {
-        print('downloadAndLaunch(${url}) failed: ${e}');
-        showUnexpectedError(context);
-      });
-  }
-
   Widget homeworkIcons(BuildContext context, Homework homework) {
     List<Widget> icons = <Widget>[];
     var devSize = MediaQuery.of(context).size;
     double boxWidth = min(devSize.width / 2.6, 300.0);
-    AuthModel auth = Provider.of<AuthModel>(context, listen: false);
 
     if (homework.fileUrl != null) {
       icons.add(
           SizedBox(
             width: boxWidth,
-            child: OutlinedButton.icon(
-                label: Text(S.of(context).download),
-                onPressed: () {
-                  downloadAndLaunch(auth, homework.fileUrl, homework.fileName);
-                },
-                icon: Icon(CupertinoIcons.cloud_download_fill) //download_outlined)
-            ),
-          )
+            child: HomeworkDownloadIcon(
+              url: homework.fileUrl,
+              fileName: homework.fileName,
+              ),
+            )
           );
     }
     if (homework.linkUrl != null) {

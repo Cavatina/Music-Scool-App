@@ -10,6 +10,8 @@ import 'package:musicscool/services/local_notifications.dart';
 import 'package:musicscool/services/intl_service.dart';
 import 'package:musicscool/strings.dart' show apiUrl;
 import 'dart:async';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
 
 class AuthModel extends ChangeNotifier {
@@ -171,9 +173,20 @@ class AuthModel extends ChangeNotifier {
     return lesson;
   }
 
-  Future<String> downloadHomework({String url, String name}) async {
+  Future<String> homeworkPath({String url, String name}) async {
+    List<String> urlParts = url.split('/');
+    String dir = (await getTemporaryDirectory()).path;
+    String filePath = '$dir/${urlParts.last}/$name';
+    File file = File(filePath);
+    if (await file.exists()) return file.path;
+    return null;
+  }
+
+  Future<String> downloadHomework({String url, String name,
+                                   void Function(int, int) onReceiveProgress}) async {
     api.token = await token;
-    return await api.downloadHomework(url: url, filename: name);
+    return await api.downloadHomework(url: url, filename: name,
+                                      onReceiveProgress: onReceiveProgress);
   }
 
   Future<void> cacheClear() async {

@@ -131,7 +131,7 @@ class _HomeworkWidgetState extends State<HomeworkWidget> {
   Widget homeworkIcons(BuildContext context, Homework homework) {
     List<Widget> icons = <Widget>[];
     var devSize = MediaQuery.of(context).size;
-    double boxWidth = min(devSize.width / 2.6, 300.0);
+    double boxWidth = min(devSize.width / 2.5, 300.0);
 
     if (homework.fileUrl != null) {
       icons.add(

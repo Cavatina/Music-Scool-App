@@ -96,7 +96,7 @@ class _HomeworkDownloadIconState extends State<HomeworkDownloadIcon> {
     }
     else if (filePath != null) {
       return OutlinedButton.icon(
-      label: Text(S.of(context).view),
+      label: Text(S.of(context).open),
       onPressed: () {
         print('Opening existing:"${filePath}"');
         OpenFile.open(filePath);

@@ -80,6 +80,8 @@
   "@notificationHourReminderTitle": {},
   "notifications": "Notifikationer",
   "@notifications": {},
+  "open": "Åbn",
+  "@open": {},
   "page.home.counter": "",
   "@page.home.counter": {},
   "page.home.title": "Eksempel på projektets startside",

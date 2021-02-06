@@ -24,6 +24,7 @@ import 'package:musicscool/models/user.dart';
 import 'package:musicscool/models/lesson.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:musicscool/strings.dart' show apiUrl;
+import 'package:permission_handler/permission_handler.dart';
 
 
 ApiError httpStatusError(int statusCode) {
@@ -245,7 +246,14 @@ class ApiService implements Api {
   Future<String> downloadHomework({String url, String filename,
                                    void Function(int, int) onReceiveProgress}) async {
     List<String> urlParts = url.split('/');
-    String dir = (await getTemporaryDirectory()).path;
+    String dir;
+    if (Platform.isAndroid && await Permission.storage.request().isGranted) {
+      dir = (await getExternalStorageDirectories(type: StorageDirectory.documents))[0].path;
+    }
+    else {
+      dir = (await getTemporaryDirectory()).path;
+    }
+    print('ExternalStorageDirectory:${dir}');
     String filePath = '$dir/${urlParts.last}/$filename';
     File file = File(filePath);
     if (await file.exists()) return file.path;

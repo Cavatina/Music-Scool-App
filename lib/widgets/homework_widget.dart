@@ -71,6 +71,7 @@ class _HomeworkDownloadIconState extends State<HomeworkDownloadIcon> {
         filePath = path;
         downloading = false;
       });
+      print('Opening:"${path}"');
       OpenFile.open(path);
     }).catchError((e) {
       print('downloadAndLaunch(${url}) failed: ${e}');
@@ -97,6 +98,7 @@ class _HomeworkDownloadIconState extends State<HomeworkDownloadIcon> {
       return OutlinedButton.icon(
       label: Text(S.of(context).view),
       onPressed: () {
+        print('Opening existing:"${filePath}"');
         OpenFile.open(filePath);
       },
       icon: Icon(CupertinoIcons.cloud_download_fill)

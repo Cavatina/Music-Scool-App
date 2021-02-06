@@ -101,7 +101,7 @@ class _HomeworkDownloadIconState extends State<HomeworkDownloadIcon> {
         print('Opening existing:"${filePath}"');
         OpenFile.open(filePath);
       },
-      icon: Icon(CupertinoIcons.cloud_download_fill)
+      icon: Icon(CupertinoIcons.music_albums_fill)
     );
     }
     return OutlinedButton.icon(

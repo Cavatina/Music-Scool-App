@@ -80,6 +80,8 @@
   "@notificationHourReminderTitle": {},
   "notifications": "Notifications",
   "@notifications": {},
+  "open": "Open",
+  "@open": {},
   "page.home.counter": "You have pushed the button this many times",
   "@page.home.counter": {},
   "page.home.title": "Sample project Home Page",

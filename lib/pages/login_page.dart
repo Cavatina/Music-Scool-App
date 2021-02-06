@@ -37,7 +37,19 @@ class LoginPage extends StatelessWidget {
               fit: BoxFit.cover,
             ),
           ),
-        child: LoginForm()
+        child: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints viewportConstraints) {
+            return SingleChildScrollView(
+                child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                        minHeight: viewportConstraints.maxHeight
+                    ),
+                    child: LoginForm()
+              )
+            );
+          }
+        )
+
     ));
   }
 }

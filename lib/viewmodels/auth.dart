@@ -13,6 +13,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class AuthModel extends ChangeNotifier {
   final Api api;
@@ -175,7 +176,15 @@ class AuthModel extends ChangeNotifier {
 
   Future<String> homeworkPath({String url, String name}) async {
     List<String> urlParts = url.split('/');
-    String dir = (await getTemporaryDirectory()).path;
+    String dir;
+    if (Platform.isAndroid && await Permission.storage.status.isGranted) {
+      dir = (await getExternalStorageDirectories(type: StorageDirectory.documents))[0].path;
+      print('ExternalStorageDirectory:${dir}');
+    }
+    else {
+      dir = (await getTemporaryDirectory()).path;
+      print('TemporaryDirectory:${dir}');
+    }
     String filePath = '$dir/${urlParts.last}/$name';
     File file = File(filePath);
     if (await file.exists()) return file.path;

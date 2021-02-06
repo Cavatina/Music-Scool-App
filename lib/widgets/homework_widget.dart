@@ -71,6 +71,7 @@ class _HomeworkDownloadIconState extends State<HomeworkDownloadIcon> {
         filePath = path;
         downloading = false;
       });
+      print('Opening:"${path}"');
       OpenFile.open(path);
     }).catchError((e) {
       print('downloadAndLaunch(${url}) failed: ${e}');
@@ -95,11 +96,12 @@ class _HomeworkDownloadIconState extends State<HomeworkDownloadIcon> {
     }
     else if (filePath != null) {
       return OutlinedButton.icon(
-      label: Text(S.of(context).view),
+      label: Text(S.of(context).open),
       onPressed: () {
+        print('Opening existing:"${filePath}"');
         OpenFile.open(filePath);
       },
-      icon: Icon(CupertinoIcons.cloud_download_fill)
+      icon: Icon(CupertinoIcons.music_albums_fill)
     );
     }
     return OutlinedButton.icon(
@@ -131,7 +133,7 @@ class _HomeworkWidgetState extends State<HomeworkWidget> {
   Widget homeworkIcons(BuildContext context, Homework homework) {
     List<Widget> icons = <Widget>[];
     var devSize = MediaQuery.of(context).size;
-    double boxWidth = min(devSize.width / 2.6, 300.0);
+    double boxWidth = min(devSize.width / 2.5, 300.0);
 
     if (homework.fileUrl != null) {
       icons.add(

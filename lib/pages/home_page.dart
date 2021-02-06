@@ -139,8 +139,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             ),
             Text('', textScaleFactor: 1.25,
                 style: TextStyle(height: 4.0)),
-            Text('', textScaleFactor: 1.25,
-                style: TextStyle(height: 4.0))
           ]
       );
     }

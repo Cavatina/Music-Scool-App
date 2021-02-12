@@ -96,6 +96,8 @@
   "@piano": {},
   "privacyPolicy": "Privacy Policy",
   "@privacyPolicy": {},
+  "replacementForLesson": "Replacement lesson for {date}",
+  "@replacementForLesson": {},
   "resetPassword": "Reset password",
   "@resetPassword": {},
   "rhythm": "Rhythm",

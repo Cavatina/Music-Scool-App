@@ -133,7 +133,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     children: <Widget>[
                       CountdownTimer(to: user.student.nextLesson.from, boxWidth: boxWidth),
                       Text(''),
-                      Text(formattedDate(context, user.student.nextLesson.from), textScaleFactor: 1.25)
+                      Text(formattedDateTime(context, user.student.nextLesson.from), textScaleFactor: 1.25)
                     ]
                 )
             ),

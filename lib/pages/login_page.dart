@@ -25,6 +25,8 @@ import 'package:provider/provider.dart';
 import 'package:musicscool/helpers.dart';
 import 'package:musicscool/services/api.dart';
 import 'package:musicscool/strings.dart' show appName;
+import 'package:musicscool/service_locator.dart';
+
 
 class LoginPage extends StatelessWidget {
   @override
@@ -72,6 +74,12 @@ class _LoginFormState extends State<LoginForm> {
     passwordFocus = FocusNode();
     emailController = TextEditingController();
     passwordController = TextEditingController();
+    locator<AuthModel>().lastUsername.then((String lastUsername) {
+      if (lastUsername?.isNotEmpty == true) {
+        emailController.value = TextEditingValue(text: lastUsername);
+        passwordFocus.requestFocus();
+      }
+    });
   }
 
   @override
@@ -84,14 +92,6 @@ class _LoginFormState extends State<LoginForm> {
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light.copyWith(
         statusBarColor: Colors.transparent));
-    final AuthModel _auth = Provider.of<AuthModel>(context, listen: true);
-    _auth.lastUsername.then((String lastUsername) {
-      if (lastUsername?.isNotEmpty == true) {
-        emailController.value = TextEditingValue(text: lastUsername);
-        passwordFocus.requestFocus();
-      }
-    });
-
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,

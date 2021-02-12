@@ -38,7 +38,7 @@ class _LessonWidgetState extends State<LessonWidget> {
 
   Lesson lesson;
 
-  Widget header(BuildContext context, bool expand, {List<Widget> children}) {
+  Widget header(BuildContext context, {List<Widget> children}) {
     String subtitle;
     if (lesson.instrument != null && lesson.teacher != null) {
       subtitle = S.of(context).instrumentWithTeacher(
@@ -51,7 +51,7 @@ class _LessonWidgetState extends State<LessonWidget> {
     else {
       subtitle = '';
     }
-    if (expand) {
+    if (children.isNotEmpty) {
       return ExpansionTile(
           title: Text(formattedDateTime(context, lesson.from)),
           subtitle: Text(subtitle, style: TextStyle(color: Colors.white60),
@@ -62,31 +62,16 @@ class _LessonWidgetState extends State<LessonWidget> {
         title: Text(formattedDateTime(context, lesson.from)),
         subtitle: Text(subtitle)));
   }
+
   List<Widget> body(BuildContext context) {
     List<Widget> out = <Widget>[];
-   if (lesson.cancelled == true) {
-     out.add(ListTile(subtitle: Text(cancelledText(context, lesson.status))));
-   }
-    return out;
-  }
-
-  List<Widget> rows(BuildContext context) {
-    List<Widget> out = <Widget>[];
-    // if (lesson.isNext) {
-    //   var devSize = MediaQuery.of(context).size;
-    //   double boxWidth = min(devSize.width / 5.5, 100.0);
-    //   out.add(Container(
-    //     padding: EdgeInsets.symmetric(vertical: devSize.height / 6),
-    //     child: Column(
-    //       children: <Widget> [
-    //         Text(S.of(context).aboutToRock),
-    //         CountdownTimer(to: lesson.from, boxWidth: boxWidth)
-    //       ]
-    //     ),
-    //   ));
-    // }
-    out.add(header(context, false));
-    out.addAll(body(context));
+    if (lesson.cancelled == true) {
+      out.add(ListTile(subtitle: Text(cancelledText(context, lesson.status))));
+    }
+    if (lesson.replacesLesson != null) {
+      out.add(ListTile(subtitle: Text(S.of(context).replacementForLesson(
+        formattedDate(context, lesson.replacesLesson.from)))));
+    }
     return out;
   }
 
@@ -181,8 +166,9 @@ class _LessonWidgetState extends State<LessonWidget> {
     if (lesson.cancelled == true) {
       border = Border(left: BorderSide(width: 2.0, color: Colors.red[900]));
     }
-    else if (lesson.pending != true) {
-      border = Border(left: BorderSide(width: 2.0, color: Theme.of(context).primaryColor));
+    else if (lesson.replacesLesson != null) {
+      border = Border(right: BorderSide(width: 2.0, color: Colors.white),
+                      left: BorderSide(width: 2.0, color: Colors.green[900]));
     }
     else { //if (lesson.isNext != true) {
       border = Border(right: BorderSide(width: 2.0, color: Colors.white));
@@ -197,8 +183,8 @@ class _LessonWidgetState extends State<LessonWidget> {
                 decoration: BoxDecoration(
                     border: border
                 ),
-                child: Column(
-                    children: rows(context)
+                child: header(context,
+                    children: body(context)
                 ),
               )
           )
@@ -210,7 +196,7 @@ class _LessonWidgetState extends State<LessonWidget> {
           decoration: BoxDecoration(
               border: border
           ),
-          child: header(context, true,
+          child: header(context,
             children: body(context)
           ),
         )

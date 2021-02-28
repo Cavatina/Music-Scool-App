@@ -3,7 +3,7 @@ description: Mobile app for Music'scool students.
 
 publish_to: 'none' # Do not publish to pub.dev
 
-version: 1.0.3
+version: 1.1.0
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -22,6 +22,8 @@ dependencies:
   permission_handler: ^5.1.0+2
   flutter_local_notifications: ^3.0.2
   timezone: ^0.5.9
+  firebase_messaging: ^8.0.0-dev.14
+  firebase_core: ^0.7.0
   flutter_native_timezone: ^1.0.4
   flutter_secure_storage: ^3.3.5
   flutter_svg: ^0.19.0

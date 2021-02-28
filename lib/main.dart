@@ -27,8 +27,6 @@ void main() {
 }
 
 class MusicScoolApp extends StatelessWidget {
-  MusicScoolApp();
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

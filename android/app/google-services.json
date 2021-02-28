@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "436756885468",
+    "project_id": "music-scool",
+    "storage_bucket": "music-scool.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:436756885468:android:7815ac7c762be30f5fe919",
+        "android_client_info": {
+          "package_name": "dk.musicscool.musicscool"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "436756885468-a5jbdfi7pd4qfvh8i1kqqk014fri5igh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDL7EFHvn_5SnHF_6MK-84ztVuwWol_8os"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "436756885468-a5jbdfi7pd4qfvh8i1kqqk014fri5igh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

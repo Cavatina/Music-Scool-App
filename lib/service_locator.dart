@@ -14,6 +14,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
 import 'package:get_it/get_it.dart';
+import 'package:musicscool/services/remote_notifications.dart';
 import 'services/api.dart';
 import 'services/api_service.dart';
 import 'services/intl_service.dart';
@@ -27,6 +28,9 @@ void setupServiceLocator() {
   locator.registerSingletonAsync<IntlService>(() async => IntlService().init());
   locator.registerSingletonAsync<LocalNotifications>(
       () async => LocalNotifications().init());
+  locator.registerSingletonAsync<RemoteNotifications>(
+    () async => RemoteNotifications().init());
   locator.registerSingletonAsync<AuthModel>(
-      () async => AuthModel(locator<Api>()).init());
+      () async => AuthModel(locator<Api>()).init(),
+      dependsOn: [RemoteNotifications]);
 }

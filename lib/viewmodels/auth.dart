@@ -8,6 +8,7 @@ import 'package:musicscool/services/api.dart';
 import 'package:musicscool/service_locator.dart';
 import 'package:musicscool/services/local_notifications.dart';
 import 'package:musicscool/services/intl_service.dart';
+import 'package:musicscool/services/remote_notifications.dart';
 import 'package:musicscool/strings.dart' show apiUrl;
 import 'dart:async';
 import 'dart:io';
@@ -105,6 +106,8 @@ class AuthModel extends ChangeNotifier {
       api.token = _token;
       await storage.write(key: 'token', value: _token);
       await storage.write(key: 'lastUsername', value: username);
+      String fcmToken = locator<RemoteNotifications>().token;
+      print('fcmToken:$fcmToken');
     }
     isLoggedIn = true;
     notifyListeners();

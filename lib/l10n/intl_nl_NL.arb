@@ -136,6 +136,8 @@
   "@yes": {},
   "youAreNotAStudent": "Je staat niet ingeschreven als leerling.",
   "@youAreNotAStudent": {},
+  "youAreRockingRightNow": "you're ROCKING right now!",
+  "@youAreRockingRightNow": {},
   "youHaveNoUpcomingLessons": "Je hebt geen lessen gepland staan.",
   "@youHaveNoUpcomingLessons": {}
 }

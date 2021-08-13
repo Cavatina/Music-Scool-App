@@ -109,6 +109,25 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     if (user?.student?.nextLesson != null) {
       var devSize = MediaQuery.of(context).size;
       double boxWidth = min(devSize.width / 5.5, 100.0);
+      DateTime now = DateTime.now();
+      bool lessonIsNow = now.isAfter(user.student.nextLesson.from);
+      DateTime countDownTo = lessonIsNow ? user.student.nextLesson.until : user.student.nextLesson.from;
+      if (lessonIsNow == true) {
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget> [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget> [
+                Text(S.of(context).youAreRockingRightNow,
+                    textScaleFactor: 1.25),
+                Text(''),
+              ],
+            )
+          ]
+        );
+      }
       return Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget> [
@@ -131,7 +150,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 padding: EdgeInsets.symmetric(vertical: 16, horizontal: 8),
                 child: Column(
                     children: <Widget>[
-                      CountdownTimer(to: user.student.nextLesson.from, boxWidth: boxWidth),
+                      CountdownTimer(to: countDownTo, boxWidth: boxWidth),
                       Text(''),
                       Text(formattedDateTime(context, user.student.nextLesson.from), textScaleFactor: 1.25)
                     ]

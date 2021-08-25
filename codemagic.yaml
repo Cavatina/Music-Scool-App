@@ -3,7 +3,7 @@
 workflows:
   development:
     name: development
-    max_build_duration: 15
+    max_build_duration: 25
     environment:
       vars:
         APP_STORE_CONNECT_ISSUER_ID: a3c260c0-e7e5-4f83-84f9-e00caa3b382f
@@ -78,7 +78,7 @@ workflows:
 
   deploy-master:
     name: deploy-master
-    max_build_duration: 30
+    max_build_duration: 35
     environment:
       vars:
         FCI_KEYSTORE_PATH: /tmp/keystore.keystore

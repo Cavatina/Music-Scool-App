@@ -22,7 +22,8 @@ class _StudentCountdownState extends State<StudentCountdown>
   Timer _timer;
   bool _lessonIsNow = false;
 
-  bool lessonIsNow() => !DateTime.now().isBefore(widget.user.student.nextLesson.from);
+  bool lessonIsNow() => widget.user?.student?.nextLesson != null
+                         && !DateTime.now().isBefore(widget.user.student.nextLesson.from);
 
   @override
   void initState() {

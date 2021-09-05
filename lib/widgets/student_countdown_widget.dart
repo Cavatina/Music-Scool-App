@@ -84,7 +84,6 @@ class _StudentCountdownState extends State<StudentCountdown>
   Widget buildCountdown(context) {
     var devSize = MediaQuery.of(context).size;
     double boxWidth = min(devSize.width / 5.5, 100.0);
-    DateTime countDownTo = _lessonIsNow ? widget.user?.student?.nextLesson?.until : widget.user?.student?.nextLesson?.from;
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget> [
@@ -107,7 +106,7 @@ class _StudentCountdownState extends State<StudentCountdown>
               padding: EdgeInsets.symmetric(vertical: 16, horizontal: 8),
               child: Column(
                   children: <Widget>[
-                    CountdownTimer(to: countDownTo, boxWidth: boxWidth),
+                    CountdownTimer(to: widget.user.student.nextLesson.from, boxWidth: boxWidth),
                     Text(''),
                     Text(formattedDateTime(context, widget.user.student.nextLesson.from), textScaleFactor: 1.25)
                   ]

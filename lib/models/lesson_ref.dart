@@ -21,9 +21,8 @@ part 'lesson_ref.g.dart';
 class LessonRef {
   final int id;
   DateTime from;
-  final DateTime until;
 
-  LessonRef(this.id, this.from, this.until);
+  LessonRef(this.id, this.from);
 
   factory LessonRef.fromJson(Map<String, dynamic> json) => _$LessonRefFromJson(json);
 

@@ -24,3 +24,5 @@ void showUnexpectedError(BuildContext context)
 //      duration: Duration(seconds: 5)
     )));
 }
+
+bool isNullOrEmpty(Object o) => o == null || o == '';

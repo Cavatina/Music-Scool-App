@@ -128,14 +128,13 @@ class _HomeworkWidgetState extends State<HomeworkWidget> {
   bool expanded;
 
   _HomeworkWidgetState({this.expanded});
-//  _HomeworkWidgetState({this.lesson, this.index}) : super(key: Key(lesson.from.toIso8601String()));
 
   Widget homeworkIcons(BuildContext context, Homework homework) {
     List<Widget> icons = <Widget>[];
     var devSize = MediaQuery.of(context).size;
     double boxWidth = min(devSize.width / 2.5, 300.0);
 
-    if (homework.fileUrl != null) {
+    if (!isNullOrEmpty(homework.fileName)) {
       icons.add(
           SizedBox(
             width: boxWidth,
@@ -146,7 +145,7 @@ class _HomeworkWidgetState extends State<HomeworkWidget> {
             )
           );
     }
-    if (homework.linkUrl != null) {
+    if (!isNullOrEmpty(homework.linkUrl)) {
       icons.add(
         SizedBox(
           width: boxWidth,

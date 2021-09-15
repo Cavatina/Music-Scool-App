@@ -13,16 +13,14 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
-import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:musicscool/services/api.dart';
 import 'package:musicscool/viewmodels/auth.dart';
-import 'package:musicscool/widgets/countdown_timer_widget.dart';
 import 'package:musicscool/widgets/homework_widget.dart';
 import 'package:musicscool/widgets/lesson_list_view.dart';
+import 'package:musicscool/widgets/student_countdown_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:musicscool/models/lesson.dart';
@@ -31,7 +29,6 @@ import 'package:musicscool/widgets/lesson_widget.dart';
 import 'package:musicscool/generated/l10n.dart';
 import 'package:musicscool/helpers.dart';
 import 'package:musicscool/strings.dart' show privacyPolicyUrl, appName;
-import 'package:musicscool/locale_strings.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -105,52 +102,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  Widget studentCountdownTimer(BuildContext context, User user) {
-    if (user?.student?.nextLesson != null) {
-      var devSize = MediaQuery.of(context).size;
-      double boxWidth = min(devSize.width / 5.5, 100.0);
-      return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget> [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget> [
-                Text(S.of(context).heyUser(user.firstName),
-                    textScaleFactor: 1.25),
-                Text(S.of(context).aboutToRock,
-                    textScaleFactor: 1.25),
-                Text(''),
-              ],
-            ),
-            Container(
-                decoration: BoxDecoration(
-                    border: Border.all(color: Theme.of(context).primaryColor, width:2.0),
-                    borderRadius: BorderRadius.circular(12)
-                ),
-                padding: EdgeInsets.symmetric(vertical: 16, horizontal: 8),
-                child: Column(
-                    children: <Widget>[
-                      CountdownTimer(to: user.student.nextLesson.from, boxWidth: boxWidth),
-                      Text(''),
-                      Text(formattedDateTime(context, user.student.nextLesson.from), textScaleFactor: 1.25)
-                    ]
-                )
-            ),
-            Text('', textScaleFactor: 1.25,
-                style: TextStyle(height: 4.0)),
-          ]
-      );
-    }
-    else {
-      return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children:<Widget> [
-          Text(S.of(context).youHaveNoUpcomingLessons)
-          ]
-      );
-    }
-  }
   Widget studentCountdownView(BuildContext context, User user) {
     return Container(
       // decoration: BoxDecoration(
@@ -167,7 +118,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget> [
-                  studentCountdownTimer(context, user)
+                  StudentCountdown(user: user)
                 ]
               ),
             ),

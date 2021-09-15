@@ -38,7 +38,8 @@ class _CountdownTimerState extends State<CountdownTimer>
         (Timer t) {
           DateTime now = DateTime.now();
           setState(() {
-            remaining = DurationStrings(widget.to.difference(now));
+            Duration duration = (widget.to == null) ? Duration(seconds:0) : widget.to.difference(now);
+            remaining = DurationStrings(duration);
           });
         }
     );

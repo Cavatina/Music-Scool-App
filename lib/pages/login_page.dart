@@ -178,7 +178,7 @@ class _LoginFormState extends State<LoginForm> {
             child: RaisedButton(
               onPressed: () {
                 _auth.resetPassword(username: emailController.text).then((String email) {
-                  Scaffold.of(context).showSnackBar(SnackBar(
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text(S.of(context).passwordResetRequestSent(email)),
                       duration: Duration(seconds: 5)
                   ));
@@ -224,13 +224,13 @@ class _LoginFormState extends State<LoginForm> {
             child: RaisedButton(
               onPressed: () {
                 if (emailController.text.isEmpty) {
-                  Scaffold.of(context).showSnackBar(SnackBar(
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text(S.of(context).loginMissingEmail),
                       duration: Duration(seconds: 2)
                   )); // snapshot.error;
                 }
                 else if (passwordController.text.isEmpty) {
-                  Scaffold.of(context).showSnackBar(SnackBar(
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text(S.of(context).loginMissingPassword),
                       duration: Duration(seconds: 2)
                   )); // snapshot.error;
@@ -239,7 +239,7 @@ class _LoginFormState extends State<LoginForm> {
                   _auth.login(
                       username: emailController.text,
                       password: passwordController.text).catchError((e) {
-                    Scaffold.of(context).showSnackBar(SnackBar(
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content: Text(S.of(context).loginFailed),
                         duration: Duration(seconds: 2)
                     )); // snapshot.error;

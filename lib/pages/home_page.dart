@@ -207,6 +207,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             bottom: TabBar(
                 controller: _tabController,
                 labelStyle: TextStyle(fontSize: 10),
+                indicatorColor: Theme.of(context).colorScheme.primary,
                 tabs: [
                   Tab(text: S.of(context).info, icon: Icon(CupertinoIcons.info_circle_fill)), //Icons.info)),
                   Tab(text: S.of(context).homework, icon: Icon(CupertinoIcons.music_albums_fill)), //doc_on_doc_fill)),//Icons.book)),
@@ -243,8 +244,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       onPressed: () {
         launch(url);
       },
-      color: Colors.black, //Theme.of(context).primaryColor,
-        textColor: Theme.of(context).primaryColor,
+      color: Colors.black,
+      textColor: Theme.of(context).colorScheme.secondary,
       padding: EdgeInsets.all(12.0),
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0),
@@ -294,7 +295,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               maxRadius: 48,
                               backgroundColor: Colors.black,
                               child: SvgPicture.asset('assets/images/Musicscool - Logo - Okergeel beeldmerk.svg',
-                                  color: Theme.of(context).primaryColor)),
+                                  color: Theme.of(context).colorScheme.secondary)),
                           Text(''),
                           Text(appName, textScaleFactor: 1.75),
                           Text(''),

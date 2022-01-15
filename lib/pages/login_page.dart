@@ -101,7 +101,7 @@ class _LoginFormState extends State<LoginForm> {
               maxRadius: 48,
               backgroundColor: Colors.black,
               child: SvgPicture.asset('assets/images/Musicscool - Logo - Okergeel beeldmerk.svg',
-                  color: Theme.of(context).primaryColor)),
+                  color: Theme.of(context).colorScheme.secondary)),
           Text(''),
           Text(appName, textScaleFactor: 1.75),
           Text(''),
@@ -188,7 +188,7 @@ class _LoginFormState extends State<LoginForm> {
                 });
               },
               elevation: 0.0,
-              color: Theme.of(context).primaryColor,
+              color: Theme.of(context).colorScheme.secondary,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
               child: Text(S.of(context).resetPassword, style: TextStyle(color: Colors.black)),
             ),
@@ -248,7 +248,7 @@ class _LoginFormState extends State<LoginForm> {
                 }
               },
               elevation: 0.0,
-              color: Theme.of(context).primaryColor,
+              color: Theme.of(context).colorScheme.secondary,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
               child: Text(S.of(context).signIn, style: TextStyle(color: Colors.black)),
             ),

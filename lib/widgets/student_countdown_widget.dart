@@ -101,7 +101,7 @@ class _StudentCountdownState extends State<StudentCountdown>
           ),
           Container(
               decoration: BoxDecoration(
-                  border: Border.all(color: Theme.of(context).primaryColor, width:2.0),
+                  border: Border.all(color: Theme.of(context).colorScheme.secondary, width:2.0),
                   borderRadius: BorderRadius.circular(12)
               ),
               padding: EdgeInsets.symmetric(vertical: 16, horizontal: 8),

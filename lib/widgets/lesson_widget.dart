@@ -144,7 +144,6 @@ class _LessonWidgetState extends State<LessonWidget> {
     if (lesson.pending == true) {
       return Dismissible(
           key: Key(lesson.id.toString()),
-          child: child,
           confirmDismiss: (dir) => confirmDismiss(context, dir),
           direction: DismissDirection.endToStart,
           background: Container(
@@ -155,7 +154,8 @@ class _LessonWidgetState extends State<LessonWidget> {
                   onPressed: null,
                   icon: Text(S.of(context).cancel),
                   label: Icon(Icons.delete, color: Colors.white))
-          )
+          ),
+          child: child,
       );
     }
     return child;

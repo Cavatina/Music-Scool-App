@@ -165,13 +165,13 @@ class _LoginFormState extends State<LoginForm> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           TextButton(
-              child: Text(S.of(context).cancel),
               style: TextButton.styleFrom(backgroundColor: Colors.transparent),
               onPressed: () {
                 setState(() {
                   formType = _FormType.signIn;
                 });
-              }
+              },
+              child: Text(S.of(context).cancel),
           ),
           SizedBox(
             width: buttonWidth,
@@ -189,8 +189,8 @@ class _LoginFormState extends State<LoginForm> {
               },
               elevation: 0.0,
               color: Theme.of(context).primaryColor,
-              child: Text(S.of(context).resetPassword, style: TextStyle(color: Colors.black)),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+              child: Text(S.of(context).resetPassword, style: TextStyle(color: Colors.black)),
             ),
           ),
         ],
@@ -211,13 +211,13 @@ class _LoginFormState extends State<LoginForm> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           TextButton(
-              child: Text(S.of(context).forgotPassword),
               style: TextButton.styleFrom(backgroundColor: Colors.transparent),
               onPressed: () {
                 setState(() {
                   formType = _FormType.resetPassword;
                 });
-              }
+              },
+              child: Text(S.of(context).forgotPassword),
           ),
           SizedBox(
             width: buttonWidth,
@@ -249,8 +249,8 @@ class _LoginFormState extends State<LoginForm> {
               },
               elevation: 0.0,
               color: Theme.of(context).primaryColor,
-              child: Text(S.of(context).signIn, style: TextStyle(color: Colors.black)),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+              child: Text(S.of(context).signIn, style: TextStyle(color: Colors.black)),
             ),
           ),
         ],

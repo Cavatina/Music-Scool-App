@@ -87,14 +87,14 @@ class AuthModel extends ChangeNotifier {
     await cancelNotifications();
   }
 
-  void scheduleNotifications() async {
+  Future<void> scheduleNotifications() async {
     List<Lesson> nextLessons =
         await api.getUpcomingLessons(page: 1, perPage: 10, withCancelled: false);
     await locator<LocalNotifications>().scheduleNotifications(
         nextLessons, locator<IntlService>().currentLocation);
   }
 
-  void cancelNotifications() async {
+  Future<void> cancelNotifications() async {
     await locator<LocalNotifications>().cancelNotifications();
   }
 
@@ -142,7 +142,7 @@ class AuthModel extends ChangeNotifier {
       await cacheClearUpcoming();
     }
     if (notificationsEnabled && newNextLesson != null && newNextLesson != _nextLesson) {
-      scheduleNotifications();
+      await scheduleNotifications();
     }
     _nextLesson = newNextLesson;
     return user;

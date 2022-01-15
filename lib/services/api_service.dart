@@ -74,7 +74,7 @@ class ApiService implements Api {
     }
     catch (e) {
       if (e is DioError) {
-        print(e.request);
+        print(e.requestOptions);
         print(e.message);
         if (e.response != null) {
           print(e.response.data);
@@ -273,8 +273,8 @@ class ApiService implements Api {
     catch (e) {
       print(e);
       if (e is DioError) {
-        if (e.request != null) {
-          print (e.request.responseType);
+        if (e.requestOptions != null) {
+          print (e.requestOptions.responseType);
         }
         if (e.response != null) {
           print (e.response.statusCode);

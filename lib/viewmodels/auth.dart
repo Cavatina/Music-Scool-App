@@ -51,12 +51,12 @@ class AuthModel extends ChangeNotifier {
       }
     }
     api.dio.interceptors.add(InterceptorsWrapper(
-      onError: (DioError e) {
+      onError: (DioError e, handler) {
         if (<int>[401, 403, 422].contains(e?.response?.statusCode)) {
           print('status:${e.response.statusCode}: logout!');
           logout();
         }
-        return e;
+        return handler.next(e);
       }
     ));
     api.dio.interceptors.add(_cache.interceptor);

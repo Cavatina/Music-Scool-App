@@ -66,7 +66,7 @@ class LocalNotifications {
               android: AndroidNotificationDetails(
                   'dk.musicscool.test2-lesson-day-reminder',
                   'lesson reminder',
-                  "Music'scool lesson reminder (morning)")),
+                  channelDescription: "Music'scool lesson reminder (morning)")),
           androidAllowWhileIdle: true,
           uiLocalNotificationDateInterpretation:
               UILocalNotificationDateInterpretation.absoluteTime);
@@ -82,7 +82,7 @@ class LocalNotifications {
               android: AndroidNotificationDetails(
                   'dk.musicscool.test2-lesson-hour-reminder',
                   'lesson reminder',
-                  "Music'scool lesson reminder (morning)")),
+                  channelDescription: "Music'scool lesson reminder (morning)")),
           androidAllowWhileIdle: true,
           uiLocalNotificationDateInterpretation:
               UILocalNotificationDateInterpretation.absoluteTime);

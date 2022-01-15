@@ -175,7 +175,7 @@ class _LoginFormState extends State<LoginForm> {
           ),
           SizedBox(
             width: buttonWidth,
-            child: RaisedButton(
+            child: ElevatedButton(
               onPressed: () {
                 _auth.resetPassword(username: emailController.text).then((String email) {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -187,9 +187,7 @@ class _LoginFormState extends State<LoginForm> {
                   formType = _FormType.signIn;
                 });
               },
-              elevation: 0.0,
-              color: Theme.of(context).colorScheme.secondary,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+              style: ElevatedButton.styleFrom(primary: Theme.of(context).colorScheme.secondary),
               child: Text(S.of(context).resetPassword, style: TextStyle(color: Colors.black)),
             ),
           ),
@@ -221,7 +219,7 @@ class _LoginFormState extends State<LoginForm> {
           ),
           SizedBox(
             width: buttonWidth,
-            child: RaisedButton(
+            child: ElevatedButton(
               onPressed: () {
                 if (emailController.text.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -247,9 +245,7 @@ class _LoginFormState extends State<LoginForm> {
                   ).catchError((_) => showUnexpectedError(context));
                 }
               },
-              elevation: 0.0,
-              color: Theme.of(context).colorScheme.secondary,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+              style: ElevatedButton.styleFrom(primary: Theme.of(context).colorScheme.secondary),
               child: Text(S.of(context).signIn, style: TextStyle(color: Colors.black)),
             ),
           ),

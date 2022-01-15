@@ -240,17 +240,19 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     //       launch(url);
     //     }
     // );
-    return FlatButton(
+    return TextButton(
       onPressed: () {
         launch(url);
       },
-      color: Colors.black,
-      textColor: Theme.of(context).colorScheme.secondary,
-      padding: EdgeInsets.all(12.0),
+      style: TextButton.styleFrom(
+        backgroundColor: Colors.black,
+        primary: Theme.of(context).colorScheme.secondary,
+        padding: EdgeInsets.all(12.0),
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0),
-//            side: BorderSide(color: Colors.white10)
         ),
+        minimumSize: Size(84, 84)
+      ),
       child: Column(
         children: <Widget> [
           Icon(icon, size: 36),

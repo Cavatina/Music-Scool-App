@@ -23,10 +23,10 @@ import 'generated/l10n.dart';
 
 String cancelledText(BuildContext context, String statusKey) {
   switch(statusKey) {
-    case 'STUDENT_CANCELLED': return S.of(context).statusStudentCancelled; break;
-    case 'STUDENT_CANCELLED_LATE': return S.of(context).statusStudentCancelledLate; break;
-    case 'TEACHER_CANCELLED': return S.of(context).statusTeacherCancelled; break;
-    case 'STUDENT_ABSENT': return S.of(context).statusStudentAbsent; break;
+    case 'STUDENT_CANCELLED': return S.of(context).statusStudentCancelled;
+    case 'STUDENT_CANCELLED_LATE': return S.of(context).statusStudentCancelledLate;
+    case 'TEACHER_CANCELLED': return S.of(context).statusTeacherCancelled;
+    case 'STUDENT_ABSENT': return S.of(context).statusStudentAbsent;
     default:
       return '';
   }
@@ -34,15 +34,15 @@ String cancelledText(BuildContext context, String statusKey) {
 
 String instrumentText(BuildContext context, String instrumentKey) {
   switch (instrumentKey) {
-    case 'Bass guitar': return S.of(context).bassGuitar; break;
-    case 'Guitar': return S.of(context).guitar; break;
-    case 'Rhythm Class': return S.of(context).rhythmClass; break;
-    case 'Piano': return S.of(context).piano; break;
-    case 'Vocal': return S.of(context).vocals; break;
-    case 'Vocals': return S.of(context).vocals; break;
-    case 'Drums': return S.of(context).drums; break;
-    case 'Songwriting': return S.of(context).songwriting; break;
-    case 'EDM': return S.of(context).EDM; break;
+    case 'Bass guitar': return S.of(context).bassGuitar;
+    case 'Guitar': return S.of(context).guitar;
+    case 'Rhythm Class': return S.of(context).rhythmClass;
+    case 'Piano': return S.of(context).piano;
+    case 'Vocal': return S.of(context).vocals;
+    case 'Vocals': return S.of(context).vocals;
+    case 'Drums': return S.of(context).drums;
+    case 'Songwriting': return S.of(context).songwriting;
+    case 'EDM': return S.of(context).EDM;
     default:
       return instrumentKey;
   }

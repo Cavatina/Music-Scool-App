@@ -20,7 +20,7 @@ part 'student.g.dart';
 
 @JsonSerializable()
 class Student {
-  final LessonRef nextLesson;
+  final LessonRef? nextLesson;
 
   Student(this.nextLesson);
 

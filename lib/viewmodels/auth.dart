@@ -130,7 +130,7 @@ class AuthModel extends ChangeNotifier {
   Future<User> get user async {
     api.token = await token;
     User user = await api.user;
-    DateTime? newNextLesson = user.student?.nextLesson.from;
+    DateTime? newNextLesson = user.student?.nextLesson?.from;
     if (newNextLesson != _nextLesson) {
       String nextLesson;
       if (newNextLesson != null) {

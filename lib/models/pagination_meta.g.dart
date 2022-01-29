@@ -8,10 +8,10 @@ part of 'pagination_meta.dart';
 
 PaginationMeta _$PaginationMetaFromJson(Map<String, dynamic> json) {
   return PaginationMeta(
-    json['current_page'] as int,
-    json['from'] as int,
-    json['path'] as String,
-    json['to'] as int,
+    json['current_page'] as int?,
+    json['from'] as int?,
+    json['path'] as String?,
+    json['to'] as int?,
   );
 }
 

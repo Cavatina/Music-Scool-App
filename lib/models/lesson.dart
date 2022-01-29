@@ -29,12 +29,12 @@ class Lesson {
   final String status;
   final Teacher? teacher;
   final Instrument? instrument;
-  final bool pending;
-  final bool cancelled;
-  final bool relocated;
-  final bool requested;
+  final bool? pending;
+  final bool? cancelled;
+  final bool? relocated;
+  final bool? requested;
   final LessonRef? replacesLesson;
-  final LessonRef replacementLesson;
+  final LessonRef? replacementLesson;
   final List<Homework>? homework;
 
   @JsonKey(ignore: true)

@@ -18,14 +18,16 @@ Lesson _$LessonFromJson(Map<String, dynamic> json) {
     json['instrument'] == null
         ? null
         : Instrument.fromJson(json['instrument'] as Map<String, dynamic>),
-    json['pending'] as bool,
-    json['cancelled'] as bool,
-    json['relocated'] as bool,
-    json['requested'] as bool,
+    json['pending'] as bool?,
+    json['cancelled'] as bool?,
+    json['relocated'] as bool?,
+    json['requested'] as bool?,
     json['replacesLesson'] == null
         ? null
         : LessonRef.fromJson(json['replacesLesson'] as Map<String, dynamic>),
-    LessonRef.fromJson(json['replacementLesson'] as Map<String, dynamic>),
+    json['replacementLesson'] == null
+        ? null
+        : LessonRef.fromJson(json['replacementLesson'] as Map<String, dynamic>),
     (json['homework'] as List<dynamic>?)
         ?.map((e) => Homework.fromJson(e as Map<String, dynamic>))
         .toList(),

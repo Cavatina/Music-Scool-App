@@ -94,7 +94,7 @@ class _HomeworkDownloadIconState extends State<HomeworkDownloadIcon> {
         )
       );
     }
-    else if (filePath != null) {
+    else if (!isNullOrEmpty(filePath)) {
       return OutlinedButton.icon(
       label: Text(S.of(context).open),
       onPressed: () {
@@ -139,7 +139,7 @@ class _HomeworkWidgetState extends State<HomeworkWidget> {
           SizedBox(
             width: boxWidth,
             child: HomeworkDownloadIcon(
-              url: homework.fileUrl,
+              url: homework.fileUrl!,
               fileName: homework.fileName ?? '',
               ),
             )
@@ -152,7 +152,7 @@ class _HomeworkWidgetState extends State<HomeworkWidget> {
           child: OutlinedButton.icon(
             label: Text(S.of(context).view),
             onPressed: () {
-              launch(homework.linkUrl.replaceAll(RegExp(r'/embed'), '/watch'));
+              launch(homework.linkUrl!.replaceAll(RegExp(r'/embed'), '/watch'));
             },
               icon: Icon(CupertinoIcons.tv_music_note_fill)//ondemand_video_outlined)
           ),
@@ -206,7 +206,7 @@ class _HomeworkWidgetState extends State<HomeworkWidget> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(homework.message),
+                      Text(homework.message ?? ''),
                       Padding(padding: EdgeInsets.symmetric(vertical: 8.0)),
                       homeworkIcons(context, homework),
 //                    Padding(padding: EdgeInsets.symmetric(vertical: 8.0)),

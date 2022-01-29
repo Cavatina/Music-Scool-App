@@ -152,7 +152,7 @@ class _HomeworkWidgetState extends State<HomeworkWidget> {
           child: OutlinedButton.icon(
             label: Text(S.of(context).view),
             onPressed: () {
-              launch(homework.linkUrl);
+              launch(homework.linkUrl.replaceAll(RegExp(r'/embed'), '/watch'));
             },
               icon: Icon(CupertinoIcons.tv_music_note_fill)//ondemand_video_outlined)
           ),

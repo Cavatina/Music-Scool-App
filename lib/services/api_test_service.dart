@@ -32,7 +32,7 @@ class ApiTestService implements Api {
   }
 
   @override
-  Future<String> login({String username, String password}) async {
+  Future<String> login({required String username, required String password}) async {
     User s = await user;
     if (username == s.email && password == 'password') {
       _token = 'dummy-token';
@@ -42,7 +42,7 @@ class ApiTestService implements Api {
   }
 
   @override
-  Future<void> resetPassword({String username}) async {
+  Future<void> resetPassword({required String username}) async {
     throw Exception('Not implemented');
   }
 
@@ -101,7 +101,7 @@ class ApiTestService implements Api {
   }
 
   @override
-  Future<LessonCancelInfo> cancelLessonInfo({int id}) async {
+  Future<LessonCancelInfo> cancelLessonInfo({required int id}) async {
     List<Lesson> lessons = await allLessons();
     for (int i=0; i<lessons.length; ++i) {
       if (lessons[i].id == id) {
@@ -112,7 +112,7 @@ class ApiTestService implements Api {
   }
 
   @override
-  Future<Lesson> cancelLesson({int id}) async {
+  Future<Lesson> cancelLesson({required int id}) async {
     List<Lesson> lessons = await allLessons();
     for (int i=0; i<lessons.length; ++i) {
       if (lessons[i].id == id) {
@@ -124,8 +124,8 @@ class ApiTestService implements Api {
   }
 
   @override
-  Future<String> downloadHomework({String url, String filename,
-                                   void Function(int, int) onReceiveProgress}) async {
+  Future<String> downloadHomework({required String url, required String filename,
+                                   required void Function(int, int) onReceiveProgress}) async {
     return '';
   }
 
@@ -176,7 +176,7 @@ class ApiTestService implements Api {
     return _allLessons;
   }
 
-  List<Lesson> _allLessons;
+  late List<Lesson> _allLessons;
   int _lessonIndex = -1;
   static const pageSize = 25;
   static final fixtureTimeDelta = _fixtureTimeDelta();

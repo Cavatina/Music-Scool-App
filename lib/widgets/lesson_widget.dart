@@ -27,18 +27,18 @@ import 'package:musicscool/generated/l10n.dart';
 
 class LessonWidget extends StatefulWidget {
   final Lesson lesson;
-  LessonWidget({this.lesson});
+  LessonWidget({required this.lesson});
 
   @override
   _LessonWidgetState createState() => _LessonWidgetState(lesson: lesson);
 }
 
 class _LessonWidgetState extends State<LessonWidget> {
-  _LessonWidgetState({this.lesson});
+  _LessonWidgetState({required this.lesson});
 
   Lesson lesson;
 
-  Widget header(BuildContext context, {List<Widget> children}) {
+  Widget header(BuildContext context, {required List<Widget> children}) {
     String subtitle;
     if (lesson.instrument != null && lesson.teacher != null) {
       subtitle = S.of(context).instrumentWithTeacher(

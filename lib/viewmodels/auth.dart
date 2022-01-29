@@ -99,7 +99,7 @@ class AuthModel extends ChangeNotifier {
   }
 
   Future<void> login(
-      {@required String username, @required String password}) async {
+      {required String username, required String password}) async {
     _token = await api.login(username: username, password: password);
     if (_token?.isNotEmpty == true) {
       api.token = _token;
@@ -110,7 +110,7 @@ class AuthModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<String> resetPassword({@required String username}) async {
+  Future<String> resetPassword({required String username}) async {
     await api.resetPassword(username: username);
     return username;
   }
@@ -152,29 +152,29 @@ class AuthModel extends ChangeNotifier {
     return await storage.read(key: 'lastUsername');
   }
 
-  Future<List<Lesson>> getUpcomingLessons({int page, int perPage}) async {
+  Future<List<Lesson>> getUpcomingLessons({required int page, required int perPage}) async {
     api.token = await token;
     return await api.getUpcomingLessons(page: page, perPage: perPage);
   }
 
-  Future<List<Lesson>> getHomeworkLessons({int page, int perPage}) async {
+  Future<List<Lesson>> getHomeworkLessons({required int page, required int perPage}) async {
     api.token = await token;
     return await api.getHomeworkLessons(page: page, perPage: perPage);
   }
 
-  Future<LessonCancelInfo> cancelLessonInfo({int id}) async {
+  Future<LessonCancelInfo> cancelLessonInfo({required int id}) async {
     api.token = await token;
     return await api.cancelLessonInfo(id: id);
   }
 
-  Future<Lesson> cancelLesson({int id}) async {
+  Future<Lesson> cancelLesson({required int id}) async {
     api.token = await token;
     Lesson lesson = await api.cancelLesson(id: id);
     await cacheClearUpcoming();
     return lesson;
   }
 
-  Future<String> homeworkPath({String url, String name}) async {
+  Future<String> homeworkPath({required String url, required String name}) async {
     List<String> urlParts = url.split('/');
     String dir;
     if (Platform.isAndroid && await Permission.storage.status.isGranted) {
@@ -191,8 +191,8 @@ class AuthModel extends ChangeNotifier {
     return null;
   }
 
-  Future<String> downloadHomework({String url, String name,
-                                   void Function(int, int) onReceiveProgress}) async {
+  Future<String> downloadHomework({required String url, required String name,
+                                   required void Function(int, int) onReceiveProgress}) async {
     api.token = await token;
     return await api.downloadHomework(url: url, filename: name,
                                       onReceiveProgress: onReceiveProgress);

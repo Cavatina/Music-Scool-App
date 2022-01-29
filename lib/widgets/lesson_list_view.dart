@@ -15,8 +15,8 @@ class LessonListView extends StatefulWidget {
   final LessonListGetter itemGetter;
   final LessonListRefresh itemRefresh;
 
-  LessonListView({@required this.itemBuilder, @required this.itemGetter,
-                  @required this.itemRefresh});
+  LessonListView({required this.itemBuilder, required this.itemGetter,
+                  required this.itemRefresh});
 
   @override
   _LessonListViewState createState() => _LessonListViewState();

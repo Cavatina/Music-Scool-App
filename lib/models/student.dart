@@ -27,9 +27,4 @@ class Student {
   factory Student.fromJson(Map<String, dynamic> json) => _$StudentFromJson(json);
 
   Map<String, dynamic> toJson() => _$StudentToJson(this);
-
-  Student copyWith({LessonRef nextLesson}) {
-    return Student(
-        nextLesson);
-  }
 }

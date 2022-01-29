@@ -31,7 +31,7 @@ class HomeworkDownloadIcon extends StatefulWidget {
   final String url;
   final String fileName;
 
-  HomeworkDownloadIcon({this.url, this.fileName});
+  HomeworkDownloadIcon({required this.url, required this.fileName});
 
   @override
   _HomeworkDownloadIconState createState() => _HomeworkDownloadIconState();
@@ -118,7 +118,7 @@ class HomeworkWidget extends StatefulWidget {
   final Lesson lesson;
   final bool expanded;
 
-  HomeworkWidget({this.lesson, this.expanded});
+  HomeworkWidget({required this.lesson, required this.expanded});
 
   @override
   _HomeworkWidgetState createState() => _HomeworkWidgetState(expanded: expanded);
@@ -127,7 +127,7 @@ class HomeworkWidget extends StatefulWidget {
 class _HomeworkWidgetState extends State<HomeworkWidget> {
   bool expanded;
 
-  _HomeworkWidgetState({this.expanded});
+  _HomeworkWidgetState({required this.expanded});
 
   Widget homeworkIcons(BuildContext context, Homework homework) {
     List<Widget> icons = <Widget>[];
@@ -162,7 +162,7 @@ class _HomeworkWidgetState extends State<HomeworkWidget> {
     return Wrap(direction: Axis.horizontal, spacing: 16.0, children: icons);
   }
 
-  Widget header(BuildContext context, {List<Widget> children}) {
+  Widget header(BuildContext context, {required List<Widget> children}) {
     String subtitle;
     if (widget.lesson.instrument != null && widget.lesson.teacher != null) {
       subtitle = S.of(context).instrumentWithTeacher(

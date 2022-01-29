@@ -234,7 +234,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  Widget contactButton({BuildContext context, IconData icon, String label, String url}) {
+  Widget contactButton({required BuildContext context, required IconData icon, required String label, required String url}) {
     // return TextButton.icon(icon: Icon(icon), label: Text(label),
     //     onPressed: () {
     //       launch(url);

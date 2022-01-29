@@ -9,7 +9,7 @@ import 'countdown_timer_widget.dart';
 
 class StudentCountdown extends StatefulWidget
 {
-  const StudentCountdown({this.user});
+  const StudentCountdown({required this.user});
 
   final User user;
 

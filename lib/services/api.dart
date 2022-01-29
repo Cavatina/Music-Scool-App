@@ -31,16 +31,16 @@ class ResetPasswordFailed implements ApiError {}
 abstract class Api {
   Dio get dio;
 
-  Future<String> login({String username, String password});
-  Future<void> resetPassword({String username});
+  Future<String> login({required String username, required String password});
+  Future<void> resetPassword({required String username});
 
   set token (String token);
   Future<User> get user;
   Future<List<Lesson>> getHomeworkLessons({int page = 0, int perPage = 20});
   Future<List<Lesson>> getUpcomingLessons({int page = 0, int perPage = 20, bool withCancelled = true});
 
-  Future<LessonCancelInfo> cancelLessonInfo({int id});
-  Future<Lesson> cancelLesson({int id});
+  Future<LessonCancelInfo> cancelLessonInfo({required int id});
+  Future<Lesson> cancelLesson({required int id});
 
-  Future<String> downloadHomework({String url, String filename, void Function(int, int) onReceiveProgress});
+  Future<String> downloadHomework({required String url, required String filename, required void Function(int, int) onReceiveProgress});
 }

@@ -4,7 +4,7 @@ import 'package:musicscool/generated/l10n.dart';
 
 class CountdownTimer extends StatefulWidget
 {
-  const CountdownTimer({this.to, this.boxWidth});
+  const CountdownTimer({required this.to, required this.boxWidth});
 
   final DateTime to;
   final double boxWidth;

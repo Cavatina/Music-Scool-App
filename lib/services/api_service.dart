@@ -27,7 +27,7 @@ import 'package:musicscool/strings.dart' show apiUrl;
 import 'package:permission_handler/permission_handler.dart';
 
 
-ApiError httpStatusError(int statusCode) {
+ApiError httpStatusError(int? statusCode) {
   if (<int>[401, 403, 422].contains(statusCode)) {
     return AuthenticationFailed();
   }
@@ -38,7 +38,7 @@ ApiError httpStatusError(int statusCode) {
 
 class ApiService implements Api {
   final Dio _dio = Dio();
-  String _token;
+  String _token = '';
 
   ApiService() {
     _dio.options.baseUrl = apiUrl;
@@ -77,8 +77,8 @@ class ApiService implements Api {
         print(e.requestOptions);
         print(e.message);
         if (e.response != null) {
-          print(e.response.data);
-          throw httpStatusError(e.response.statusCode);
+          print(e.response?.data);
+          throw httpStatusError(e.response?.statusCode);
         }
       }
       else {
@@ -182,8 +182,8 @@ class ApiService implements Api {
     catch (e) {
       if (e is DioError) {
         if (e.response != null) {
-          print(e.response.data);
-          throw httpStatusError(e.response.statusCode);
+          print(e.response?.data);
+          throw httpStatusError(e.response?.statusCode);
         }
         else {
           print(e.message);
@@ -228,8 +228,8 @@ class ApiService implements Api {
     catch (e) {
       if (e is DioError) {
         if (e.response != null) {
-          print(e.response.data);
-          throw httpStatusError(e.response.statusCode);
+          print(e.response!.data);
+          throw httpStatusError(e.response?.statusCode);
         }
         else {
           print(e.message);
@@ -248,7 +248,7 @@ class ApiService implements Api {
     List<String> urlParts = url.split('/');
     String dir;
     if (Platform.isAndroid && await Permission.storage.request().isGranted) {
-      dir = (await getExternalStorageDirectories(type: StorageDirectory.documents))[0].path;
+      dir = (await getExternalStorageDirectories(type: StorageDirectory.documents))![0].path;
     }
     else {
       dir = (await getTemporaryDirectory()).path;
@@ -273,11 +273,9 @@ class ApiService implements Api {
     catch (e) {
       print(e);
       if (e is DioError) {
-        if (e.requestOptions != null) {
-          print (e.requestOptions.responseType);
-        }
+        print (e.requestOptions.responseType);
         if (e.response != null) {
-          print (e.response.statusCode);
+          print (e.response!.statusCode);
         }
         print (e.message);
       }

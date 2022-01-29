@@ -36,9 +36,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
-  bool _notificationsEnabled;
+  bool _notificationsEnabled = false;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  TabController _tabController;
+  late TabController _tabController;
   static const _tabCount = 4;
 
   @override
@@ -71,13 +71,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget countdownView(BuildContext context) {
     return Consumer<AuthModel>(
         builder: (context, model, child) {
-          if (model == null) return waiting();
           return FutureBuilder<User>(
             future: model.user,
             builder: (context, AsyncSnapshot<User> snapshot) {
               if (snapshot.hasData) {
-                if (snapshot.data.student != null) {
-                  return studentCountdownView(context, snapshot.data);
+                if (snapshot.data?.student != null) {
+                  return studentCountdownView(context, snapshot.data!);
                 }
                 else {
                   return Column(
@@ -163,12 +162,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   Widget settingsView(BuildContext context) {
     return Consumer<AuthModel>(builder: (context, model, child) {
-      if (model == null) return waiting();
       return FutureBuilder<User>(
           future: model.user,
           builder: (context, AsyncSnapshot<User> snapshot) {
             if (snapshot.hasData) {
-              return userInfo(context, snapshot.data);
+              return userInfo(context, snapshot.data!);
             }
             else if (snapshot.hasError && !(snapshot.error is AuthenticationFailed)) {
               showUnexpectedError(context);

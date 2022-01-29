@@ -20,7 +20,7 @@ part 'homework.g.dart';
 @JsonSerializable()
 class Homework {
   final String message;
-  final String fileName;
+  final String? fileName;
   final String fileUrl;
   final String linkUrl;
 

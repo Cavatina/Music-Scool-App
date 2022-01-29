@@ -25,7 +25,7 @@ class User {
   final String firstName;
   final String email;
   final SchoolContact schoolContact;
-  final Student student;
+  final Student? student;
 
   User(this.name, this.firstName, this.email, this.schoolContact, this.student);
 

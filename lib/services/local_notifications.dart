@@ -38,9 +38,8 @@ class LocalNotifications {
         InitializationSettings(
             android: initAndroid,
             iOS: initIOS,
-            macOS: initMacOS), onSelectNotification: (String payload) async {
+            macOS: initMacOS), onSelectNotification: (String? payload) async {
       print('onSelectNotification:${payload}');
-      return true;
     });
     return this;
   }

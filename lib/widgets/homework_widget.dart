@@ -40,7 +40,7 @@ class HomeworkDownloadIcon extends StatefulWidget {
 class _HomeworkDownloadIconState extends State<HomeworkDownloadIcon> {
   bool downloading = false;
   double progress = 0.0;
-  String filePath;
+  String? filePath;
 
   @override
   void initState() {
@@ -140,7 +140,7 @@ class _HomeworkWidgetState extends State<HomeworkWidget> {
             width: boxWidth,
             child: HomeworkDownloadIcon(
               url: homework.fileUrl,
-              fileName: homework.fileName,
+              fileName: homework.fileName ?? '',
               ),
             )
           );
@@ -166,18 +166,18 @@ class _HomeworkWidgetState extends State<HomeworkWidget> {
     String subtitle;
     if (widget.lesson.instrument != null && widget.lesson.teacher != null) {
       subtitle = S.of(context).instrumentWithTeacher(
-          instrumentText(context, widget.lesson.instrument.name),
-          widget.lesson.teacher.name);
+          instrumentText(context, widget.lesson.instrument!.name),
+          widget.lesson.teacher!.name);
     }
     else if (widget.lesson.teacher != null) {
-      subtitle = S.of(context).withTeacher(widget.lesson.teacher.name);
+      subtitle = S.of(context).withTeacher(widget.lesson.teacher!.name);
     }
     else {
       subtitle = '';
     }
 
-    if (widget.lesson.homework != null && widget.lesson.homework.isNotEmpty && expanded == false) {
-        subtitle = widget.lesson.homework.first.message ?? '';
+    if (widget.lesson.homework?.isNotEmpty == true && expanded == false) {
+        subtitle = widget.lesson.homework?.first.message ?? '';
     }
     return ExpansionTile(
         title: Text(formattedDateTime(context, widget.lesson.from)),
@@ -196,7 +196,7 @@ class _HomeworkWidgetState extends State<HomeworkWidget> {
     List<Widget> out = <Widget>[];
     if (widget.lesson.homework != null) {
 //      out.add(ListTile(subtitle: Text('Homework')/*, tileColor: Color.fromRGBO(64, 64, 64, 0.5)*/));
-      widget.lesson.homework.forEach((Homework homework) =>
+      widget.lesson.homework!.forEach((Homework homework) =>
           out.add(
               Container(
                 color: Color.fromRGBO(64, 64, 64, 0.3),
@@ -206,7 +206,7 @@ class _HomeworkWidgetState extends State<HomeworkWidget> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(homework.message ?? ''),
+                      Text(homework.message),
                       Padding(padding: EdgeInsets.symmetric(vertical: 8.0)),
                       homeworkIcons(context, homework),
 //                    Padding(padding: EdgeInsets.symmetric(vertical: 8.0)),

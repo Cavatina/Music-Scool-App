@@ -32,8 +32,8 @@ final Map<int, Color> mmColors = {
 final ColorScheme colorScheme = ColorScheme(
   primary: Colors.white,
   primaryVariant: Colors.white60,
-  secondary: mmColors[900],
-  secondaryVariant: mmColors[700],
+  secondary: mmColors[900]!,
+  secondaryVariant: mmColors[700]!,
   background: Colors.black,
   surface: Color.fromRGBO(21, 21, 21, 0.3),
   onBackground: Colors.white,

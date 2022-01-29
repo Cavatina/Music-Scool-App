@@ -65,8 +65,8 @@ enum _FormType { signIn, resetPassword }
 
 class _LoginFormState extends State<LoginForm> {
   _FormType formType = _FormType.signIn;
-  FocusNode passwordFocus;
-  TextEditingController emailController, passwordController;
+  late FocusNode passwordFocus;
+  late TextEditingController emailController, passwordController;
 
   @override
   void initState() {
@@ -75,7 +75,7 @@ class _LoginFormState extends State<LoginForm> {
     emailController = TextEditingController();
     passwordController = TextEditingController();
     locator<AuthModel>().lastUsername.then((String lastUsername) {
-      if (lastUsername?.isNotEmpty == true) {
+      if (lastUsername.isNotEmpty == true) {
         emailController.value = TextEditingValue(text: lastUsername);
         passwordFocus.requestFocus();
       }
@@ -182,7 +182,9 @@ class _LoginFormState extends State<LoginForm> {
                       content: Text(S.of(context).passwordResetRequestSent(email)),
                       duration: Duration(seconds: 5)
                   ));
-                }).catchError((_) => showUnexpectedError(context));
+                }).catchError((_) {
+                  showUnexpectedError(context);
+                });
                 setState(() {
                   formType = _FormType.signIn;
                 });

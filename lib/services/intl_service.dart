@@ -19,7 +19,7 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 
 class IntlService {
-  Location currentLocation;
+  late Location currentLocation;
   Future<IntlService> init() async {
     // MaterialLocalizations call initializeDateFormattingCustom,
     // which is incompatible with this function:

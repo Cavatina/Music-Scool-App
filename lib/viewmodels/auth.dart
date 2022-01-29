@@ -20,9 +20,9 @@ class AuthModel extends ChangeNotifier {
   final storage = FlutterSecureStorage();
 
   bool isLoggedIn = false;
-  String _token;
+  String _token = '';
   bool _notificationsEnabled = true;
-  DateTime _nextLesson;
+  DateTime? _nextLesson;
   final DioCacheManager _cache = DioCacheManager(CacheConfig(
     baseUrl: apiUrl,
     defaultRequestMethod: 'GET'));
@@ -30,8 +30,8 @@ class AuthModel extends ChangeNotifier {
   AuthModel(this.api);
 
   Future<AuthModel> init() async {
-    String value = await token;
-    if (value?.isNotEmpty == true) {
+    String? value = await token;
+    if (value.isNotEmpty == true) {
       print('reading token from storage:${value}');
       isLoggedIn = true;
     } else {
@@ -52,8 +52,8 @@ class AuthModel extends ChangeNotifier {
     }
     api.dio.interceptors.add(InterceptorsWrapper(
       onError: (DioError e, handler) {
-        if (<int>[401, 403, 422].contains(e?.response?.statusCode)) {
-          print('status:${e.response.statusCode}: logout!');
+        if (<int>[401, 403, 422].contains(e.response?.statusCode)) {
+          print('status:${e.response!.statusCode}: logout!');
           logout();
         }
         return handler.next(e);
@@ -66,7 +66,9 @@ class AuthModel extends ChangeNotifier {
   }
 
   Future<String> get token async {
-    _token ??= await storage.read(key: 'token');
+    if (_token == '') {
+      _token = (await storage.read(key: 'token')) ?? '';
+    }
     return _token;
   }
 
@@ -101,7 +103,7 @@ class AuthModel extends ChangeNotifier {
   Future<void> login(
       {required String username, required String password}) async {
     _token = await api.login(username: username, password: password);
-    if (_token?.isNotEmpty == true) {
+    if (_token.isNotEmpty == true) {
       api.token = _token;
       await storage.write(key: 'token', value: _token);
       await storage.write(key: 'lastUsername', value: username);
@@ -128,7 +130,7 @@ class AuthModel extends ChangeNotifier {
   Future<User> get user async {
     api.token = await token;
     User user = await api.user;
-    DateTime newNextLesson = user?.student?.nextLesson?.from;
+    DateTime? newNextLesson = user.student?.nextLesson.from;
     if (newNextLesson != _nextLesson) {
       String nextLesson;
       if (newNextLesson != null) {
@@ -149,7 +151,7 @@ class AuthModel extends ChangeNotifier {
   }
 
   Future<String> get lastUsername async {
-    return await storage.read(key: 'lastUsername');
+    return await storage.read(key: 'lastUsername') ?? '';
   }
 
   Future<List<Lesson>> getUpcomingLessons({required int page, required int perPage}) async {
@@ -178,7 +180,7 @@ class AuthModel extends ChangeNotifier {
     List<String> urlParts = url.split('/');
     String dir;
     if (Platform.isAndroid && await Permission.storage.status.isGranted) {
-      dir = (await getExternalStorageDirectories(type: StorageDirectory.documents))[0].path;
+      dir = (await getExternalStorageDirectories(type: StorageDirectory.documents))![0].path;
       print('ExternalStorageDirectory:${dir}');
     }
     else {
@@ -188,7 +190,7 @@ class AuthModel extends ChangeNotifier {
     String filePath = '$dir/${urlParts.last}/$name';
     File file = File(filePath);
     if (await file.exists()) return file.path;
-    return null;
+    return '';
   }
 
   Future<String> downloadHomework({required String url, required String name,

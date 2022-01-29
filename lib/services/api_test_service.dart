@@ -23,7 +23,7 @@ import 'package:musicscool/models/lesson.dart';
 import 'package:dio/dio.dart';
 
 class ApiTestService implements Api {
-  String _token;
+  String _token = '';
   final Dio _dio = Dio();
 
   @override
@@ -54,8 +54,10 @@ class ApiTestService implements Api {
   @override
   Future<User> get user async {
     User u = User.fromJson(json.decode(testUser)['data']);
-    u.student.nextLesson.from =
-        u.student.nextLesson.from.add(fixtureTimeDelta);
+    if (u.student?.nextLesson != null) {
+      u.student!.nextLesson.from =
+        u.student!.nextLesson.from.add(fixtureTimeDelta);
+    }
     return u;
   }
 
@@ -167,7 +169,7 @@ class ApiTestService implements Api {
             from: _allLessons[i].from.add(fixtureTimeDelta),
             until: _allLessons[i].until.add(fixtureTimeDelta)
         );
-        if (u.student.nextLesson.id == _allLessons[i].id) {
+        if (u.student?.nextLesson.id == _allLessons[i].id) {
           _allLessons[i].isNext = true;
         }
       }

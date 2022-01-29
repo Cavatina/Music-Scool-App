@@ -31,14 +31,14 @@ class DurationStrings
 class _CountdownTimerState extends State<CountdownTimer>
 {
   DurationStrings remaining = DurationStrings(Duration());
-  Timer _timer;
+  Timer? _timer;
 
   _CountdownTimerState() {
     _timer = Timer.periodic(Duration(milliseconds:250),
         (Timer t) {
           DateTime now = DateTime.now();
           setState(() {
-            Duration duration = (widget.to == null) ? Duration(seconds:0) : widget.to.difference(now);
+            Duration duration = widget.to.difference(now);
             remaining = DurationStrings(duration);
           });
         }

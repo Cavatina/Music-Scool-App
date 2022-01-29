@@ -42,11 +42,11 @@ class _LessonWidgetState extends State<LessonWidget> {
     String subtitle;
     if (lesson.instrument != null && lesson.teacher != null) {
       subtitle = S.of(context).instrumentWithTeacher(
-          instrumentText(context, lesson.instrument.name),
-          lesson.teacher.name);
+          instrumentText(context, lesson.instrument!.name),
+          lesson.teacher!.name);
     }
     else if (lesson.teacher != null) {
-      subtitle = S.of(context).withTeacher(lesson.teacher.name);
+      subtitle = S.of(context).withTeacher(lesson.teacher!.name);
     }
     else {
       subtitle = '';
@@ -70,7 +70,7 @@ class _LessonWidgetState extends State<LessonWidget> {
     }
     if (lesson.replacesLesson != null) {
       out.add(ListTile(subtitle: Text(S.of(context).replacementForLesson(
-        formattedDate(context, lesson.replacesLesson.from)))));
+        formattedDate(context, lesson.replacesLesson!.from)))));
     }
     return out;
   }
@@ -165,11 +165,11 @@ class _LessonWidgetState extends State<LessonWidget> {
   Widget build(BuildContext context) {
     Border border;
     if (lesson.cancelled == true) {
-      border = Border(left: BorderSide(width: 2.0, color: Colors.red[900]));
+      border = Border(left: BorderSide(width: 2.0, color: Colors.red[900]!));
     }
     else if (lesson.replacesLesson != null) {
       border = Border(right: BorderSide(width: 2.0, color: Colors.white),
-                      left: BorderSide(width: 2.0, color: Colors.green[900]));
+                      left: BorderSide(width: 2.0, color: Colors.green[900]!));
     }
     else { //if (lesson.isNext != true) {
       border = Border(right: BorderSide(width: 2.0, color: Colors.white));

@@ -8,9 +8,7 @@ part of 'student.dart';
 
 Student _$StudentFromJson(Map<String, dynamic> json) {
   return Student(
-    json['nextLesson'] == null
-        ? null
-        : LessonRef.fromJson(json['nextLesson'] as Map<String, dynamic>),
+    LessonRef.fromJson(json['nextLesson'] as Map<String, dynamic>),
   );
 }
 

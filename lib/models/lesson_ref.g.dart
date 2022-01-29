@@ -9,11 +9,11 @@ part of 'lesson_ref.dart';
 LessonRef _$LessonRefFromJson(Map<String, dynamic> json) {
   return LessonRef(
     json['id'] as int,
-    json['from'] == null ? null : DateTime.parse(json['from'] as String),
+    DateTime.parse(json['from'] as String),
   );
 }
 
 Map<String, dynamic> _$LessonRefToJson(LessonRef instance) => <String, dynamic>{
       'id': instance.id,
-      'from': instance.from?.toIso8601String(),
+      'from': instance.from.toIso8601String(),
     };

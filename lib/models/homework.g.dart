@@ -9,7 +9,7 @@ part of 'homework.dart';
 Homework _$HomeworkFromJson(Map<String, dynamic> json) {
   return Homework(
     json['message'] as String,
-    json['fileName'] as String,
+    json['fileName'] as String?,
     json['fileUrl'] as String,
     json['linkUrl'] as String,
   );

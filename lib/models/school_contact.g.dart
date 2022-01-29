@@ -11,7 +11,7 @@ SchoolContact _$SchoolContactFromJson(Map<String, dynamic> json) {
     json['name'] as String,
     json['phone'] as String,
     json['email'] as String,
-    (json['address'] as List)?.map((e) => e as String)?.toList(),
+    (json['address'] as List<dynamic>).map((e) => e as String).toList(),
   );
 }
 

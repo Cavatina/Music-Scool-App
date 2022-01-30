@@ -185,7 +185,7 @@ class ApiTestService implements Api {
 }
 
 String testUser = '''
-{"data":{"name":"Mrs. Pixie","firstName":"Mrs.","email":"someone@acme.com","schoolContact":{"name":"Roan Segers","phone":"+4512345678","email":"info@musicschooI.dk"},"student":{"nextLesson":{"id":1138, "from":"2020-11-28T14:00:00.000000Z"}}}}
+{"data":{"name":"Mrs. Pixie","firstName":"Mrs.","email":"someone@acme.com","schoolContact":{"name":"Roan Segers","phone":"+4512345678","email":"info@musicschooI.dk", "address": ["123 some street", "4000 Roskilde"]},"student":{"nextLesson":{"id":1138, "from":"2020-11-28T14:00:00.000000Z"}}}}
 ''';
 
 String testLessons = '''

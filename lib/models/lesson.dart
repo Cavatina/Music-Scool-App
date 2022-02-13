@@ -27,15 +27,15 @@ class Lesson {
   final DateTime from;
   final DateTime until;
   final String status;
-  final Teacher teacher;
-  final Instrument instrument;
-  final bool pending;
-  final bool cancelled;
-  final bool relocated;
-  final bool requested;
-  final LessonRef replacesLesson;
-  final LessonRef replacementLesson;
-  final List<Homework> homework;
+  final Teacher? teacher;
+  final Instrument? instrument;
+  final bool? pending;
+  final bool? cancelled;
+  final bool? relocated;
+  final bool? requested;
+  final LessonRef? replacesLesson;
+  final LessonRef? replacementLesson;
+  final List<Homework>? homework;
 
   @JsonKey(ignore: true)
   bool isNext = false;
@@ -44,8 +44,8 @@ class Lesson {
       this.teacher, this.instrument,
       this.pending, this.cancelled, this.relocated, this.requested,
       this.replacesLesson, this.replacementLesson, this.homework);
-  Lesson copyWith({DateTime from, DateTime until, String status,
-    bool pending, bool cancelled, bool relocated, bool requested}) {
+  Lesson copyWith({DateTime? from, DateTime? until, String? status,
+    bool? pending, bool? cancelled, bool? relocated, bool? requested}) {
     return Lesson(
         id,
         from ?? this.from,

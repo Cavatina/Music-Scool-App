@@ -36,9 +36,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
-  bool _notificationsEnabled;
+  bool _notificationsEnabled = false;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  TabController _tabController;
+  late TabController _tabController;
   static const _tabCount = 4;
 
   @override
@@ -71,13 +71,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget countdownView(BuildContext context) {
     return Consumer<AuthModel>(
         builder: (context, model, child) {
-          if (model == null) return waiting();
           return FutureBuilder<User>(
             future: model.user,
             builder: (context, AsyncSnapshot<User> snapshot) {
               if (snapshot.hasData) {
-                if (snapshot.data.student != null) {
-                  return studentCountdownView(context, snapshot.data);
+                if (snapshot.data?.student != null) {
+                  return studentCountdownView(context, snapshot.data!);
                 }
                 else {
                   return Column(
@@ -163,12 +162,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   Widget settingsView(BuildContext context) {
     return Consumer<AuthModel>(builder: (context, model, child) {
-      if (model == null) return waiting();
       return FutureBuilder<User>(
           future: model.user,
           builder: (context, AsyncSnapshot<User> snapshot) {
             if (snapshot.hasData) {
-              return userInfo(context, snapshot.data);
+              return userInfo(context, snapshot.data!);
             }
             else if (snapshot.hasError && !(snapshot.error is AuthenticationFailed)) {
               showUnexpectedError(context);
@@ -199,7 +197,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         //   child:
         // ),
         appBar: AppBar(
-          toolbarHeight: 150,
+          toolbarHeight: 90,
             title: SvgPicture.asset('assets/images/Musicscool - Logo - Zwart beeld- en woordmerk.svg',
                 height: 75 /* @todo Size dynamically */ //),
             ),
@@ -207,6 +205,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             bottom: TabBar(
                 controller: _tabController,
                 labelStyle: TextStyle(fontSize: 10),
+                indicatorColor: Theme.of(context).colorScheme.primary,
                 tabs: [
                   Tab(text: S.of(context).info, icon: Icon(CupertinoIcons.info_circle_fill)), //Icons.info)),
                   Tab(text: S.of(context).homework, icon: Icon(CupertinoIcons.music_albums_fill)), //doc_on_doc_fill)),//Icons.book)),
@@ -233,23 +232,25 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  Widget contactButton({BuildContext context, IconData icon, String label, String url}) {
+  Widget contactButton({required BuildContext context, required IconData icon, required String label, required String url}) {
     // return TextButton.icon(icon: Icon(icon), label: Text(label),
     //     onPressed: () {
     //       launch(url);
     //     }
     // );
-    return FlatButton(
+    return TextButton(
       onPressed: () {
         launch(url);
       },
-      color: Colors.black, //Theme.of(context).primaryColor,
-        textColor: Theme.of(context).primaryColor,
-      padding: EdgeInsets.all(12.0),
+      style: TextButton.styleFrom(
+        backgroundColor: Colors.black,
+        primary: Theme.of(context).colorScheme.secondary,
+        padding: EdgeInsets.all(12.0),
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0),
-//            side: BorderSide(color: Colors.white10)
         ),
+        minimumSize: Size(84, 84)
+      ),
       child: Column(
         children: <Widget> [
           Icon(icon, size: 36),
@@ -294,7 +295,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               maxRadius: 48,
                               backgroundColor: Colors.black,
                               child: SvgPicture.asset('assets/images/Musicscool - Logo - Okergeel beeldmerk.svg',
-                                  color: Theme.of(context).primaryColor)),
+                                  color: Theme.of(context).colorScheme.secondary)),
                           Text(''),
                           Text(appName, textScaleFactor: 1.75),
                           Text(''),

@@ -20,9 +20,9 @@ class AuthModel extends ChangeNotifier {
   final storage = FlutterSecureStorage();
 
   bool isLoggedIn = false;
-  String _token;
+  String _token = '';
   bool _notificationsEnabled = true;
-  DateTime _nextLesson;
+  DateTime? _nextLesson;
   final DioCacheManager _cache = DioCacheManager(CacheConfig(
     baseUrl: apiUrl,
     defaultRequestMethod: 'GET'));
@@ -30,8 +30,8 @@ class AuthModel extends ChangeNotifier {
   AuthModel(this.api);
 
   Future<AuthModel> init() async {
-    String value = await token;
-    if (value?.isNotEmpty == true) {
+    String? value = await token;
+    if (value.isNotEmpty == true) {
       print('reading token from storage:${value}');
       isLoggedIn = true;
     } else {
@@ -51,12 +51,12 @@ class AuthModel extends ChangeNotifier {
       }
     }
     api.dio.interceptors.add(InterceptorsWrapper(
-      onError: (DioError e) {
-        if (<int>[401, 403, 422].contains(e?.response?.statusCode)) {
-          print('status:${e.response.statusCode}: logout!');
+      onError: (DioError e, handler) {
+        if (<int>[401, 403, 422].contains(e.response?.statusCode)) {
+          print('status:${e.response!.statusCode}: logout!');
           logout();
         }
-        return e;
+        return handler.next(e);
       }
     ));
     api.dio.interceptors.add(_cache.interceptor);
@@ -66,7 +66,9 @@ class AuthModel extends ChangeNotifier {
   }
 
   Future<String> get token async {
-    _token ??= await storage.read(key: 'token');
+    if (_token == '') {
+      _token = (await storage.read(key: 'token')) ?? '';
+    }
     return _token;
   }
 
@@ -87,21 +89,21 @@ class AuthModel extends ChangeNotifier {
     await cancelNotifications();
   }
 
-  void scheduleNotifications() async {
+  Future<void> scheduleNotifications() async {
     List<Lesson> nextLessons =
         await api.getUpcomingLessons(page: 1, perPage: 10, withCancelled: false);
     await locator<LocalNotifications>().scheduleNotifications(
         nextLessons, locator<IntlService>().currentLocation);
   }
 
-  void cancelNotifications() async {
+  Future<void> cancelNotifications() async {
     await locator<LocalNotifications>().cancelNotifications();
   }
 
   Future<void> login(
-      {@required String username, @required String password}) async {
+      {required String username, required String password}) async {
     _token = await api.login(username: username, password: password);
-    if (_token?.isNotEmpty == true) {
+    if (_token.isNotEmpty == true) {
       api.token = _token;
       await storage.write(key: 'token', value: _token);
       await storage.write(key: 'lastUsername', value: username);
@@ -110,7 +112,7 @@ class AuthModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<String> resetPassword({@required String username}) async {
+  Future<String> resetPassword({required String username}) async {
     await api.resetPassword(username: username);
     return username;
   }
@@ -128,7 +130,7 @@ class AuthModel extends ChangeNotifier {
   Future<User> get user async {
     api.token = await token;
     User user = await api.user;
-    DateTime newNextLesson = user?.student?.nextLesson?.from;
+    DateTime? newNextLesson = user.student?.nextLesson?.from;
     if (newNextLesson != _nextLesson) {
       String nextLesson;
       if (newNextLesson != null) {
@@ -142,43 +144,43 @@ class AuthModel extends ChangeNotifier {
       await cacheClearUpcoming();
     }
     if (notificationsEnabled && newNextLesson != null && newNextLesson != _nextLesson) {
-      scheduleNotifications();
+      await scheduleNotifications();
     }
     _nextLesson = newNextLesson;
     return user;
   }
 
   Future<String> get lastUsername async {
-    return await storage.read(key: 'lastUsername');
+    return await storage.read(key: 'lastUsername') ?? '';
   }
 
-  Future<List<Lesson>> getUpcomingLessons({int page, int perPage}) async {
+  Future<List<Lesson>> getUpcomingLessons({required int page, required int perPage}) async {
     api.token = await token;
     return await api.getUpcomingLessons(page: page, perPage: perPage);
   }
 
-  Future<List<Lesson>> getHomeworkLessons({int page, int perPage}) async {
+  Future<List<Lesson>> getHomeworkLessons({required int page, required int perPage}) async {
     api.token = await token;
     return await api.getHomeworkLessons(page: page, perPage: perPage);
   }
 
-  Future<LessonCancelInfo> cancelLessonInfo({int id}) async {
+  Future<LessonCancelInfo> cancelLessonInfo({required int id}) async {
     api.token = await token;
     return await api.cancelLessonInfo(id: id);
   }
 
-  Future<Lesson> cancelLesson({int id}) async {
+  Future<Lesson> cancelLesson({required int id}) async {
     api.token = await token;
     Lesson lesson = await api.cancelLesson(id: id);
     await cacheClearUpcoming();
     return lesson;
   }
 
-  Future<String> homeworkPath({String url, String name}) async {
+  Future<String> homeworkPath({required String url, required String name}) async {
     List<String> urlParts = url.split('/');
     String dir;
     if (Platform.isAndroid && await Permission.storage.status.isGranted) {
-      dir = (await getExternalStorageDirectories(type: StorageDirectory.documents))[0].path;
+      dir = (await getExternalStorageDirectories(type: StorageDirectory.documents))![0].path;
       print('ExternalStorageDirectory:${dir}');
     }
     else {
@@ -188,11 +190,11 @@ class AuthModel extends ChangeNotifier {
     String filePath = '$dir/${urlParts.last}/$name';
     File file = File(filePath);
     if (await file.exists()) return file.path;
-    return null;
+    return '';
   }
 
-  Future<String> downloadHomework({String url, String name,
-                                   void Function(int, int) onReceiveProgress}) async {
+  Future<String> downloadHomework({required String url, required String name,
+                                   required void Function(int, int) onReceiveProgress}) async {
     api.token = await token;
     return await api.downloadHomework(url: url, filename: name,
                                       onReceiveProgress: onReceiveProgress);

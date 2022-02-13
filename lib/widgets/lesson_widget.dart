@@ -27,26 +27,26 @@ import 'package:musicscool/generated/l10n.dart';
 
 class LessonWidget extends StatefulWidget {
   final Lesson lesson;
-  LessonWidget({this.lesson});
+  LessonWidget({required this.lesson});
 
   @override
   _LessonWidgetState createState() => _LessonWidgetState(lesson: lesson);
 }
 
 class _LessonWidgetState extends State<LessonWidget> {
-  _LessonWidgetState({this.lesson});
+  _LessonWidgetState({required this.lesson});
 
   Lesson lesson;
 
-  Widget header(BuildContext context, {List<Widget> children}) {
+  Widget header(BuildContext context, {required List<Widget> children}) {
     String subtitle;
     if (lesson.instrument != null && lesson.teacher != null) {
       subtitle = S.of(context).instrumentWithTeacher(
-          instrumentText(context, lesson.instrument.name),
-          lesson.teacher.name);
+          instrumentText(context, lesson.instrument!.name),
+          lesson.teacher!.name);
     }
     else if (lesson.teacher != null) {
-      subtitle = S.of(context).withTeacher(lesson.teacher.name);
+      subtitle = S.of(context).withTeacher(lesson.teacher!.name);
     }
     else {
       subtitle = '';
@@ -70,7 +70,7 @@ class _LessonWidgetState extends State<LessonWidget> {
     }
     if (lesson.replacesLesson != null) {
       out.add(ListTile(subtitle: Text(S.of(context).replacementForLesson(
-        formattedDate(context, lesson.replacesLesson.from)))));
+        formattedDate(context, lesson.replacesLesson!.from)))));
     }
     return out;
   }
@@ -144,18 +144,19 @@ class _LessonWidgetState extends State<LessonWidget> {
     if (lesson.pending == true) {
       return Dismissible(
           key: Key(lesson.id.toString()),
-          child: child,
           confirmDismiss: (dir) => confirmDismiss(context, dir),
           direction: DismissDirection.endToStart,
           background: Container(
               color: Colors.red,
               padding: EdgeInsets.symmetric(horizontal: 20),
               alignment: AlignmentDirectional.centerEnd,
-              child: FlatButton.icon(
+              child: TextButton.icon(
+                style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent)),
                   onPressed: null,
                   icon: Text(S.of(context).cancel),
                   label: Icon(Icons.delete, color: Colors.white))
-          )
+          ),
+          child: child,
       );
     }
     return child;
@@ -164,11 +165,11 @@ class _LessonWidgetState extends State<LessonWidget> {
   Widget build(BuildContext context) {
     Border border;
     if (lesson.cancelled == true) {
-      border = Border(left: BorderSide(width: 2.0, color: Colors.red[900]));
+      border = Border(left: BorderSide(width: 2.0, color: Colors.red[900]!));
     }
     else if (lesson.replacesLesson != null) {
       border = Border(right: BorderSide(width: 2.0, color: Colors.white),
-                      left: BorderSide(width: 2.0, color: Colors.green[900]));
+                      left: BorderSide(width: 2.0, color: Colors.green[900]!));
     }
     else { //if (lesson.isNext != true) {
       border = Border(right: BorderSide(width: 2.0, color: Colors.white));

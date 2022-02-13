@@ -9,7 +9,7 @@ import 'countdown_timer_widget.dart';
 
 class StudentCountdown extends StatefulWidget
 {
-  const StudentCountdown({this.user});
+  const StudentCountdown({required this.user});
 
   final User user;
 
@@ -19,11 +19,11 @@ class StudentCountdown extends StatefulWidget
 
 class _StudentCountdownState extends State<StudentCountdown>
 {
-  Timer _timer;
+  Timer? _timer;
   bool _lessonIsNow = false;
 
-  bool lessonIsNow() => widget.user?.student?.nextLesson != null
-                         && !DateTime.now().isBefore(widget.user.student.nextLesson.from);
+  bool lessonIsNow() => widget.user.student?.nextLesson != null
+                         && !DateTime.now().isBefore(widget.user.student!.nextLesson!.from);
 
   @override
   void initState() {
@@ -45,7 +45,7 @@ class _StudentCountdownState extends State<StudentCountdown>
 
   @override
   Widget build(BuildContext context) {
-    if (widget.user?.student?.nextLesson == null) {
+    if (widget.user.student?.nextLesson == null) {
       return buildNoLesson(context);
     }
     else if (_lessonIsNow == true) {
@@ -101,15 +101,15 @@ class _StudentCountdownState extends State<StudentCountdown>
           ),
           Container(
               decoration: BoxDecoration(
-                  border: Border.all(color: Theme.of(context).primaryColor, width:2.0),
+                  border: Border.all(color: Theme.of(context).colorScheme.secondary, width:2.0),
                   borderRadius: BorderRadius.circular(12)
               ),
               padding: EdgeInsets.symmetric(vertical: 16, horizontal: 8),
               child: Column(
                   children: <Widget>[
-                    CountdownTimer(to: widget.user.student.nextLesson.from, boxWidth: boxWidth),
+                    CountdownTimer(to: widget.user.student!.nextLesson!.from, boxWidth: boxWidth),
                     Text(''),
-                    Text(formattedDateTime(context, widget.user.student.nextLesson.from), textScaleFactor: 1.25)
+                    Text(formattedDateTime(context, widget.user.student!.nextLesson!.from), textScaleFactor: 1.25)
                   ]
               )
           ),

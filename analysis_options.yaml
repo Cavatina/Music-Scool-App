@@ -18,6 +18,7 @@ analyzer:
     # Stream and not importing dart:async
     # Please see https://github.com/flutter/flutter/pull/24528 for details.
     sdk_version_async_exported_from_core: ignore
+    unnecessary_brace_in_string_interps: ignore
   exclude:
     - 'lib/**/*.g.dart'
     - 'lib/generated/**'

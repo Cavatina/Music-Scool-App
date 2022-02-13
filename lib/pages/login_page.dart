@@ -65,8 +65,8 @@ enum _FormType { signIn, resetPassword }
 
 class _LoginFormState extends State<LoginForm> {
   _FormType formType = _FormType.signIn;
-  FocusNode passwordFocus;
-  TextEditingController emailController, passwordController;
+  late FocusNode passwordFocus;
+  late TextEditingController emailController, passwordController;
 
   @override
   void initState() {
@@ -75,7 +75,7 @@ class _LoginFormState extends State<LoginForm> {
     emailController = TextEditingController();
     passwordController = TextEditingController();
     locator<AuthModel>().lastUsername.then((String lastUsername) {
-      if (lastUsername?.isNotEmpty == true) {
+      if (lastUsername.isNotEmpty == true) {
         emailController.value = TextEditingValue(text: lastUsername);
         passwordFocus.requestFocus();
       }
@@ -101,7 +101,7 @@ class _LoginFormState extends State<LoginForm> {
               maxRadius: 48,
               backgroundColor: Colors.black,
               child: SvgPicture.asset('assets/images/Musicscool - Logo - Okergeel beeldmerk.svg',
-                  color: Theme.of(context).primaryColor)),
+                  color: Theme.of(context).colorScheme.secondary)),
           Text(''),
           Text(appName, textScaleFactor: 1.75),
           Text(''),
@@ -165,32 +165,32 @@ class _LoginFormState extends State<LoginForm> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           TextButton(
-              child: Text(S.of(context).cancel),
               style: TextButton.styleFrom(backgroundColor: Colors.transparent),
               onPressed: () {
                 setState(() {
                   formType = _FormType.signIn;
                 });
-              }
+              },
+              child: Text(S.of(context).cancel),
           ),
           SizedBox(
             width: buttonWidth,
-            child: RaisedButton(
+            child: ElevatedButton(
               onPressed: () {
                 _auth.resetPassword(username: emailController.text).then((String email) {
-                  Scaffold.of(context).showSnackBar(SnackBar(
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text(S.of(context).passwordResetRequestSent(email)),
                       duration: Duration(seconds: 5)
                   ));
-                }).catchError((_) => showUnexpectedError(context));
+                }).catchError((_) {
+                  showUnexpectedError(context);
+                });
                 setState(() {
                   formType = _FormType.signIn;
                 });
               },
-              elevation: 0.0,
-              color: Theme.of(context).primaryColor,
+              style: ElevatedButton.styleFrom(primary: Theme.of(context).colorScheme.secondary),
               child: Text(S.of(context).resetPassword, style: TextStyle(color: Colors.black)),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
             ),
           ),
         ],
@@ -211,26 +211,26 @@ class _LoginFormState extends State<LoginForm> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           TextButton(
-              child: Text(S.of(context).forgotPassword),
               style: TextButton.styleFrom(backgroundColor: Colors.transparent),
               onPressed: () {
                 setState(() {
                   formType = _FormType.resetPassword;
                 });
-              }
+              },
+              child: Text(S.of(context).forgotPassword),
           ),
           SizedBox(
             width: buttonWidth,
-            child: RaisedButton(
+            child: ElevatedButton(
               onPressed: () {
                 if (emailController.text.isEmpty) {
-                  Scaffold.of(context).showSnackBar(SnackBar(
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text(S.of(context).loginMissingEmail),
                       duration: Duration(seconds: 2)
                   )); // snapshot.error;
                 }
                 else if (passwordController.text.isEmpty) {
-                  Scaffold.of(context).showSnackBar(SnackBar(
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text(S.of(context).loginMissingPassword),
                       duration: Duration(seconds: 2)
                   )); // snapshot.error;
@@ -239,7 +239,7 @@ class _LoginFormState extends State<LoginForm> {
                   _auth.login(
                       username: emailController.text,
                       password: passwordController.text).catchError((e) {
-                    Scaffold.of(context).showSnackBar(SnackBar(
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content: Text(S.of(context).loginFailed),
                         duration: Duration(seconds: 2)
                     )); // snapshot.error;
@@ -247,10 +247,8 @@ class _LoginFormState extends State<LoginForm> {
                   ).catchError((_) => showUnexpectedError(context));
                 }
               },
-              elevation: 0.0,
-              color: Theme.of(context).primaryColor,
+              style: ElevatedButton.styleFrom(primary: Theme.of(context).colorScheme.secondary),
               child: Text(S.of(context).signIn, style: TextStyle(color: Colors.black)),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
             ),
           ),
         ],

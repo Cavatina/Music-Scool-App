@@ -19,10 +19,10 @@ part 'pagination_meta.g.dart';
 
 @JsonSerializable()
 class PaginationMeta {
-  final int current_page;
-  final int from;
-  final String path;
-  final int to;
+  final int? current_page;
+  final int? from;
+  final String? path;
+  final int? to;
 
   PaginationMeta(this.current_page, this.from, this.path, this.to);
   factory PaginationMeta.fromJson(Map<String, dynamic> json) => _$PaginationMetaFromJson(json);

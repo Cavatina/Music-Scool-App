@@ -20,16 +20,11 @@ part 'student.g.dart';
 
 @JsonSerializable()
 class Student {
-  final LessonRef nextLesson;
+  final LessonRef? nextLesson;
 
   Student(this.nextLesson);
 
   factory Student.fromJson(Map<String, dynamic> json) => _$StudentFromJson(json);
 
   Map<String, dynamic> toJson() => _$StudentToJson(this);
-
-  Student copyWith({LessonRef nextLesson}) {
-    return Student(
-        nextLesson);
-  }
 }

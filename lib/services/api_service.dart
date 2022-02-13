@@ -27,7 +27,7 @@ import 'package:musicscool/strings.dart' show apiUrl;
 import 'package:permission_handler/permission_handler.dart';
 
 
-ApiError httpStatusError(int statusCode) {
+ApiError httpStatusError(int? statusCode) {
   if (<int>[401, 403, 422].contains(statusCode)) {
     return AuthenticationFailed();
   }
@@ -38,7 +38,7 @@ ApiError httpStatusError(int statusCode) {
 
 class ApiService implements Api {
   final Dio _dio = Dio();
-  String _token;
+  String _token = '';
 
   ApiService() {
     _dio.options.baseUrl = apiUrl;
@@ -53,7 +53,7 @@ class ApiService implements Api {
   }
 
   @override
-  Future<String> login({String username, String password}) async {
+  Future<String> login({required String username, required String password}) async {
     try {
       Response response = await _dio.post(
         '/login',
@@ -74,11 +74,11 @@ class ApiService implements Api {
     }
     catch (e) {
       if (e is DioError) {
-        print(e.request);
+        print(e.requestOptions);
         print(e.message);
         if (e.response != null) {
-          print(e.response.data);
-          throw httpStatusError(e.response.statusCode);
+          print(e.response?.data);
+          throw httpStatusError(e.response?.statusCode);
         }
       }
       else {
@@ -89,7 +89,7 @@ class ApiService implements Api {
   }
 
   @override
-  Future<void> resetPassword({String username}) async {
+  Future<void> resetPassword({required String username}) async {
     try {
       await _dio.post(
         '/requestPasswordReset',
@@ -142,9 +142,9 @@ class ApiService implements Api {
 
   Future<Map<String, dynamic>> jsonGet(
     String path, {
-      int page,
-      int perPage,
-      bool withHomework,
+      int? page,
+      int? perPage,
+      bool withHomework = false,
       bool withCancelled = true,
       bool useCache = false,
       }) async {
@@ -182,8 +182,8 @@ class ApiService implements Api {
     catch (e) {
       if (e is DioError) {
         if (e.response != null) {
-          print(e.response.data);
-          throw httpStatusError(e.response.statusCode);
+          print(e.response?.data);
+          throw httpStatusError(e.response?.statusCode);
         }
         else {
           print(e.message);
@@ -208,12 +208,12 @@ class ApiService implements Api {
   }
 
   @override
-  Future<LessonCancelInfo> cancelLessonInfo({int id}) async {
+  Future<LessonCancelInfo> cancelLessonInfo({required int id}) async {
     return LessonCancelInfo.fromJson((await jsonGet('/student/lessons/${id}/cancel'))['data']);
   }
 
   @override
-  Future<Lesson> cancelLesson({int id}) async {
+  Future<Lesson> cancelLesson({required int id}) async {
     try {
       Response response = await _dio.post(
         '/student/lessons/${id}/cancel',
@@ -228,8 +228,8 @@ class ApiService implements Api {
     catch (e) {
       if (e is DioError) {
         if (e.response != null) {
-          print(e.response.data);
-          throw httpStatusError(e.response.statusCode);
+          print(e.response!.data);
+          throw httpStatusError(e.response?.statusCode);
         }
         else {
           print(e.message);
@@ -243,12 +243,12 @@ class ApiService implements Api {
   }
 
   @override
-  Future<String> downloadHomework({String url, String filename,
-                                   void Function(int, int) onReceiveProgress}) async {
+  Future<String> downloadHomework({required String url, required String filename,
+                                   required void Function(int, int) onReceiveProgress}) async {
     List<String> urlParts = url.split('/');
     String dir;
     if (Platform.isAndroid && await Permission.storage.request().isGranted) {
-      dir = (await getExternalStorageDirectories(type: StorageDirectory.documents))[0].path;
+      dir = (await getExternalStorageDirectories(type: StorageDirectory.documents))![0].path;
     }
     else {
       dir = (await getTemporaryDirectory()).path;
@@ -273,11 +273,9 @@ class ApiService implements Api {
     catch (e) {
       print(e);
       if (e is DioError) {
-        if (e.request != null) {
-          print (e.request.responseType);
-        }
+        print (e.requestOptions.responseType);
         if (e.response != null) {
-          print (e.response.statusCode);
+          print (e.response!.statusCode);
         }
         print (e.message);
       }

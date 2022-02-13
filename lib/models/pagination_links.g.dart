@@ -8,10 +8,10 @@ part of 'pagination_links.dart';
 
 PaginationLinks _$PaginationLinksFromJson(Map<String, dynamic> json) {
   return PaginationLinks(
-    json['first'] as String,
-    json['last'] as String,
-    json['prev'] as String,
-    json['next'] as String,
+    json['first'] as String?,
+    json['last'] as String?,
+    json['prev'] as String?,
+    json['next'] as String?,
   );
 }
 

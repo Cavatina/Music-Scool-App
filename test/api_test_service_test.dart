@@ -17,8 +17,8 @@ void main() {
     expect(user, isNotNull);
     expect(user.email, isNotEmpty);
     expect(user.student, isNotNull);
-    expect(user.student.nextLesson, isNotNull);
-    expect(user.student.nextLesson.from.isUtc, isTrue);
+    expect(user.student!.nextLesson, isNotNull);
+    expect(user.student!.nextLesson!.from.isUtc, isTrue);
   });
 /*
   test('lessons browse after/before works', () async {

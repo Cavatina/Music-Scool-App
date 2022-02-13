@@ -38,14 +38,13 @@ class LocalNotifications {
         InitializationSettings(
             android: initAndroid,
             iOS: initIOS,
-            macOS: initMacOS), onSelectNotification: (String payload) async {
+            macOS: initMacOS), onSelectNotification: (String? payload) async {
       print('onSelectNotification:${payload}');
-      return true;
     });
     return this;
   }
 
-  void scheduleNotification(Lesson lesson, Location timeZoneLocation) async {
+  Future<void> scheduleNotification(Lesson lesson, Location timeZoneLocation) async {
     TZDateTime now = TZDateTime.now(timeZoneLocation);
     TZDateTime localTime = TZDateTime.from(lesson.from, timeZoneLocation);
     TZDateTime startOfDay = localTime
@@ -66,7 +65,7 @@ class LocalNotifications {
               android: AndroidNotificationDetails(
                   'dk.musicscool.test2-lesson-day-reminder',
                   'lesson reminder',
-                  "Music'scool lesson reminder (morning)")),
+                  channelDescription: "Music'scool lesson reminder (morning)")),
           androidAllowWhileIdle: true,
           uiLocalNotificationDateInterpretation:
               UILocalNotificationDateInterpretation.absoluteTime);
@@ -82,7 +81,7 @@ class LocalNotifications {
               android: AndroidNotificationDetails(
                   'dk.musicscool.test2-lesson-hour-reminder',
                   'lesson reminder',
-                  "Music'scool lesson reminder (morning)")),
+                  channelDescription: "Music'scool lesson reminder (morning)")),
           androidAllowWhileIdle: true,
           uiLocalNotificationDateInterpretation:
               UILocalNotificationDateInterpretation.absoluteTime);
@@ -90,7 +89,7 @@ class LocalNotifications {
     }
   }
 
-  void scheduleNotifications(
+  Future<void> scheduleNotifications(
       List<Lesson> lessons, Location timeZoneLocation) async {
     await cancelNotifications();
     for (var lesson in lessons) {
@@ -98,7 +97,7 @@ class LocalNotifications {
     }
   }
 
-  void cancelNotifications() async {
+  Future<void> cancelNotifications() async {
     await _flutterLocalNotificationsPlugin.cancelAll();
     print('Cancelled all notifications');
   }

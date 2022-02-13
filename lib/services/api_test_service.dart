@@ -23,7 +23,7 @@ import 'package:musicscool/models/lesson.dart';
 import 'package:dio/dio.dart';
 
 class ApiTestService implements Api {
-  String _token;
+  String _token = '';
   final Dio _dio = Dio();
 
   @override
@@ -32,7 +32,7 @@ class ApiTestService implements Api {
   }
 
   @override
-  Future<String> login({String username, String password}) async {
+  Future<String> login({required String username, required String password}) async {
     User s = await user;
     if (username == s.email && password == 'password') {
       _token = 'dummy-token';
@@ -42,7 +42,7 @@ class ApiTestService implements Api {
   }
 
   @override
-  Future<void> resetPassword({String username}) async {
+  Future<void> resetPassword({required String username}) async {
     throw Exception('Not implemented');
   }
 
@@ -54,8 +54,10 @@ class ApiTestService implements Api {
   @override
   Future<User> get user async {
     User u = User.fromJson(json.decode(testUser)['data']);
-    u.student.nextLesson.from =
-        u.student.nextLesson.from.add(fixtureTimeDelta);
+    if (u.student?.nextLesson != null) {
+      u.student!.nextLesson!.from =
+        u.student!.nextLesson!.from.add(fixtureTimeDelta);
+    }
     return u;
   }
 
@@ -101,7 +103,7 @@ class ApiTestService implements Api {
   }
 
   @override
-  Future<LessonCancelInfo> cancelLessonInfo({int id}) async {
+  Future<LessonCancelInfo> cancelLessonInfo({required int id}) async {
     List<Lesson> lessons = await allLessons();
     for (int i=0; i<lessons.length; ++i) {
       if (lessons[i].id == id) {
@@ -112,7 +114,7 @@ class ApiTestService implements Api {
   }
 
   @override
-  Future<Lesson> cancelLesson({int id}) async {
+  Future<Lesson> cancelLesson({required int id}) async {
     List<Lesson> lessons = await allLessons();
     for (int i=0; i<lessons.length; ++i) {
       if (lessons[i].id == id) {
@@ -124,8 +126,8 @@ class ApiTestService implements Api {
   }
 
   @override
-  Future<String> downloadHomework({String url, String filename,
-                                   void Function(int, int) onReceiveProgress}) async {
+  Future<String> downloadHomework({required String url, required String filename,
+                                   required void Function(int, int) onReceiveProgress}) async {
     return '';
   }
 
@@ -167,7 +169,7 @@ class ApiTestService implements Api {
             from: _allLessons[i].from.add(fixtureTimeDelta),
             until: _allLessons[i].until.add(fixtureTimeDelta)
         );
-        if (u.student.nextLesson.id == _allLessons[i].id) {
+        if (u.student?.nextLesson?.id == _allLessons[i].id) {
           _allLessons[i].isNext = true;
         }
       }
@@ -176,14 +178,14 @@ class ApiTestService implements Api {
     return _allLessons;
   }
 
-  List<Lesson> _allLessons;
+  late List<Lesson> _allLessons;
   int _lessonIndex = -1;
   static const pageSize = 25;
   static final fixtureTimeDelta = _fixtureTimeDelta();
 }
 
 String testUser = '''
-{"data":{"name":"Mrs. Pixie","email":"someone@acme.com","schoolContact":{"name":"Roan Segers","phone":"+4512345678","email":"info@musicschooI.dk"},"student":{"nextLesson":{"id":1138, "from":"2020-11-28T14:00:00.000000Z"}}}}
+{"data":{"name":"Mrs. Pixie","firstName":"Mrs.","email":"someone@acme.com","schoolContact":{"name":"Roan Segers","phone":"+4512345678","email":"info@musicschooI.dk", "address": ["123 some street", "4000 Roskilde"]},"student":{"nextLesson":{"id":1138, "from":"2020-11-28T14:00:00.000000Z"}}}}
 ''';
 
 String testLessons = '''

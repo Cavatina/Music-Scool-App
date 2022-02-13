@@ -8,16 +8,11 @@ part of 'lesson_response.dart';
 
 LessonResponse _$LessonResponseFromJson(Map<String, dynamic> json) {
   return LessonResponse(
-    (json['data'] as List)
-        ?.map((e) =>
-            e == null ? null : Lesson.fromJson(e as Map<String, dynamic>))
-        ?.toList(),
-    json['meta'] == null
-        ? null
-        : PaginationMeta.fromJson(json['meta'] as Map<String, dynamic>),
-    json['links'] == null
-        ? null
-        : PaginationLinks.fromJson(json['links'] as Map<String, dynamic>),
+    (json['data'] as List<dynamic>)
+        .map((e) => Lesson.fromJson(e as Map<String, dynamic>))
+        .toList(),
+    PaginationMeta.fromJson(json['meta'] as Map<String, dynamic>),
+    PaginationLinks.fromJson(json['links'] as Map<String, dynamic>),
   );
 }
 

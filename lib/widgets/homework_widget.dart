@@ -31,7 +31,7 @@ class HomeworkDownloadIcon extends StatefulWidget {
   final String url;
   final String fileName;
 
-  HomeworkDownloadIcon({this.url, this.fileName});
+  HomeworkDownloadIcon({required this.url, required this.fileName});
 
   @override
   _HomeworkDownloadIconState createState() => _HomeworkDownloadIconState();
@@ -40,7 +40,7 @@ class HomeworkDownloadIcon extends StatefulWidget {
 class _HomeworkDownloadIconState extends State<HomeworkDownloadIcon> {
   bool downloading = false;
   double progress = 0.0;
-  String filePath;
+  String? filePath;
 
   @override
   void initState() {
@@ -94,7 +94,7 @@ class _HomeworkDownloadIconState extends State<HomeworkDownloadIcon> {
         )
       );
     }
-    else if (filePath != null) {
+    else if (!isNullOrEmpty(filePath)) {
       return OutlinedButton.icon(
       label: Text(S.of(context).open),
       onPressed: () {
@@ -118,7 +118,7 @@ class HomeworkWidget extends StatefulWidget {
   final Lesson lesson;
   final bool expanded;
 
-  HomeworkWidget({this.lesson, this.expanded});
+  HomeworkWidget({required this.lesson, required this.expanded});
 
   @override
   _HomeworkWidgetState createState() => _HomeworkWidgetState(expanded: expanded);
@@ -127,7 +127,7 @@ class HomeworkWidget extends StatefulWidget {
 class _HomeworkWidgetState extends State<HomeworkWidget> {
   bool expanded;
 
-  _HomeworkWidgetState({this.expanded});
+  _HomeworkWidgetState({required this.expanded});
 
   Widget homeworkIcons(BuildContext context, Homework homework) {
     List<Widget> icons = <Widget>[];
@@ -139,8 +139,8 @@ class _HomeworkWidgetState extends State<HomeworkWidget> {
           SizedBox(
             width: boxWidth,
             child: HomeworkDownloadIcon(
-              url: homework.fileUrl,
-              fileName: homework.fileName,
+              url: homework.fileUrl!,
+              fileName: homework.fileName ?? '',
               ),
             )
           );
@@ -152,7 +152,7 @@ class _HomeworkWidgetState extends State<HomeworkWidget> {
           child: OutlinedButton.icon(
             label: Text(S.of(context).view),
             onPressed: () {
-              launch(homework.linkUrl);
+              launch(homework.linkUrl!.replaceAll(RegExp(r'/embed'), '/watch'));
             },
               icon: Icon(CupertinoIcons.tv_music_note_fill)//ondemand_video_outlined)
           ),
@@ -162,26 +162,26 @@ class _HomeworkWidgetState extends State<HomeworkWidget> {
     return Wrap(direction: Axis.horizontal, spacing: 16.0, children: icons);
   }
 
-  Widget header(BuildContext context, {List<Widget> children}) {
+  Widget header(BuildContext context, {required List<Widget> children}) {
     String subtitle;
     if (widget.lesson.instrument != null && widget.lesson.teacher != null) {
       subtitle = S.of(context).instrumentWithTeacher(
-          instrumentText(context, widget.lesson.instrument.name),
-          widget.lesson.teacher.name);
+          instrumentText(context, widget.lesson.instrument!.name),
+          widget.lesson.teacher!.name);
     }
     else if (widget.lesson.teacher != null) {
-      subtitle = S.of(context).withTeacher(widget.lesson.teacher.name);
+      subtitle = S.of(context).withTeacher(widget.lesson.teacher!.name);
     }
     else {
       subtitle = '';
     }
 
-    if (widget.lesson.homework != null && widget.lesson.homework.isNotEmpty && expanded == false) {
-        subtitle = widget.lesson.homework.first.message ?? '';
+    if (widget.lesson.homework?.isNotEmpty == true && expanded == false) {
+        subtitle = widget.lesson.homework?.first.message ?? '';
     }
     return ExpansionTile(
         title: Text(formattedDateTime(context, widget.lesson.from)),
-        subtitle: Text(subtitle, style: TextStyle(color: Colors.white60),
+        subtitle: Text(subtitle, style: TextStyle(color: Theme.of(context).colorScheme.primaryVariant),
         overflow: TextOverflow.ellipsis),
         initiallyExpanded: widget.expanded,
           onExpansionChanged: (bool state) {
@@ -196,7 +196,7 @@ class _HomeworkWidgetState extends State<HomeworkWidget> {
     List<Widget> out = <Widget>[];
     if (widget.lesson.homework != null) {
 //      out.add(ListTile(subtitle: Text('Homework')/*, tileColor: Color.fromRGBO(64, 64, 64, 0.5)*/));
-      widget.lesson.homework.forEach((Homework homework) =>
+      widget.lesson.homework!.forEach((Homework homework) =>
           out.add(
               Container(
                 color: Color.fromRGBO(64, 64, 64, 0.3),

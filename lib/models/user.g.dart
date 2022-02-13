@@ -11,9 +11,7 @@ User _$UserFromJson(Map<String, dynamic> json) {
     json['name'] as String,
     json['firstName'] as String,
     json['email'] as String,
-    json['schoolContact'] == null
-        ? null
-        : SchoolContact.fromJson(json['schoolContact'] as Map<String, dynamic>),
+    SchoolContact.fromJson(json['schoolContact'] as Map<String, dynamic>),
     json['student'] == null
         ? null
         : Student.fromJson(json['student'] as Map<String, dynamic>),

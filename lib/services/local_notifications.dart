@@ -51,7 +51,7 @@ class LocalNotifications {
         .subtract(Duration(hours: localTime.hour, minutes: localTime.minute))
         .add(Duration(hours: 8));
     if (now.isAfter(startOfDay)) {
-      startOfDay = now.add(Duration(seconds:1));
+      startOfDay = now.add(Duration(seconds:10));
     }
     TZDateTime oneHourBefore = localTime.subtract(Duration(hours: 1));
     String localHourMinute = DateFormat.Hm().format(localTime);

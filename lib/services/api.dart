@@ -13,6 +13,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
+import 'package:musicscool/models/instrument.dart';
 import 'package:musicscool/models/lesson_cancel_info.dart';
 import 'package:musicscool/models/user.dart';
 import 'package:musicscool/models/lesson.dart';
@@ -43,4 +44,6 @@ abstract class Api {
   Future<Lesson> cancelLesson({required int id});
 
   Future<String> downloadHomework({required String url, required String filename, required void Function(int, int) onReceiveProgress});
+
+  Future<List<Instrument>> getInstruments();
 }

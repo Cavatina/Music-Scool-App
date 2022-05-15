@@ -17,6 +17,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
+import 'package:musicscool/models/instrument.dart';
 import 'package:musicscool/models/lesson_cancel_info.dart';
 import 'package:musicscool/models/lesson_response.dart';
 import 'package:musicscool/services/api.dart';
@@ -281,6 +282,12 @@ class ApiService implements Api {
       }
       throw ServerError();
     }
+  }
+
+  @override
+  Future<List<Instrument>> getInstruments() async {
+    List<dynamic> js = (await jsonGet('/instruments'))['data'];
+    return js.map<Instrument>((jsObj) => Instrument.fromJson(jsObj)).toList();
   }
 
   static const pageSize = 25;

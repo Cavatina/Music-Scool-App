@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:musicscool/models/instrument.dart';
 import 'package:musicscool/models/lesson_cancel_info.dart';
 import 'package:musicscool/models/lesson.dart';
 import 'package:musicscool/models/user.dart';
@@ -198,6 +199,10 @@ class AuthModel extends ChangeNotifier {
     api.token = await token;
     return await api.downloadHomework(url: url, filename: name,
                                       onReceiveProgress: onReceiveProgress);
+  }
+
+  Future<List<Instrument>> getInstruments() async {
+    return await api.getInstruments();
   }
 
   Future<void> cacheClear() async {

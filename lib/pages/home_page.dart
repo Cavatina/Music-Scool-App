@@ -58,16 +58,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  Widget waiting() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget> [
-        CircularProgressIndicator()
-      ]
-    );
-  }
-
   Widget countdownView(BuildContext context) {
     return Consumer<AuthModel>(
         builder: (context, model, child) {

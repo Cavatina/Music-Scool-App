@@ -25,4 +25,14 @@ void showUnexpectedError(BuildContext context)
     )));
 }
 
+Widget waiting() {
+  return Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: <Widget> [
+      CircularProgressIndicator()
+    ]
+  );
+}
+
 bool isNullOrEmpty(Object? o) => o == null || o == '';

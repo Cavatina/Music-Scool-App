@@ -7,6 +7,7 @@ import 'package:musicscool/models/user.dart';
 import 'package:musicscool/service_locator.dart';
 import 'package:musicscool/services/api.dart';
 import 'package:musicscool/viewmodels/auth.dart';
+import 'package:musicscool/widgets/duration_select.dart';
 import 'package:provider/provider.dart';
 import 'package:musicscool/generated/l10n.dart';
 
@@ -22,6 +23,7 @@ class RequestLesson extends StatefulWidget {
 class _RequestLessonState extends State<RequestLesson> {
   List<Instrument>? _instruments;
   Instrument? instrument;
+  LessonDuration duration = LessonDuration.HalfHour;
 
   @override
   void initState() {
@@ -69,6 +71,17 @@ class _RequestLessonState extends State<RequestLesson> {
             )],
           ),
           leading: Icon(CupertinoIcons.question_circle),
+        ),
+        ListTile(
+          title: DurationSelect(
+            selected: duration,
+            onSelect: (selected) {
+              setState(() {
+                duration = selected;
+              });
+            },
+          ),
+          leading: Icon(CupertinoIcons.clock),
         ),
       ]
     );

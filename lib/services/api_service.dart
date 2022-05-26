@@ -17,12 +17,16 @@ import 'dart:async';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
+import 'package:musicscool/models/available_dates.dart';
 import 'package:musicscool/models/instrument.dart';
 import 'package:musicscool/models/lesson_cancel_info.dart';
 import 'package:musicscool/models/lesson_response.dart';
+import 'package:musicscool/models/teacher.dart';
+import 'package:musicscool/models/time_slot.dart';
 import 'package:musicscool/services/api.dart';
 import 'package:musicscool/models/user.dart';
 import 'package:musicscool/models/lesson.dart';
+import 'package:musicscool/widgets/duration_select.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:musicscool/strings.dart' show apiUrl;
 import 'package:permission_handler/permission_handler.dart';
@@ -148,12 +152,20 @@ class ApiService implements Api {
       bool withHomework = false,
       bool withCancelled = true,
       bool useCache = false,
+      Instrument? instrument,
+      Teacher? teacher,
+      LessonDuration? duration,
+      DateTime? date
       }) async {
     Map<String, String> params = <String, String>{};
     if (page != null && page != 0) params['page'] = page.toString();
     if (perPage != null && perPage != 0) params['per_page'] = perPage.toString();
     if (withHomework == true) params['with_homework'] = 'true';
     if (withCancelled == false) params['with_cancelled'] = 'false';
+    if (instrument != null) params['instrument_id'] = instrument.id.toString();
+    if (teacher != null) params['teacher_id'] = teacher.id.toString();
+    if (duration != null) params['duration'] = duration.minutes.toString();
+    if (date != null) params['date'] = date.toIso8601String().substring(0, 10);
 
     Options options = Options(
       headers: <String, String> {
@@ -288,6 +300,22 @@ class ApiService implements Api {
   Future<List<Instrument>> getInstruments() async {
     List<dynamic> js = (await jsonGet('/instruments'))['data'];
     return js.map<Instrument>((jsObj) => Instrument.fromJson(jsObj)).toList();
+  }
+
+  @override
+  Future<List<AvailableDates>> getAvailableDates({required Instrument instrument}) async {
+    List<dynamic> js = (await jsonGet('/lessons/days', instrument: instrument))['data'];
+    return js.map<AvailableDates>((jsObj) => AvailableDates.fromJson(jsObj)).toList();
+  }
+
+  @override
+  Future<List<TimeSlot>> getTimeSlots({required Teacher teacher, required DateTime date, required LessonDuration duration}) async {
+    List<dynamic> js = (await jsonGet(
+      '/lessons/time-slots',
+      teacher: teacher,
+      date: date,
+      duration: duration))['data'];
+    return js.map<TimeSlot>((jsObj) => TimeSlot.fromJson(jsObj)).toList();
   }
 
   static const pageSize = 25;

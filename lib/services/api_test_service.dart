@@ -16,12 +16,16 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 import 'dart:async';
 import 'dart:convert' show json;
 import 'dart:math';
+import 'package:musicscool/models/available_dates.dart';
 import 'package:musicscool/models/instrument.dart';
 import 'package:musicscool/models/lesson_cancel_info.dart';
+import 'package:musicscool/models/teacher.dart';
+import 'package:musicscool/models/time_slot.dart';
 import 'package:musicscool/services/api.dart';
 import 'package:musicscool/models/user.dart';
 import 'package:musicscool/models/lesson.dart';
 import 'package:dio/dio.dart';
+import 'package:musicscool/widgets/duration_select.dart';
 
 class ApiTestService implements Api {
   String _token = '';
@@ -164,6 +168,18 @@ class ApiTestService implements Api {
     return js.map<Instrument>((jsObj) => Instrument.fromJson(jsObj)).toList();
   }
 
+  @override
+  Future<List<AvailableDates>> getAvailableDates({required Instrument instrument}) async {
+    List<dynamic> js = json.decode(testAvailableDates)['data'];
+    return js.map<AvailableDates>((jsObj) => AvailableDates.fromJson(jsObj)).toList();
+  }
+
+  @override
+  Future<List<TimeSlot>> getTimeSlots({required Teacher teacher, required DateTime date, required LessonDuration duration}) async {
+    List<dynamic> js = json.decode(testTimeSlots)['data'];
+    return js.map<TimeSlot>((jsObj) => TimeSlot.fromJson(jsObj)).toList();
+  }
+
   Future<List<Lesson>> _cachedLessons() async {
     if (_lessonIndex == -1) {
       List<dynamic> js = json.decode(testLessons)['data'];
@@ -201,4 +217,12 @@ String testLessons = '''
 
 String testInstruments =
 '''{"data":[{"id":5,"name":"Bass guitar"},{"id":6,"name":"Guitar"},{"id":7,"name":"Piano"},{"id":9,"name":"Vocal"},{"id":10,"name":"Drums"},{"id":11,"name":"Songwriting"},{"id":13,"name":"Rhythm Class"}]}
+''';
+
+String testTimeSlots =
+'''{"data":[{"time":"15:30"},{"time":"16:30"}]}
+''';
+
+String testAvailableDates =
+'''{"data":[{"date":"2022-05-30","teacher":{"id":7,"name":"Ditlev Ulriksen"},"location":{"id":2}}]}
 ''';

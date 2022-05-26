@@ -13,12 +13,16 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
+import 'package:musicscool/models/available_dates.dart';
 import 'package:musicscool/models/instrument.dart';
 import 'package:musicscool/models/lesson_cancel_info.dart';
+import 'package:musicscool/models/teacher.dart';
+import 'package:musicscool/models/time_slot.dart';
 import 'package:musicscool/models/user.dart';
 import 'package:musicscool/models/lesson.dart';
 import 'dart:async';
 import 'package:dio/dio.dart';
+import 'package:musicscool/widgets/duration_select.dart';
 
 class ApiError implements Exception {}
 
@@ -46,4 +50,7 @@ abstract class Api {
   Future<String> downloadHomework({required String url, required String filename, required void Function(int, int) onReceiveProgress});
 
   Future<List<Instrument>> getInstruments();
+
+  Future<List<AvailableDates>> getAvailableDates({required Instrument instrument});
+  Future<List<TimeSlot>> getTimeSlots({required Teacher teacher, required DateTime date, required LessonDuration duration});
 }

@@ -29,6 +29,7 @@ import 'package:musicscool/widgets/lesson_widget.dart';
 import 'package:musicscool/generated/l10n.dart';
 import 'package:musicscool/helpers.dart';
 import 'package:musicscool/strings.dart' show privacyPolicyUrl, appName;
+import 'package:musicscool/pages/home_voucher_tab.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -39,7 +40,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   bool _notificationsEnabled = false;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   late TabController _tabController;
-  static const _tabCount = 4;
+  static const _tabCount = 5;
 
   @override
   void initState() {
@@ -194,13 +195,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             centerTitle: true,
             bottom: TabBar(
                 controller: _tabController,
-                labelStyle: TextStyle(fontSize: 10),
+                labelStyle: TextStyle(fontSize: 9),
                 indicatorColor: Theme.of(context).colorScheme.primary,
                 tabs: [
                   Tab(text: S.of(context).info, icon: Icon(CupertinoIcons.info_circle_fill)), //Icons.info)),
                   Tab(text: S.of(context).homework, icon: Icon(CupertinoIcons.music_albums_fill)), //doc_on_doc_fill)),//Icons.book)),
                   Tab(text: S.of(context).next, icon: Icon(CupertinoIcons.timer_fill)), //Icons.home)),
                   Tab(text: S.of(context).upcoming, icon: Icon(CupertinoIcons.calendar)), //Icons.fast_forward)),
+                  Tab(text: S.of(context).voucher, icon: Icon(CupertinoIcons.ticket_fill)),
                 ]
             )
         ),
@@ -216,6 +218,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 homeworkLessonsView(context),
                 countdownView(context),
                 upcomingLessonsView(context),
+                voucherView(context),
               ]
           ),
         )

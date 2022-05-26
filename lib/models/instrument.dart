@@ -24,6 +24,11 @@ class Instrument {
 
   Instrument(this.id, this.name);
 
+  @override
+  String toString() {
+    return 'Instrument(${name}(${id}))';
+  }
+
   factory Instrument.fromJson(Map<String, dynamic> json) => _$InstrumentFromJson(json);
 
   Map<String, dynamic> toJson() => _$InstrumentToJson(this);

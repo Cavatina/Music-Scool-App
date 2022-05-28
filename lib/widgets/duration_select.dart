@@ -59,7 +59,6 @@ class _DurationSelectState extends State<DurationSelect> {
           setState(() {
             selected = LessonDuration.values[index];
             widget.onSelect(selected);
-            print('duration:${selected.minutes}');
           });
         },
         children: LessonDuration.values.map((duration) {

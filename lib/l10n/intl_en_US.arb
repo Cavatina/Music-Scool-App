@@ -146,6 +146,8 @@
   "@vocals": {},
   "voucher": "Voucher",
   "@voucher": {},
+  "voucherInfo": "{lessonsRemaining} lessons, expires {expiryDate}",
+  "@voucherInfo": {},
   "withTeacher": "With {teacher}",
   "@withTeacher": {},
   "yes": "Confirm",

@@ -48,6 +48,11 @@ String instrumentText(BuildContext context, String instrumentKey) {
   }
 }
 
+String formattedDateShort(BuildContext context, DateTime time) {
+    TZDateTime local = locator<IntlService>().localDateTime(time);
+    return DateFormat.yMMMd().format(local);
+}
+
 String formattedDate(BuildContext context, DateTime time) {
     TZDateTime local = locator<IntlService>().localDateTime(time);
     return DateFormat.yMMMEd().format(local);

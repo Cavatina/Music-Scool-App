@@ -20,6 +20,7 @@ import 'package:musicscool/models/teacher.dart';
 import 'package:musicscool/models/time_slot.dart';
 import 'package:musicscool/models/user.dart';
 import 'package:musicscool/models/lesson.dart';
+import 'package:musicscool/models/voucher.dart';
 import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:musicscool/widgets/duration_select.dart';
@@ -48,6 +49,8 @@ abstract class Api {
   Future<Lesson> cancelLesson({required int id});
 
   Future<String> downloadHomework({required String url, required String filename, required void Function(int, int) onReceiveProgress});
+
+  Future<List<Voucher>> getVouchers();
 
   Future<List<Instrument>> getInstruments();
 

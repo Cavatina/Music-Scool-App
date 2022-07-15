@@ -23,6 +23,7 @@ import 'package:musicscool/models/lesson_cancel_info.dart';
 import 'package:musicscool/models/lesson_response.dart';
 import 'package:musicscool/models/teacher.dart';
 import 'package:musicscool/models/time_slot.dart';
+import 'package:musicscool/models/voucher.dart';
 import 'package:musicscool/services/api.dart';
 import 'package:musicscool/models/user.dart';
 import 'package:musicscool/models/lesson.dart';
@@ -218,6 +219,12 @@ class ApiService implements Api {
     LessonResponse response = LessonResponse.fromJson(await jsonGet('/student/lessons/past',
         page: page, perPage: perPage, withHomework: true, useCache: true));
     return response.data;
+  }
+
+  @override
+  Future<List<Voucher>> getVouchers() async {
+    List<dynamic> js = (await jsonGet('/student/vouchers'))['data'];
+    return js.map<Voucher>((jsObj) => Voucher.fromJson(jsObj)).toList();
   }
 
   @override

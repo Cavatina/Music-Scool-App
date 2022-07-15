@@ -2,10 +2,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:musicscool/helpers.dart';
+import 'package:musicscool/locale_strings.dart';
 import 'package:musicscool/models/available_dates.dart';
 import 'package:musicscool/models/instrument.dart';
 import 'package:musicscool/models/time_slot.dart';
 import 'package:musicscool/models/user.dart';
+import 'package:musicscool/models/voucher.dart';
 import 'package:musicscool/service_locator.dart';
 import 'package:musicscool/services/api.dart';
 import 'package:musicscool/viewmodels/auth.dart';
@@ -27,6 +29,8 @@ class RequestLesson extends StatefulWidget {
 class _RequestLessonState extends State<RequestLesson> {
   List<Instrument>? _instruments;
   Instrument? instrument;
+  List<Voucher>? _vouchers;
+  Voucher? voucher;
   AvailableDates? date;
   LessonDuration duration = LessonDuration.HalfHour;
   TimeSlot? slot;
@@ -39,6 +43,39 @@ class _RequestLessonState extends State<RequestLesson> {
         _instruments = instruments;
       });
     });
+    locator<AuthModel>().getVouchers().then((List<Voucher> vouchers) {
+      setState(() {
+        _vouchers = vouchers.where((v) => v.active).toList();
+        if (voucher == null && _vouchers?.isNotEmpty == true) {
+          voucher = vouchers.first;
+        }
+      });
+    });
+  }
+
+  Widget vouchersDropdown(BuildContext context, Voucher? selected, List<Voucher>? vouchers) {
+    return DropdownButton<Voucher>(
+      hint: Text(S.of(context).voucher),
+      isExpanded: true,
+      value: selected,
+      items: vouchers?.map((voucher) {
+        return DropdownMenuItem<Voucher>(
+          value: voucher,
+          child: Text(S.of(context).voucherInfo(
+            voucher.lessonsRemaining,
+            formattedDateShort(context, voucher.expiryDate))),
+        );
+        }).toList(),
+      onChanged: (newVal) {
+        setState(() {
+          if (voucher != newVal) {
+            voucher = newVal;
+            date = null;
+            slot = null;
+          }
+        });
+      }
+    );
   }
 
   Widget instrumentsDropdown(BuildContext context, Instrument? selected, List<Instrument>? instruments) {
@@ -69,6 +106,11 @@ class _RequestLessonState extends State<RequestLesson> {
     return ListView(
       padding: EdgeInsets.symmetric(vertical: 16.0),
       children: <Widget>[
+        ListTile(
+          title: vouchersDropdown(context, voucher, _vouchers),
+          subtitle: Text(''),
+          leading: Icon(CupertinoIcons.ticket_fill),
+        ),
         ListTile(
           title: instrumentsDropdown(context, instrument, _instruments),
           subtitle: Text(''),

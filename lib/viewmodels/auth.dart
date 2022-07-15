@@ -5,6 +5,7 @@ import 'package:musicscool/models/instrument.dart';
 import 'package:musicscool/models/lesson_cancel_info.dart';
 import 'package:musicscool/models/lesson.dart';
 import 'package:musicscool/models/user.dart';
+import 'package:musicscool/models/voucher.dart';
 import 'package:musicscool/services/api.dart';
 import 'package:musicscool/service_locator.dart';
 import 'package:musicscool/services/local_notifications.dart';
@@ -163,6 +164,10 @@ class AuthModel extends ChangeNotifier {
   Future<List<Lesson>> getHomeworkLessons({required int page, required int perPage}) async {
     api.token = await token;
     return await api.getHomeworkLessons(page: page, perPage: perPage);
+  }
+
+  Future<List<Voucher>> getVouchers() async {
+    return await api.getVouchers();
   }
 
   Future<LessonCancelInfo> cancelLessonInfo({required int id}) async {

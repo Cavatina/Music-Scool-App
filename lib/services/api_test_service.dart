@@ -21,6 +21,7 @@ import 'package:musicscool/models/instrument.dart';
 import 'package:musicscool/models/lesson_cancel_info.dart';
 import 'package:musicscool/models/teacher.dart';
 import 'package:musicscool/models/time_slot.dart';
+import 'package:musicscool/models/voucher.dart';
 import 'package:musicscool/services/api.dart';
 import 'package:musicscool/models/user.dart';
 import 'package:musicscool/models/lesson.dart';
@@ -163,6 +164,12 @@ class ApiTestService implements Api {
   }
 
   @override
+  Future<List<Voucher>> getVouchers() async {
+    List<dynamic> js = json.decode(testVouchers)['data'];
+    return js.map<Voucher>((jsObj) => Voucher.fromJson(jsObj)).toList();
+  }
+
+  @override
   Future<List<Instrument>> getInstruments() async {
     List<dynamic> js = json.decode(testInstruments)['data'];
     return js.map<Instrument>((jsObj) => Instrument.fromJson(jsObj)).toList();
@@ -225,4 +232,8 @@ String testTimeSlots =
 
 String testAvailableDates =
 '''{"data":[{"date":"2022-05-30","teacher":{"id":7,"name":"Ditlev Ulriksen"},"location":{"id":2}}]}
+''';
+
+String testVouchers =
+'''{"data":[{"id":21,"active":true,"lessonsGranted":10,"lessonsRemaining":10,"activeFrom":"2022-02-14T23:00:00.000000Z","expiryDate":"2023-02-14T23:00:00.000000Z"},{"id":1,"active":false,"lessonsGranted":10,"lessonsRemaining":5,"activeFrom":"2021-01-31T23:00:00.000000Z","expiryDate":"2022-01-31T23:00:00.000000Z"}]}
 ''';

@@ -24,6 +24,7 @@ import 'package:provider/provider.dart';
 import 'package:musicscool/models/lesson.dart';
 import 'package:musicscool/helpers.dart';
 import 'package:musicscool/generated/l10n.dart';
+import 'lesson_list_view.dart';
 
 class LessonWidget extends StatefulWidget {
   final Lesson lesson;
@@ -77,6 +78,17 @@ class _LessonWidgetState extends State<LessonWidget> {
 
   Future<bool> confirmCancel(BuildContext context) async {
     AuthModel auth = Provider.of<AuthModel>(context, listen: false);
+    if (lesson.requested == true) {
+        await auth.cancelLesson(id: lesson.id).then((_) {
+          LessonListViewState? list = context.findAncestorStateOfType<LessonListViewState>();
+          if (list != null) {
+            list.removeLesson(lesson.id);
+          }
+        }).catchError((e) {
+          showUnexpectedError(context);
+        });
+        return true;
+    }
     LessonCancelInfo cancelInfo;
     try {
       cancelInfo = await auth.cancelLessonInfo(id: lesson.id);
@@ -143,7 +155,7 @@ class _LessonWidgetState extends State<LessonWidget> {
   }
 
   Widget cancellableIfPending(BuildContext context, Widget child) {
-    if (lesson.pending == true) {
+    if (lesson.pending == true || lesson.requested == true) {
       return Dismissible(
           key: Key(lesson.id.toString()),
           confirmDismiss: (dir) => confirmDismiss(context, dir),
@@ -173,13 +185,13 @@ class _LessonWidgetState extends State<LessonWidget> {
       border = Border(right: BorderSide(width: 2.0, color: Colors.white),
                       left: BorderSide(width: 2.0, color: Colors.green[900]!));
     }
-    else { //if (lesson.isNext != true) {
-      border = Border(right: BorderSide(width: 2.0, color: Colors.white));
+    else if (lesson.requested == true) {
+      border = Border(right: BorderSide(width: 2.0, color: Colors.grey[600]!));
     }
-    // else {
-    //   border = Border(right: BorderSide(width: 2.0, color: Colors.black));
-    // }
-    if (lesson.pending == true) {
+    else {
+      border = Border(right: BorderSide(width: 2.0, color: Colors.black));
+    }
+    if (lesson.pending == true || lesson.requested == true) {
       return Card(
           child: cancellableIfPending(context,
               Container(

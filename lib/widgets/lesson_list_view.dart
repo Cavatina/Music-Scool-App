@@ -19,10 +19,10 @@ class LessonListView extends StatefulWidget {
                   required this.itemRefresh});
 
   @override
-  _LessonListViewState createState() => _LessonListViewState();
+  LessonListViewState createState() => LessonListViewState();
 }
 
-class _LessonListViewState extends State<LessonListView> {
+class LessonListViewState extends State<LessonListView> {
   static const _pageSize = 20;
 
   PagingController<int, Lesson>? _pagingController =
@@ -55,6 +55,16 @@ class _LessonListViewState extends State<LessonListView> {
       if (mounted && _pagingController != null) {
         _pagingController!.error = S.current.unexpectedErrorMessage;
       }
+    }
+  }
+
+  void removeLesson(int id) {
+    if (_pagingController != null && _pagingController!.itemList != null) {
+      final list = _pagingController!.itemList ?? [];
+      list.removeWhere((lesson) => lesson.id == id);
+      setState(() {
+        _pagingController!.itemList = list;
+      });
     }
   }
 

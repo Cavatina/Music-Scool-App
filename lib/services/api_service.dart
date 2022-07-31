@@ -34,7 +34,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 
 ApiError httpStatusError(int? statusCode) {
-  if (<int>[401, 403, 422].contains(statusCode)) {
+  if (<int>[401, 403].contains(statusCode)) {
     return AuthenticationFailed();
   }
   else {

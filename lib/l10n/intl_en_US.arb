@@ -108,6 +108,8 @@
   "@privacyPolicy": {},
   "replacementForLesson": "Replacement lesson for {date}",
   "@replacementForLesson": {},
+  "requested": "Requested",
+  "@requested": {},
   "requestLesson": "Request Lesson",
   "@requestLesson": {},
   "resetPassword": "Reset password",

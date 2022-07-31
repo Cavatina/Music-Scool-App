@@ -52,6 +52,9 @@ class _LessonWidgetState extends State<LessonWidget> {
     else {
       subtitle = '';
     }
+    if (lesson.requested == true) {
+      subtitle = '(' + S.of(context).requested + ') ' + subtitle;
+    }
     if (children.isNotEmpty) {
       return ExpansionTile(
           title: Text(formattedDateTime(context, lesson.from)),
@@ -182,11 +185,12 @@ class _LessonWidgetState extends State<LessonWidget> {
       border = Border(left: BorderSide(width: 2.0, color: Colors.red[900]!));
     }
     else if (lesson.replacesLesson != null) {
-      border = Border(right: BorderSide(width: 2.0, color: Colors.white),
+      border = Border(right: BorderSide(width: 2.0, color: Colors.black),
                       left: BorderSide(width: 2.0, color: Colors.green[900]!));
     }
     else if (lesson.requested == true) {
-      border = Border(right: BorderSide(width: 2.0, color: Colors.grey[600]!));
+      border = Border(right: BorderSide(width: 2.0, color: Colors.black),
+                      left: BorderSide(width: 2.0, color: Colors.purple[900]!));
     }
     else {
       border = Border(right: BorderSide(width: 2.0, color: Colors.black));

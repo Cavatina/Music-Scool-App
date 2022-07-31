@@ -110,6 +110,8 @@
   "@replacementForLesson": {},
   "requested": "Requested",
   "@requested": {},
+  "requestedNotYetApproved": "Pending teacher approval",
+  "@requestedNotYetApproved": {},
   "requestLesson": "Request Lesson",
   "@requestLesson": {},
   "resetPassword": "Reset password",

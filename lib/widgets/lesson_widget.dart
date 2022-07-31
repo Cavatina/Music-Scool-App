@@ -76,6 +76,9 @@ class _LessonWidgetState extends State<LessonWidget> {
       out.add(ListTile(subtitle: Text(S.of(context).replacementForLesson(
         formattedDate(context, lesson.replacesLesson!.from)))));
     }
+    if (lesson.requested == true) {
+      out.add(ListTile(subtitle: Text(S.of(context).requestedNotYetApproved)));
+    }
     return out;
   }
 

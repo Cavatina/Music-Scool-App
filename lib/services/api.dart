@@ -46,7 +46,7 @@ abstract class Api {
   Future<List<Lesson>> getUpcomingLessons({int page = 0, int perPage = 20, bool withCancelled = true});
 
   Future<LessonCancelInfo> cancelLessonInfo({required int id});
-  Future<Lesson> cancelLesson({required int id});
+  Future<Lesson?> cancelLesson({required int id});
 
   Future<String> downloadHomework({required String url, required String filename, required void Function(int, int) onReceiveProgress});
 

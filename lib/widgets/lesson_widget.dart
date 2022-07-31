@@ -118,10 +118,12 @@ class _LessonWidgetState extends State<LessonWidget> {
             CupertinoDialogAction(
                 child: Text(S.of(context).yes),
                 onPressed: () {
-                  auth.cancelLesson(id: lesson.id).then((Lesson l) {
-                    setState(() {
-                      lesson = l;
-                    });
+                  auth.cancelLesson(id: lesson.id).then((Lesson? l) {
+                    if (l != null) {
+                      setState(() {
+                        lesson = l;
+                      });
+                    }
                     Navigator.of(dialogContext).pop(true);
                   }).catchError((e) {
                     showUnexpectedError(context);

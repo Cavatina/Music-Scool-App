@@ -175,9 +175,9 @@ class AuthModel extends ChangeNotifier {
     return await api.cancelLessonInfo(id: id);
   }
 
-  Future<Lesson> cancelLesson({required int id}) async {
+  Future<Lesson?> cancelLesson({required int id}) async {
     api.token = await token;
-    Lesson lesson = await api.cancelLesson(id: id);
+    Lesson? lesson = await api.cancelLesson(id: id);
     await cacheClearUpcoming();
     return lesson;
   }

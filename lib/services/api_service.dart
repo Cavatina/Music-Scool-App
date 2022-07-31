@@ -233,7 +233,7 @@ class ApiService implements Api {
   }
 
   @override
-  Future<Lesson> cancelLesson({required int id}) async {
+  Future<Lesson?> cancelLesson({required int id}) async {
     try {
       Response response = await _dio.post(
         '/student/lessons/${id}/cancel',
@@ -243,7 +243,12 @@ class ApiService implements Api {
           }
         )
       );
-      return Lesson.fromJson(response.data['data']);
+      try {
+        return Lesson.fromJson(response.data['data']);
+      }
+      on TypeError catch (_) {
+        return null;
+      }
     }
     catch (e) {
       if (e is DioError) {

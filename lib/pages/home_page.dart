@@ -218,7 +218,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 homeworkLessonsView(context),
                 countdownView(context),
                 upcomingLessonsView(context),
-                voucherView(context),
+                voucherView(context, () {_tabController.index = 3;}),
               ]
           ),
         )

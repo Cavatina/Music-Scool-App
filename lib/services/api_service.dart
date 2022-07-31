@@ -17,6 +17,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
+import 'package:intl/intl.dart';
 import 'package:musicscool/models/available_dates.dart';
 import 'package:musicscool/models/instrument.dart';
 import 'package:musicscool/models/lesson_cancel_info.dart';
@@ -328,6 +329,53 @@ class ApiService implements Api {
       date: date,
       duration: duration))['data'];
     return js.map<TimeSlot>((jsObj) => TimeSlot.fromJson(jsObj)).toList();
+  }
+
+  @override
+  Future<void> createLessonRequest({
+    required Voucher voucher,
+    required AvailableDates date,
+    required Instrument instrument,
+    required TimeSlot time,
+    required LessonDuration duration}) async
+  {
+    try {
+      String formattedDate = DateFormat('yyyy-MM-dd').format(date.date);
+      String query =
+        '/student/lessons/create'
+        '?date=${formattedDate}'
+        '&voucher_id=${voucher.id}'
+        '&location_id=${date.location.id}'
+        '&teacher_id=${date.teacher.id}'
+        '&instrument_id=${instrument.id}'
+        '&duration=${duration.minutes}'
+        '&time=${time.time}';
+      print(query);
+      Response response = await _dio.post(query,
+        options: Options(
+          headers: <String, String> {
+            HttpHeaders.authorizationHeader: 'Bearer ${_token}'
+          }
+        )
+      );
+      print(response.data);
+    }
+    catch (e) {
+      if (e is DioError) {
+        if (e.response != null) {
+          print(e.response!.data);
+          print(e.response?.statusCode);
+          throw httpStatusError(e.response?.statusCode);
+        }
+        else {
+          print(e.message);
+        }
+      }
+      else {
+        print(e);
+      }
+      throw ServerError();
+    }
   }
 
   static const pageSize = 25;

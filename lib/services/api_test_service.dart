@@ -187,6 +187,17 @@ class ApiTestService implements Api {
     return js.map<TimeSlot>((jsObj) => TimeSlot.fromJson(jsObj)).toList();
   }
 
+  @override
+  Future<void> createLessonRequest({
+    required Voucher voucher,
+    required AvailableDates date,
+    required Instrument instrument,
+    required TimeSlot time,
+    required LessonDuration duration}) async
+  {
+    throw ServerError();
+  }
+
   Future<List<Lesson>> _cachedLessons() async {
     if (_lessonIndex == -1) {
       List<dynamic> js = json.decode(testLessons)['data'];

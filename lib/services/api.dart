@@ -56,4 +56,10 @@ abstract class Api {
 
   Future<List<AvailableDates>> getAvailableDates({required Instrument instrument});
   Future<List<TimeSlot>> getTimeSlots({required Teacher teacher, required DateTime date, required LessonDuration duration});
+  Future<void> createLessonRequest({
+    required Voucher voucher,
+    required AvailableDates date,
+    required Instrument instrument,
+    required TimeSlot time,
+    required LessonDuration duration});
 }

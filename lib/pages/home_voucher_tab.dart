@@ -17,10 +17,13 @@ import 'package:musicscool/widgets/time_slot_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:musicscool/generated/l10n.dart';
 
+typedef VoucherRequested = void Function();
+
 class RequestLesson extends StatefulWidget {
-  const RequestLesson({required this.user});
+  const RequestLesson({required this.user, required this.onSuccess});
 
   final User user;
+  final VoucherRequested onSuccess;
 
   @override
   _RequestLessonState createState() => _RequestLessonState();
@@ -166,7 +169,7 @@ class _RequestLessonState extends State<RequestLesson> {
         ListTile(
           title: TextButton(
             style: TextButton.styleFrom(
-              backgroundColor: date == null ? Theme.of(context).disabledColor : Theme.of(context).colorScheme.secondary,
+              backgroundColor: slot == null ? Theme.of(context).disabledColor : Theme.of(context).colorScheme.secondary,
               primary: Theme.of(context).colorScheme.onPrimary,
               padding: EdgeInsets.all(12.0),
               shape: RoundedRectangleBorder(
@@ -174,8 +177,24 @@ class _RequestLessonState extends State<RequestLesson> {
               ),
               minimumSize: Size(84, 64)
             ),
-            onPressed: (date == null) ? null : () {
-
+            onPressed: (slot == null) ? null : () {
+              AuthModel auth = Provider.of<AuthModel>(context, listen: false);
+              auth.createLessonRequest(
+                voucher: voucher!, date: date!, instrument: instrument!,
+                time: slot!, duration: duration)
+                .then((_) {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(S.of(context).voucherRequestSuccess),
+                        duration: Duration(seconds: 2)
+                    ));
+                    widget.onSuccess();
+                })
+                .catchError((e) {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(S.of(context).voucherRequestFailed),
+                        duration: Duration(seconds: 4)
+                    ));
+                });
             },
             child: Text(S.of(context).requestLesson)
           )
@@ -185,7 +204,7 @@ class _RequestLessonState extends State<RequestLesson> {
   }
 }
 
-Widget voucherView(BuildContext context) {
+Widget voucherView(BuildContext context, VoucherRequested onSuccess) {
   return Consumer<AuthModel>(
       builder: (context, model, child) {
         return FutureBuilder<User>(
@@ -193,7 +212,7 @@ Widget voucherView(BuildContext context) {
           builder: (context, AsyncSnapshot<User> snapshot) {
             if (snapshot.hasData) {
               if (snapshot.data?.student != null) {
-                return RequestLesson(user: snapshot.data!);
+                return RequestLesson(user: snapshot.data!, onSuccess: onSuccess);
               }
               else {
                 return Column(

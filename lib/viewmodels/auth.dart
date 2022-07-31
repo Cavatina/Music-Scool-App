@@ -1,9 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:musicscool/models/available_dates.dart';
 import 'package:musicscool/models/instrument.dart';
 import 'package:musicscool/models/lesson_cancel_info.dart';
 import 'package:musicscool/models/lesson.dart';
+import 'package:musicscool/models/time_slot.dart';
 import 'package:musicscool/models/user.dart';
 import 'package:musicscool/models/voucher.dart';
 import 'package:musicscool/services/api.dart';
@@ -11,6 +13,7 @@ import 'package:musicscool/service_locator.dart';
 import 'package:musicscool/services/local_notifications.dart';
 import 'package:musicscool/services/intl_service.dart';
 import 'package:musicscool/strings.dart' show apiUrl;
+import 'package:musicscool/widgets/duration_select.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
@@ -180,6 +183,19 @@ class AuthModel extends ChangeNotifier {
     Lesson? lesson = await api.cancelLesson(id: id);
     await cacheClearUpcoming();
     return lesson;
+  }
+
+  Future<void> createLessonRequest({
+    required Voucher voucher,
+    required AvailableDates date,
+    required Instrument instrument,
+    required TimeSlot time,
+    required LessonDuration duration}) async
+  {
+    api.token = await token;
+    await api.createLessonRequest(
+      voucher: voucher, date: date, instrument: instrument, time: time, duration: duration);
+    return cacheClearUpcoming();
   }
 
   Future<String> homeworkPath({required String url, required String name}) async {

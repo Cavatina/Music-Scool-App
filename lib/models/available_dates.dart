@@ -14,22 +14,19 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:musicscool/models/teacher.dart';
+import 'package:musicscool/models/location.dart';
 
-part 'instrument.g.dart';
+part 'available_dates.g.dart';
 
 @JsonSerializable()
-class Instrument {
-  final int id;
-  final String name;
+class AvailableDates {
+  final DateTime date;
+  final Teacher teacher;
+  final Location location;
 
-  Instrument(this.id, this.name);
+  AvailableDates(this.date, this.teacher, this.location);
+  factory AvailableDates.fromJson(Map<String, dynamic> json) => _$AvailableDatesFromJson(json);
 
-  @override
-  String toString() {
-    return 'Instrument(${name}(${id}))';
-  }
-
-  factory Instrument.fromJson(Map<String, dynamic> json) => _$InstrumentFromJson(json);
-
-  Map<String, dynamic> toJson() => _$InstrumentToJson(this);
+  Map<String, dynamic> toJson() => _$AvailableDatesToJson(this);
 }

@@ -15,21 +15,15 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
 import 'package:json_annotation/json_annotation.dart';
 
-part 'instrument.g.dart';
+part 'time_slot.g.dart';
 
 @JsonSerializable()
-class Instrument {
-  final int id;
-  final String name;
+class TimeSlot {
+  final String time;
 
-  Instrument(this.id, this.name);
+  TimeSlot(this.time);
 
-  @override
-  String toString() {
-    return 'Instrument(${name}(${id}))';
-  }
+  factory TimeSlot.fromJson(Map<String, dynamic> json) => _$TimeSlotFromJson(json);
 
-  factory Instrument.fromJson(Map<String, dynamic> json) => _$InstrumentFromJson(json);
-
-  Map<String, dynamic> toJson() => _$InstrumentToJson(this);
+  Map<String, dynamic> toJson() => _$TimeSlotToJson(this);
 }

@@ -25,4 +25,24 @@ void showUnexpectedError(BuildContext context)
     )));
 }
 
+Widget waiting() {
+  return Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: <Widget> [
+      CircularProgressIndicator()
+    ]
+  );
+}
+
+Widget waitingSmall() {
+  return Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: <Widget> [
+      SizedBox(width:24.0, height:24.0, child: CircularProgressIndicator())
+    ]
+  );
+}
+
 bool isNullOrEmpty(Object? o) => o == null || o == '';

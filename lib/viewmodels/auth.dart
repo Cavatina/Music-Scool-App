@@ -1,14 +1,19 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:musicscool/models/available_dates.dart';
+import 'package:musicscool/models/instrument.dart';
 import 'package:musicscool/models/lesson_cancel_info.dart';
 import 'package:musicscool/models/lesson.dart';
+import 'package:musicscool/models/time_slot.dart';
 import 'package:musicscool/models/user.dart';
+import 'package:musicscool/models/voucher.dart';
 import 'package:musicscool/services/api.dart';
 import 'package:musicscool/service_locator.dart';
 import 'package:musicscool/services/local_notifications.dart';
 import 'package:musicscool/services/intl_service.dart';
 import 'package:musicscool/strings.dart' show apiUrl;
+import 'package:musicscool/widgets/duration_select.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
@@ -52,7 +57,7 @@ class AuthModel extends ChangeNotifier {
     }
     api.dio.interceptors.add(InterceptorsWrapper(
       onError: (DioError e, handler) {
-        if (<int>[401, 403, 422].contains(e.response?.statusCode)) {
+        if (<int>[401, 403].contains(e.response?.statusCode)) {
           print('status:${e.response!.statusCode}: logout!');
           logout();
         }
@@ -164,16 +169,33 @@ class AuthModel extends ChangeNotifier {
     return await api.getHomeworkLessons(page: page, perPage: perPage);
   }
 
+  Future<List<Voucher>> getVouchers() async {
+    return await api.getVouchers();
+  }
+
   Future<LessonCancelInfo> cancelLessonInfo({required int id}) async {
     api.token = await token;
     return await api.cancelLessonInfo(id: id);
   }
 
-  Future<Lesson> cancelLesson({required int id}) async {
+  Future<Lesson?> cancelLesson({required int id}) async {
     api.token = await token;
-    Lesson lesson = await api.cancelLesson(id: id);
+    Lesson? lesson = await api.cancelLesson(id: id);
     await cacheClearUpcoming();
     return lesson;
+  }
+
+  Future<void> createLessonRequest({
+    required Voucher voucher,
+    required AvailableDates date,
+    required Instrument instrument,
+    required TimeSlot time,
+    required LessonDuration duration}) async
+  {
+    api.token = await token;
+    await api.createLessonRequest(
+      voucher: voucher, date: date, instrument: instrument, time: time, duration: duration);
+    return cacheClearUpcoming();
   }
 
   Future<String> homeworkPath({required String url, required String name}) async {
@@ -198,6 +220,10 @@ class AuthModel extends ChangeNotifier {
     api.token = await token;
     return await api.downloadHomework(url: url, filename: name,
                                       onReceiveProgress: onReceiveProgress);
+  }
+
+  Future<List<Instrument>> getInstruments() async {
+    return await api.getInstruments();
   }
 
   Future<void> cacheClear() async {

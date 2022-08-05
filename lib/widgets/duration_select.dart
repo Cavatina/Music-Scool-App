@@ -17,10 +17,7 @@ extension LessonDurationMinutes on LessonDuration {
 
 extension LessonDurationText on LessonDuration {
   String text(context) {
-    switch (this) {
-      case LessonDuration.HalfHour: return S.of(context).halfHour;
-      case LessonDuration.Hour: return S.of(context).hour;
-    }
+    return '${minutes.toString()} ' + S.of(context).minutes;
   }
 }
 

@@ -12,7 +12,7 @@
   "@cancelLessonAt": {},
   "cancelLessonNonRefundable": "Denne lektion kan ikke erstattes.",
   "@cancelLessonNonRefundable": {},
-  "cancelLessonRefundable": "Du kan få en erstatningslektion.\n\nDu er ved at aflyse lektion {totalCancelled} af {allowCancelled} tilladte aflysninger dette år.",
+  "cancelLessonRefundable": "Du kan højst sandsynligt få en erstatningslektion.\n\nDu er ved at aflyse lektion {totalCancelled} af {allowCancelled} tilladte aflysninger dette år.",
   "@cancelLessonRefundable": {},
   "confirm": "BEKRÆFT\n",
   "@confirm": {},
@@ -164,7 +164,7 @@
   "@youAreNotAStudent": {},
   "youAreRockingRightNow": "you're ROCKING right now!",
   "@youAreRockingRightNow": {},
-  "youHaveNoActiveVouchers": "Du har ingen lektioner tilgode",
+  "youHaveNoActiveVouchers": "Du har ingen lektioner tilgode.",
   "@youHaveNoActiveVouchers": {},
   "youHaveNoUpcomingLessons": "Du har ingen kommende lektioner.",
   "@youHaveNoUpcomingLessons": {}

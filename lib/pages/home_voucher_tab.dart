@@ -89,7 +89,7 @@ class _RequestLessonState extends State<RequestLesson> {
       items: instruments?.map((instrument) {
         return DropdownMenuItem<Instrument>(
           value: instrument,
-          child: Text(instrument.name),
+          child: Text(instrumentText(context, instrument.name)),
         );
         }).toList(),
       onChanged: (newVal) {

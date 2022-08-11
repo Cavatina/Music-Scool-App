@@ -126,9 +126,12 @@ class _RequestLessonState extends State<RequestLesson> {
             instrument: instrument!,
             duration: duration,
             onSelect: (selected) {
-              setState(() {
-                date = selected;
-              });
+              if (date != selected) {
+                setState(() {
+                    date = selected;
+                    slot = null;
+                });
+              }
             }
           ),
           subtitle: Text(''),

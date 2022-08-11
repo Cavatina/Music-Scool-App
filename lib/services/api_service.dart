@@ -105,7 +105,8 @@ class ApiService implements Api {
         }
       );
     }
-    catch (_) {
+    catch (e) {
+      print(e);
       throw ServerError();
     }
     return;

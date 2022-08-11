@@ -28,5 +28,10 @@ class AvailableDates {
   AvailableDates(this.date, this.teacher, this.location);
   factory AvailableDates.fromJson(Map<String, dynamic> json) => _$AvailableDatesFromJson(json);
 
+  @override
+  String toString() {
+    return 'AvailableDates(${date},teacher=${teacher.id},location=${location.id}))';
+  }
+
   Map<String, dynamic> toJson() => _$AvailableDatesToJson(this);
 }

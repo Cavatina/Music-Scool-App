@@ -17,7 +17,7 @@ import 'package:musicscool/widgets/duration_select.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
-import 'package:dio_http_cache/dio_http_cache.dart';
+import 'package:dio_http_cache_lts/dio_http_cache_lts.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class AuthModel extends ChangeNotifier {

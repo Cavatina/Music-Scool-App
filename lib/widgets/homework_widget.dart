@@ -24,7 +24,7 @@ import 'package:musicscool/models/lesson.dart';
 import 'package:musicscool/models/homework.dart';
 import 'package:musicscool/generated/l10n.dart';
 import 'package:musicscool/helpers.dart';
-import 'package:open_file/open_file.dart';
+import 'package:open_filex/open_filex.dart';
 import 'package:musicscool/service_locator.dart';
 
 class HomeworkDownloadIcon extends StatefulWidget {
@@ -72,7 +72,7 @@ class _HomeworkDownloadIconState extends State<HomeworkDownloadIcon> {
         downloading = false;
       });
       print('Opening:"${path}"');
-      OpenFile.open(path);
+      OpenFilex.open(path);
     }).catchError((e) {
       print('downloadAndLaunch(${url}) failed: ${e}');
       setState((){
@@ -99,7 +99,7 @@ class _HomeworkDownloadIconState extends State<HomeworkDownloadIcon> {
       label: Text(S.of(context).open),
       onPressed: () {
         print('Opening existing:"${filePath}"');
-        OpenFile.open(filePath);
+        OpenFilex.open(filePath);
       },
       icon: Icon(CupertinoIcons.music_albums_fill)
     );

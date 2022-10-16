@@ -92,7 +92,7 @@ class _LoginFormState extends State<LoginForm> {
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light.copyWith(
         statusBarColor: Colors.transparent));
-    return Column(
+    return AutofillGroup(child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget> [
@@ -108,7 +108,8 @@ class _LoginFormState extends State<LoginForm> {
           userPwSection(),
           buttonSection(context),
         ],
-      );
+      )
+    );
   }
 
   Container userPwSection() {
@@ -116,6 +117,7 @@ class _LoginFormState extends State<LoginForm> {
       TextFormField(
         keyboardType: TextInputType.emailAddress,
         controller: emailController,
+        autofillHints: [AutofillHints.email],
         cursorColor: Colors.white,
         autofocus: true,
         style: TextStyle(color: Colors.white),
@@ -132,6 +134,7 @@ class _LoginFormState extends State<LoginForm> {
       children.add(SizedBox(height: 30.0));
       children.add(TextFormField(
         controller: passwordController,
+        autofillHints: [AutofillHints.password],
         focusNode: passwordFocus,
         cursorColor: Colors.white,
         obscureText: true,

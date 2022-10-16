@@ -19,7 +19,7 @@ import 'package:flutter/material.dart';
 import 'package:musicscool/locale_strings.dart';
 import 'package:musicscool/viewmodels/auth.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'package:musicscool/models/lesson.dart';
 import 'package:musicscool/models/homework.dart';
 import 'package:musicscool/generated/l10n.dart';
@@ -152,7 +152,7 @@ class _HomeworkWidgetState extends State<HomeworkWidget> {
           child: OutlinedButton.icon(
             label: Text(S.of(context).view),
             onPressed: () {
-              launch(homework.linkUrl!.replaceAll(RegExp(r'/embed'), '/watch'));
+              launchUrlString(homework.linkUrl!.replaceAll(RegExp(r'/embed'), '/watch'));
             },
               icon: Icon(CupertinoIcons.tv_music_note_fill)//ondemand_video_outlined)
           ),

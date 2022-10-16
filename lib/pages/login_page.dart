@@ -189,7 +189,7 @@ class _LoginFormState extends State<LoginForm> {
                   formType = _FormType.signIn;
                 });
               },
-              style: ElevatedButton.styleFrom(primary: Theme.of(context).colorScheme.secondary),
+              style: ElevatedButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.secondary),
               child: Text(S.of(context).resetPassword, style: TextStyle(color: Colors.black)),
             ),
           ),
@@ -247,7 +247,7 @@ class _LoginFormState extends State<LoginForm> {
                   ).catchError((_) => showUnexpectedError(context));
                 }
               },
-              style: ElevatedButton.styleFrom(primary: Theme.of(context).colorScheme.secondary),
+              style: ElevatedButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.secondary),
               child: Text(S.of(context).signIn, style: TextStyle(color: Colors.black)),
             ),
           ),

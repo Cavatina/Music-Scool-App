@@ -173,7 +173,7 @@ class _RequestLessonState extends State<RequestLesson> {
           title: TextButton(
             style: TextButton.styleFrom(
               backgroundColor: slot == null ? Theme.of(context).disabledColor : Theme.of(context).colorScheme.secondary,
-              primary: Theme.of(context).colorScheme.onPrimary,
+              foregroundColor: Theme.of(context).colorScheme.onPrimary,
               padding: EdgeInsets.all(12.0),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.0),

@@ -181,7 +181,7 @@ class _HomeworkWidgetState extends State<HomeworkWidget> {
     }
     return ExpansionTile(
         title: Text(formattedDateTime(context, widget.lesson.from)),
-        subtitle: Text(subtitle, style: TextStyle(color: Theme.of(context).colorScheme.primaryVariant),
+        subtitle: Text(subtitle, style: TextStyle(color: Theme.of(context).colorScheme.primaryContainer),
         overflow: TextOverflow.ellipsis),
         initiallyExpanded: widget.expanded,
           onExpansionChanged: (bool state) {

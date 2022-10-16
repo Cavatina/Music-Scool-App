@@ -237,7 +237,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       },
       style: TextButton.styleFrom(
         backgroundColor: Colors.black,
-        primary: Theme.of(context).colorScheme.secondary,
+        foregroundColor: Theme.of(context).colorScheme.secondary,
         padding: EdgeInsets.all(12.0),
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0),

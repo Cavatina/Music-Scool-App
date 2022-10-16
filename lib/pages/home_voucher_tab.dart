@@ -172,15 +172,15 @@ class _RequestLessonState extends State<RequestLesson> {
         ListTile(
           title: TextButton(
             style: TextButton.styleFrom(
-              backgroundColor: slot == null ? Theme.of(context).disabledColor : Theme.of(context).colorScheme.secondary,
-              primary: Theme.of(context).colorScheme.onPrimary,
+              backgroundColor: slot == null || voucher == null ? Theme.of(context).disabledColor : Theme.of(context).colorScheme.secondary,
+              foregroundColor: Theme.of(context).colorScheme.onPrimary,
               padding: EdgeInsets.all(12.0),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.0),
               ),
               minimumSize: Size(84, 64)
             ),
-            onPressed: (slot == null) ? null : () {
+            onPressed: (slot == null || voucher == null) ? null : () {
               AuthModel auth = Provider.of<AuthModel>(context, listen: false);
               auth.createLessonRequest(
                 voucher: voucher!, date: date!, instrument: instrument!,

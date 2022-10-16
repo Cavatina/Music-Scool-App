@@ -92,7 +92,7 @@ class _LoginFormState extends State<LoginForm> {
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light.copyWith(
         statusBarColor: Colors.transparent));
-    return Column(
+    return AutofillGroup(child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget> [
@@ -108,7 +108,8 @@ class _LoginFormState extends State<LoginForm> {
           userPwSection(),
           buttonSection(context),
         ],
-      );
+      )
+    );
   }
 
   Container userPwSection() {
@@ -116,6 +117,7 @@ class _LoginFormState extends State<LoginForm> {
       TextFormField(
         keyboardType: TextInputType.emailAddress,
         controller: emailController,
+        autofillHints: [AutofillHints.email],
         cursorColor: Colors.white,
         autofocus: true,
         style: TextStyle(color: Colors.white),
@@ -132,6 +134,7 @@ class _LoginFormState extends State<LoginForm> {
       children.add(SizedBox(height: 30.0));
       children.add(TextFormField(
         controller: passwordController,
+        autofillHints: [AutofillHints.password],
         focusNode: passwordFocus,
         cursorColor: Colors.white,
         obscureText: true,
@@ -189,7 +192,7 @@ class _LoginFormState extends State<LoginForm> {
                   formType = _FormType.signIn;
                 });
               },
-              style: ElevatedButton.styleFrom(primary: Theme.of(context).colorScheme.secondary),
+              style: ElevatedButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.secondary),
               child: Text(S.of(context).resetPassword, style: TextStyle(color: Colors.black)),
             ),
           ),
@@ -247,7 +250,7 @@ class _LoginFormState extends State<LoginForm> {
                   ).catchError((_) => showUnexpectedError(context));
                 }
               },
-              style: ElevatedButton.styleFrom(primary: Theme.of(context).colorScheme.secondary),
+              style: ElevatedButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.secondary),
               child: Text(S.of(context).signIn, style: TextStyle(color: Colors.black)),
             ),
           ),

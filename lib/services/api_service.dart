@@ -16,7 +16,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 import 'dart:async';
 import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:dio_http_cache/dio_http_cache.dart';
+import 'package:dio_http_cache_lts/dio_http_cache_lts.dart';
 import 'package:intl/intl.dart';
 import 'package:musicscool/models/available_dates.dart';
 import 'package:musicscool/models/instrument.dart';

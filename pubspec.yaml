@@ -3,40 +3,40 @@ description: Mobile app for Music'scool students.
 
 publish_to: 'none' # Do not publish to pub.dev
 
-version: 1.0.8
+version: 1.1.0
 
 environment:
   sdk: ">=2.15.0 <3.0.0"
 
 dependencies:
-  infinite_scroll_pagination: ^3.1.0
+  infinite_scroll_pagination: ^3.2.0
   json_annotation: ^4.0.1
   intl: ^0.17.0
   table_calendar: ^3.0.5
   dio: ^4.0.4
-  dio_http_cache: ^0.3.0
+  dio_http_cache_lts: ^0.4.1
   provider: ^6.0.2
   get_it: ^7.2.0
-  url_launcher: ^6.0.18
+  url_launcher: ^6.1.6
   path_provider: ^2.0.0
   open_file: ^3.0.3
-  permission_handler: ^8.3.0
-  flutter_local_notifications: ^9.2.0
-  timezone: ^0.8.0
+  permission_handler: ^10.1.0
+  flutter_local_notifications: ^12.0.2
+  timezone: ^0.9.0
   flutter_native_timezone: ^2.0.0
-  flutter_secure_storage: ^5.0.2
-  flutter_svg: ^1.0.1
+  flutter_secure_storage: ^6.0.0
+  flutter_svg: ^1.1.5
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  google_fonts: ^2.2.0
-  cupertino_icons: ^1.0.0
+  google_fonts: ^3.0.1
+  cupertino_icons: ^1.0.4
 
 dev_dependencies:
   test: any
-  build_runner: ^2.1.7
-  json_serializable: ^4.1.4
+  build_runner: ^2.3.0
+  json_serializable: ^6.5.1
   pedantic: ^1.9.2
   flutter_test:
     sdk: flutter

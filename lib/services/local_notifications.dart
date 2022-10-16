@@ -25,22 +25,17 @@ class LocalNotifications {
 
   Future<LocalNotifications> init() async {
     const initAndroid = AndroidInitializationSettings('app_notification_icon');
-    final initIOS = IOSInitializationSettings(
+    final initDarwin = DarwinInitializationSettings(
         requestAlertPermission: true,
         requestBadgePermission: true,
         requestSoundPermission: true,
         onDidReceiveLocalNotification: null);
-    final initMacOS = MacOSInitializationSettings(
-        requestAlertPermission: true,
-        requestBadgePermission: true,
-        requestSoundPermission: true);
     await _flutterLocalNotificationsPlugin.initialize(
         InitializationSettings(
             android: initAndroid,
-            iOS: initIOS,
-            macOS: initMacOS), onSelectNotification: (String? payload) async {
-      print('onSelectNotification:${payload}');
-    });
+            iOS: initDarwin,
+            macOS: initDarwin)
+      );
     return this;
   }
 

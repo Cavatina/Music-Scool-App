@@ -31,9 +31,9 @@ final Map<int, Color> mmColors = {
 
 final ColorScheme colorScheme = ColorScheme(
   primary: Colors.white,
-  primaryVariant: Colors.white60,
+  primaryContainer: Colors.white60,
   secondary: mmColors[900]!,
-  secondaryVariant: mmColors[700]!,
+  secondaryContainer: mmColors[700]!,
   background: Colors.black,
   surface: Color.fromRGBO(21, 21, 21, 0.3),
   onBackground: Colors.white,
@@ -67,7 +67,7 @@ ThemeData theme()
       textTheme: GoogleFonts.robotoTextTheme(theme.textTheme),
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
-        primary: colorScheme.secondary, // Colors.white,
+        foregroundColor: colorScheme.secondary, // Colors.white,
         //backgroundColor: Colors.white24,
         backgroundColor: Colors.black
       )

@@ -22,7 +22,7 @@ import 'package:musicscool/widgets/homework_widget.dart';
 import 'package:musicscool/widgets/lesson_list_view.dart';
 import 'package:musicscool/widgets/student_countdown_widget.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'package:musicscool/models/lesson.dart';
 import 'package:musicscool/models/user.dart';
 import 'package:musicscool/widgets/lesson_widget.dart';
@@ -233,11 +233,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     // );
     return TextButton(
       onPressed: () {
-        launch(url);
+        launchUrlString(url);
       },
       style: TextButton.styleFrom(
         backgroundColor: Colors.black,
-        primary: Theme.of(context).colorScheme.secondary,
+        foregroundColor: Theme.of(context).colorScheme.secondary,
         padding: EdgeInsets.all(12.0),
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0),
@@ -353,7 +353,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         leading: Icon(Icons.open_in_browser)
                     ),
                     onTap: () {
-                      launch(privacyPolicyUrl);
+                      launchUrlString(privacyPolicyUrl);
                     }
                 ),
                 InkWell(

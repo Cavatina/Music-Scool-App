@@ -18,7 +18,7 @@ import 'package:musicscool/generated/l10n.dart';
 
 void showUnexpectedError(BuildContext context)
 {
-  WidgetsBinding.instance?.addPostFrameCallback((_) =>
+  WidgetsBinding.instance.addPostFrameCallback((_) =>
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(S.of(context).unexpectedErrorMessage),
 //      duration: Duration(seconds: 5)

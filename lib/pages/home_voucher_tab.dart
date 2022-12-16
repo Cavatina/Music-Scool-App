@@ -42,11 +42,13 @@ class _RequestLessonState extends State<RequestLesson> {
   void initState() {
     super.initState();
     locator<AuthModel>().getInstruments().then((List<Instrument> instruments) {
+      if (!mounted) return;
       setState(() {
         _instruments = instruments;
       });
     });
     locator<AuthModel>().getVouchers().then((List<Voucher> vouchers) {
+      if (!mounted) return;
       setState(() {
         _vouchers = vouchers.where((v) => v.active).toList();
         if (voucher == null && _vouchers?.isNotEmpty == true) {

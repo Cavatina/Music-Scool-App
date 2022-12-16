@@ -42,11 +42,9 @@ class AuthModel extends ChangeNotifier {
     } else {
       print('token empty!');
     }
-    value = await storage.read(key: 'notificationsEnabled');
-    print('notificationsEnabled:${value}');
+    value = await readStorage('notificationsEnabled');
     if (value != null && value == 'false') _notificationsEnabled = false;
-    value = await storage.read(key: 'nextLesson');
-    print('nextLesson:${value}');
+    value = await readStorage('nextLesson');
     if (value != null && value != '') {
       try {
         _nextLesson = DateTime.parse(value);
@@ -70,9 +68,19 @@ class AuthModel extends ChangeNotifier {
     return this;
   }
 
+  Future<String?> readStorage(String key) async {
+    try {
+      return await storage.read(key: key);
+    }
+    catch(e) {
+      await storage.deleteAll();
+      return null;
+    }
+  }
+
   Future<String> get token async {
     if (_token == '') {
-      _token = (await storage.read(key: 'token')) ?? '';
+      _token = (await readStorage('token')) ?? '';
     }
     return _token;
   }
@@ -156,7 +164,7 @@ class AuthModel extends ChangeNotifier {
   }
 
   Future<String> get lastUsername async {
-    return await storage.read(key: 'lastUsername') ?? '';
+    return await readStorage('lastUsername') ?? '';
   }
 
   Future<List<Lesson>> getUpcomingLessons({required int page, required int perPage}) async {

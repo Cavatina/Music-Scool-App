@@ -32,6 +32,9 @@ dependencies:
     sdk: flutter
   google_fonts: ^3.0.1
   cupertino_icons: ^1.0.4
+  firebase_core: ^2.4.0
+  firebase_crashlytics: ^3.0.7
+  firebase_messaging: ^14.1.4
 
 dev_dependencies:
   test: any

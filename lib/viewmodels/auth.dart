@@ -122,12 +122,13 @@ class AuthModel extends ChangeNotifier {
       api.token = _token;
       await storage.write(key: 'token', value: _token);
       await storage.write(key: 'lastUsername', value: username);
-    }
-    var deviceToken = locator<RemoteNotifications>().token;
-    print('deviceToken:${deviceToken}');
-    if (deviceToken != null) {
-      await api.registerDevice(deviceToken: deviceToken, locale: Platform.localeName);
-      print('registerDevice:${deviceToken}, locale:${Platform.localeName}');
+
+      var deviceToken = locator<RemoteNotifications>().token;
+      print('deviceToken:${deviceToken}');
+      if (deviceToken != null) {
+        await api.registerDevice(deviceToken: deviceToken, locale: Platform.localeName);
+        print('registerDevice:${deviceToken}, locale:${Platform.localeName}');
+      }
     }
     locator<RemoteNotifications>().tokenStream.listen((String token) {
       if (isLoggedIn && notificationsEnabled) {

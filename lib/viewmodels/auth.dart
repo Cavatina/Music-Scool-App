@@ -12,6 +12,7 @@ import 'package:musicscool/services/api.dart';
 import 'package:musicscool/service_locator.dart';
 import 'package:musicscool/services/local_notifications.dart';
 import 'package:musicscool/services/intl_service.dart';
+import 'package:musicscool/services/remote_notifications.dart';
 import 'package:musicscool/strings.dart' show apiUrl;
 import 'package:musicscool/widgets/duration_select.dart';
 import 'dart:async';
@@ -121,6 +122,12 @@ class AuthModel extends ChangeNotifier {
       await storage.write(key: 'token', value: _token);
       await storage.write(key: 'lastUsername', value: username);
     }
+    var deviceToken = locator<RemoteNotifications>().token;
+    print('deviceToken:${deviceToken}');
+    if (deviceToken != null) {
+      await api.registerDevice(deviceToken: deviceToken, locale: Platform.localeName);
+      print('registerDevice:${deviceToken}, locale:${Platform.localeName}');
+    }
     isLoggedIn = true;
     notifyListeners();
   }
@@ -131,6 +138,10 @@ class AuthModel extends ChangeNotifier {
   }
 
   void logout() {
+    var deviceToken = locator<RemoteNotifications>().token;
+    if (deviceToken != null) {
+      api.removeDevice(deviceToken: deviceToken).then((_) {});
+    }
     isLoggedIn = false;
     _token = '';
     _nextLesson = null;

@@ -57,7 +57,10 @@ class RemoteNotifications {
     );
     _token = await FirebaseMessaging.instance.getToken();
     print('token: $_token');
-    _tokenStream.listen((String token) => _token = token);
+    _tokenStream.listen((String token) {
+      print('FCM token refresh: ${token}');
+      _token = token;
+    });
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;

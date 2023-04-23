@@ -62,4 +62,7 @@ abstract class Api {
     required Instrument instrument,
     required TimeSlot time,
     required LessonDuration duration});
+
+  Future<void> registerDevice({required String deviceToken, required String locale});
+  Future<void> removeDevice({required String deviceToken});
 }

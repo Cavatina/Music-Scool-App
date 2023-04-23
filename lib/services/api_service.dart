@@ -387,7 +387,12 @@ class ApiService implements Api {
         data: <String, String> {
           'deviceToken': deviceToken,
           'locale': locale,
-        }
+        },
+        options: Options(
+          headers: <String, String> {
+            HttpHeaders.authorizationHeader: 'Bearer ${_token}'
+          }
+        ),
       );
     }
     catch (e) {
@@ -402,7 +407,12 @@ class ApiService implements Api {
         '/removeDevice',
         data: <String, String> {
           'deviceToken': deviceToken,
-        }
+        },
+        options: Options(
+          headers: <String, String> {
+            HttpHeaders.authorizationHeader: 'Bearer ${_token}'
+          }
+        ),
       );
     }
     catch (e) {

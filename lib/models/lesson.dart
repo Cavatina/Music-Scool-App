@@ -37,7 +37,7 @@ class Lesson {
   final LessonRef? replacementLesson;
   final List<Homework>? homework;
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   bool isNext = false;
 
   Lesson(this.id, this.from, this.until, this.status,

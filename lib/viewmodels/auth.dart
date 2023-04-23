@@ -55,9 +55,9 @@ class AuthModel extends ChangeNotifier {
     }
     api.dio.interceptors.add(InterceptorsWrapper(
       onError: (DioError e, handler) {
-        if (<int>[401, 403].contains(e.response?.statusCode)) {
+        if (e.requestOptions.method == 'GET' && <int>[401, 403].contains(e.response?.statusCode)) {
           print('status:${e.response!.statusCode}: logout!');
-          logout();
+          clearLoginToken();
         }
         return handler.next(e);
       }
@@ -149,6 +149,10 @@ class AuthModel extends ChangeNotifier {
     if (deviceToken != null) {
       api.removeDevice(deviceToken: deviceToken).then((_) {});
     }
+    clearLoginToken();
+  }
+
+  void clearLoginToken() {
     isLoggedIn = false;
     _token = '';
     _nextLesson = null;

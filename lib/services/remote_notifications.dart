@@ -23,7 +23,7 @@ Future<dynamic> _backgroundMessageHandler(RemoteMessage message) async {
 class RemoteNotifications {
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
-  final Stream<String> _tokenStream = FirebaseMessaging.instance.onTokenRefresh;
+  final Stream<String> tokenStream = FirebaseMessaging.instance.onTokenRefresh;
   String? _token;
 
   final AndroidNotificationChannel channel = AndroidNotificationChannel(
@@ -57,7 +57,7 @@ class RemoteNotifications {
     );
     _token = await FirebaseMessaging.instance.getToken();
     print('token: $_token');
-    _tokenStream.listen((String token) {
+    tokenStream.listen((String token) {
       print('FCM token refresh: ${token}');
       _token = token;
     });

@@ -129,6 +129,12 @@ class AuthModel extends ChangeNotifier {
       await api.registerDevice(deviceToken: deviceToken, locale: Platform.localeName);
       print('registerDevice:${deviceToken}, locale:${Platform.localeName}');
     }
+    locator<RemoteNotifications>().tokenStream.listen((String token) {
+      if (isLoggedIn && notificationsEnabled) {
+        api.registerDevice(deviceToken: token, locale: Platform.localeName).then((_) {});
+      }
+    });
+
     isLoggedIn = true;
     notifyListeners();
   }

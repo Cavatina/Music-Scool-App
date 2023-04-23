@@ -11,7 +11,6 @@ import 'package:musicscool/models/voucher.dart';
 import 'package:musicscool/services/api.dart';
 import 'package:musicscool/service_locator.dart';
 import 'package:musicscool/services/local_notifications.dart';
-import 'package:musicscool/services/intl_service.dart';
 import 'package:musicscool/services/remote_notifications.dart';
 import 'package:musicscool/strings.dart' show apiUrl;
 import 'package:musicscool/widgets/duration_select.dart';
@@ -65,6 +64,8 @@ class AuthModel extends ChangeNotifier {
     ));
     api.dio.interceptors.add(_cache.interceptor);
 
+    // Temporary, cancel any local notifications scheduled by previous versions.
+    await cancelNotifications();
     notifyListeners();
     return this;
   }
@@ -93,21 +94,21 @@ class AuthModel extends ChangeNotifier {
   Future<void> enableNotifications() async {
     _notificationsEnabled = true;
     print('Notifications enabled');
+    var deviceToken = locator<RemoteNotifications>().token;
+    if (deviceToken != null) {
+      await api.registerDevice(deviceToken: deviceToken, locale: Platform.localeName);
+      print('registerDevice:${deviceToken}, locale:${Platform.localeName}');
+    }
     await storage.write(key: 'notificationsEnabled', value: 'true');
-    await scheduleNotifications();
   }
   Future<void> disableNotifications() async {
     _notificationsEnabled = false;
     print('Notifications disabled');
+    var deviceToken = locator<RemoteNotifications>().token;
+    if (deviceToken != null) {
+      await api.removeDevice(deviceToken: deviceToken);
+    }
     await storage.write(key: 'notificationsEnabled', value: 'false');
-    await cancelNotifications();
-  }
-
-  Future<void> scheduleNotifications() async {
-    List<Lesson> nextLessons =
-        await api.getUpcomingLessons(page: 1, perPage: 10, withCancelled: false);
-    await locator<LocalNotifications>().scheduleNotifications(
-        nextLessons, locator<IntlService>().currentLocation);
   }
 
   Future<void> cancelNotifications() async {
@@ -166,9 +167,6 @@ class AuthModel extends ChangeNotifier {
       await storage.write(key: 'nextLesson', value: nextLesson);
       await cacheClearPast();
       await cacheClearUpcoming();
-    }
-    if (notificationsEnabled && newNextLesson != null && newNextLesson != _nextLesson) {
-      await scheduleNotifications();
     }
     _nextLesson = newNextLesson;
     return user;

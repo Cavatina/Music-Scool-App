@@ -39,6 +39,7 @@ class AuthModel extends ChangeNotifier {
     if (value.isNotEmpty == true) {
       print('reading token from storage:${value}');
       isLoggedIn = true;
+      api.token = _token;
     } else {
       print('token empty!');
     }
@@ -67,6 +68,14 @@ class AuthModel extends ChangeNotifier {
     // Temporary, cancel any local notifications scheduled by previous versions.
     await cancelNotifications();
     notifyListeners();
+
+    if (isLoggedIn && notificationsEnabled) await registerDevice();
+    locator<RemoteNotifications>().tokenStream.listen((String token) {
+      if (isLoggedIn && notificationsEnabled) {
+        api.registerDevice(deviceToken: token, locale: Platform.localeName).then((_) {});
+      }
+    });
+
     return this;
   }
 
@@ -115,6 +124,14 @@ class AuthModel extends ChangeNotifier {
     await locator<LocalNotifications>().cancelNotifications();
   }
 
+  Future<void> registerDevice() async {
+      var deviceToken = locator<RemoteNotifications>().token;
+      if (deviceToken != null) {
+        await api.registerDevice(deviceToken: deviceToken, locale: Platform.localeName);
+        print('registerDevice:${deviceToken}, locale:${Platform.localeName}');
+      }
+  }
+
   Future<void> login(
       {required String username, required String password}) async {
     _token = await api.login(username: username, password: password);
@@ -122,20 +139,8 @@ class AuthModel extends ChangeNotifier {
       api.token = _token;
       await storage.write(key: 'token', value: _token);
       await storage.write(key: 'lastUsername', value: username);
-
-      var deviceToken = locator<RemoteNotifications>().token;
-      print('deviceToken:${deviceToken}');
-      if (deviceToken != null) {
-        await api.registerDevice(deviceToken: deviceToken, locale: Platform.localeName);
-        print('registerDevice:${deviceToken}, locale:${Platform.localeName}');
-      }
+      await registerDevice();
     }
-    locator<RemoteNotifications>().tokenStream.listen((String token) {
-      if (isLoggedIn && notificationsEnabled) {
-        api.registerDevice(deviceToken: token, locale: Platform.localeName).then((_) {});
-      }
-    });
-
     isLoggedIn = true;
     notifyListeners();
   }

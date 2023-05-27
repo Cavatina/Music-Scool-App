@@ -379,5 +379,46 @@ class ApiService implements Api {
     }
   }
 
+  @override
+  Future<void> registerDevice({required String deviceToken, required String locale}) async {
+    try {
+      await _dio.post(
+        '/registerDevice',
+        data: <String, String> {
+          'deviceToken': deviceToken,
+          'locale': locale,
+        },
+        options: Options(
+          headers: <String, String> {
+            HttpHeaders.authorizationHeader: 'Bearer ${_token}'
+          }
+        ),
+      );
+    }
+    catch (e) {
+      print('registerDevice failed:${e}');
+    }
+  }
+
+  @override
+  Future<void> removeDevice({required String deviceToken}) async {
+    try {
+      await _dio.delete(
+        '/removeDevice',
+        data: <String, String> {
+          'deviceToken': deviceToken,
+        },
+        options: Options(
+          headers: <String, String> {
+            HttpHeaders.authorizationHeader: 'Bearer ${_token}'
+          }
+        ),
+      );
+    }
+    catch (e) {
+      print('removeDevice failed:${e}');
+    }
+  }
+
   static const pageSize = 25;
 }

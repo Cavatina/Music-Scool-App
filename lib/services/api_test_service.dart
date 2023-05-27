@@ -219,6 +219,16 @@ class ApiTestService implements Api {
     return _allLessons;
   }
 
+  @override
+  Future<void> registerDevice({required String deviceToken, required String locale}) async {
+    throw Exception('Not implemented');
+  }
+
+  @override
+  Future<void> removeDevice({required String deviceToken}) async {
+    throw Exception('Not implemented');
+  }
+
   late List<Lesson> _allLessons;
   int _lessonIndex = -1;
   static const pageSize = 25;

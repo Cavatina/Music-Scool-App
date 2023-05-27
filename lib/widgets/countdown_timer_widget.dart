@@ -61,9 +61,12 @@ class _CountdownTimerState extends State<CountdownTimer>
         color: Colors.black, // Color.fromRGBO(48, 48, 48, 1), //Colors.black,
         child: Column(
           children: <Widget> [
-            Text(value, style: TextStyle(fontSize: width*0.7, fontWeight: FontWeight.w900)),
+            Text(value,
+              style: TextStyle(fontSize: width*0.57, fontWeight: FontWeight.w900),
+              overflow: TextOverflow.clip
+            ),
             Text(header,
-              style: TextStyle(fontSize: width*0.135, height: 1.0),
+              style: TextStyle(fontSize: width*0.12, height: 1.0),
               overflow: TextOverflow.clip
             )
           ]

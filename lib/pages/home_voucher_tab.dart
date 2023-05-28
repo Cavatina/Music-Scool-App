@@ -61,6 +61,7 @@ class _RequestLessonState extends State<RequestLesson> {
   Widget vouchersDropdown(BuildContext context, Voucher? selected, List<Voucher>? vouchers) {
     return DropdownButton<Voucher>(
       hint: Text(S.of(context).voucher),
+      style: TextStyle(fontSize: 12),
       isExpanded: true,
       value: selected,
       items: vouchers?.map((voucher) {
@@ -85,6 +86,7 @@ class _RequestLessonState extends State<RequestLesson> {
 
   Widget instrumentsDropdown(BuildContext context, Instrument? selected, List<Instrument>? instruments, bool enabled) {
     return DropdownButton<Instrument>(
+      style: TextStyle(fontSize: 12),
       hint: Text(S.of(context).instrument),
       isExpanded: true,
       value: selected,

@@ -61,6 +61,7 @@ class _RequestLessonState extends State<RequestLesson> {
   Widget vouchersDropdown(BuildContext context, Voucher? selected, List<Voucher>? vouchers) {
     return DropdownButton<Voucher>(
       hint: Text(S.of(context).voucher),
+      style: TextStyle(fontSize: 12),
       isExpanded: true,
       value: selected,
       items: vouchers?.map((voucher) {
@@ -83,8 +84,9 @@ class _RequestLessonState extends State<RequestLesson> {
     );
   }
 
-  Widget instrumentsDropdown(BuildContext context, Instrument? selected, List<Instrument>? instruments) {
+  Widget instrumentsDropdown(BuildContext context, Instrument? selected, List<Instrument>? instruments, bool enabled) {
     return DropdownButton<Instrument>(
+      style: TextStyle(fontSize: 12),
       hint: Text(S.of(context).instrument),
       isExpanded: true,
       value: selected,
@@ -94,7 +96,7 @@ class _RequestLessonState extends State<RequestLesson> {
           child: Text(instrumentText(context, instrument.name)),
         );
         }).toList(),
-      onChanged: (newVal) {
+      onChanged: !enabled ? null : (newVal) {
         setState(() {
           if (instrument != newVal) {
             instrument = newVal;
@@ -117,7 +119,7 @@ class _RequestLessonState extends State<RequestLesson> {
           leading: Icon(CupertinoIcons.ticket_fill),
         ),
         ListTile(
-          title: instrumentsDropdown(context, instrument, _instruments),
+          title: instrumentsDropdown(context, instrument, _instruments, voucher != null),
           subtitle: Text(''),
           leading: Icon(CupertinoIcons.music_note),
         ),

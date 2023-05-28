@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:musicscool/models/available_dates.dart';
 import 'package:musicscool/models/instrument.dart';
 import 'package:musicscool/models/lesson_cancel_info.dart';
@@ -31,10 +32,12 @@ class AuthModel extends ChangeNotifier {
   final DioCacheManager _cache = DioCacheManager(CacheConfig(
     baseUrl: apiUrl,
     defaultRequestMethod: 'GET'));
+  late PackageInfo pkgInfo;
 
   AuthModel(this.api);
 
   Future<AuthModel> init() async {
+    pkgInfo = await PackageInfo.fromPlatform();
     String? value = await token;
     if (value.isNotEmpty == true) {
       print('reading token from storage:${value}');

@@ -195,7 +195,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             centerTitle: true,
             bottom: TabBar(
                 controller: _tabController,
-                labelStyle: TextStyle(fontSize: 9),
+                labelStyle: TextStyle(fontSize: 7),
                 indicatorColor: Theme.of(context).colorScheme.primary,
                 tabs: [
                   Tab(text: S.of(context).info, icon: Icon(CupertinoIcons.info_circle_fill)), //Icons.info)),
@@ -270,6 +270,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               title: Text(user.name),
               subtitle: Text(user.email),
               leading: Icon(CupertinoIcons.person_fill) //Icons.person)
+          ),
+          ListTile(
+              title: Text('App version ${auth.pkgInfo.version}'),
+              leading: Icon(Icons.perm_device_info)
           ),
           ExpansionTile(
               title: Text(S.of(context).contact),

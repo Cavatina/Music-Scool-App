@@ -271,6 +271,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               subtitle: Text(user.email),
               leading: Icon(CupertinoIcons.person_fill) //Icons.person)
           ),
+          ListTile(
+              title: Text('App version ${auth.pkgInfo.version}'),
+              leading: Icon(Icons.perm_device_info)
+          ),
           ExpansionTile(
               title: Text(S.of(context).contact),
               leading: Icon(CupertinoIcons.doc_person_fill),

@@ -13,17 +13,49 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
+import 'dart:async';
+import 'dart:isolate';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter/foundation.dart' show PlatformDispatcher, kDebugMode;
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_core/firebase_core.dart';
+import '../firebase_options.dart';
 import 'package:musicscool/generated/l10n.dart';
 import 'package:musicscool/pages/root_page.dart';
 import 'package:musicscool/theme.dart';
 import 'package:musicscool/strings.dart' show appName;
 import 'service_locator.dart';
 
-void main() {
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  Isolate.current.addErrorListener(RawReceivePort((pair) {
+    final errorAndStacktrace = pair as List<dynamic>;
+    FirebaseCrashlytics.instance.recordError(
+      errorAndStacktrace.first,
+      errorAndStacktrace.last as StackTrace,
+    );
+  }).sendPort);
+  if (!kDebugMode) {
+    FlutterError.onError = (errorDetails) {
+      FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+    };
+    PlatformDispatcher.instance.onError = (error, stack) {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      return true;
+    };
+  }
+
   setupServiceLocator();
-  runApp(MusicScoolApp());
+
+  runZonedGuarded<void>(() {
+    runApp(MusicScoolApp());
+  }, FirebaseCrashlytics.instance.recordError);
 }
 
 class MusicScoolApp extends StatelessWidget {

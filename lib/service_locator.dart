@@ -15,7 +15,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
 import 'package:get_it/get_it.dart';
 import 'services/remote_notifications.dart';
-import 'services/firebase_service.dart';
 import 'services/api.dart';
 import 'services/api_service.dart';
 import 'services/intl_service.dart';
@@ -26,11 +25,9 @@ GetIt locator = GetIt.instance;
 
 void setupServiceLocator() {
   locator.registerSingleton<Api>(ApiService());
-  locator.registerSingletonAsync<FirebaseService>(
-      () async => FirebaseService().init());
   locator.registerSingletonAsync<RemoteNotifications>(
       () async => RemoteNotifications().init(),
-      dependsOn: [FirebaseService]);
+      dependsOn: []);
   locator.registerSingletonAsync<IntlService>(() async => IntlService().init());
   locator.registerSingletonAsync<LocalNotifications>(
       () async => LocalNotifications().init());

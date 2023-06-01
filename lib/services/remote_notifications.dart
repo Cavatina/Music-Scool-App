@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -55,7 +56,12 @@ class RemoteNotifications {
       badge: true,
       sound: true,
     );
-    _token = await FirebaseMessaging.instance.getToken();
+    try {
+      _token = await FirebaseMessaging.instance.getToken();
+    }
+    catch (e) {
+      await FirebaseCrashlytics.instance.recordError(e, null);
+    }
     print('token: $_token');
     tokenStream.listen((String token) {
       print('FCM token refresh: ${token}');

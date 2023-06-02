@@ -25,13 +25,13 @@ GetIt locator = GetIt.instance;
 
 void setupServiceLocator() {
   locator.registerSingleton<Api>(ApiService());
-  locator.registerSingletonAsync<RemoteNotifications>(
-      () async => RemoteNotifications().init(),
-      dependsOn: []);
-  locator.registerSingletonAsync<IntlService>(() async => IntlService().init());
   locator.registerSingletonAsync<LocalNotifications>(
       () async => LocalNotifications().init());
+  locator.registerSingletonAsync<RemoteNotifications>(
+      () async => RemoteNotifications().init(),
+      dependsOn: [LocalNotifications]);
+  locator.registerSingletonAsync<IntlService>(() async => IntlService().init());
   locator.registerSingletonAsync<AuthModel>(
       () async => AuthModel(locator<Api>()).init(),
-      dependsOn: [RemoteNotifications]);
+      dependsOn: [RemoteNotifications, LocalNotifications]);
 }

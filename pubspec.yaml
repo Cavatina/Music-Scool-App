@@ -3,7 +3,7 @@ description: Mobile app for Music'scool students.
 
 publish_to: 'none' # Do not publish to pub.dev
 
-version: 1.2.2
+version: 1.2.3
 
 environment:
   sdk: ">=2.15.0 <3.0.0"

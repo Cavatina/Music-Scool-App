@@ -29,7 +29,7 @@ class _StudentCountdownState extends State<StudentCountdown>
   void initState() {
     _timer = Timer.periodic(Duration(milliseconds:250),
       (Timer t) {
-        setState(() => {_lessonIsNow = lessonIsNow()});
+        setState(() => _lessonIsNow = lessonIsNow());
       }
     );
     _lessonIsNow = lessonIsNow();
@@ -74,7 +74,8 @@ class _StudentCountdownState extends State<StudentCountdown>
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget> [
             Text(S.of(context).youAreRockingRightNow,
-                textScaleFactor: 1.25, style: TextStyle(fontWeight: FontWeight.bold)),
+                textScaler: TextScaler.linear(1.25),
+                style: TextStyle(fontWeight: FontWeight.bold)),
             Text(''),
           ],
         )
@@ -93,9 +94,11 @@ class _StudentCountdownState extends State<StudentCountdown>
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget> [
               Text(S.of(context).heyUser(widget.user.firstName),
-                  textScaleFactor: 1.25),
+                  textScaler: TextScaler.linear(1.25),
+              ),
               Text(S.of(context).aboutToRock,
-                  textScaleFactor: 1.25),
+                  textScaler: TextScaler.linear(1.25)
+              ),
               Text(''),
             ],
           ),
@@ -109,11 +112,12 @@ class _StudentCountdownState extends State<StudentCountdown>
                   children: <Widget>[
                     CountdownTimer(to: widget.user.student!.nextLesson!.from, boxWidth: boxWidth),
                     Text(''),
-                    Text(formattedDateTime(context, widget.user.student!.nextLesson!.from), textScaleFactor: 1.25)
+                    Text(formattedDateTime(context, widget.user.student!.nextLesson!.from),
+                      textScaler: TextScaler.linear(1.25))
                   ]
               )
           ),
-          Text('', textScaleFactor: 1.25,
+          Text('', textScaler: TextScaler.linear(1.25),
               style: TextStyle(height: 4.0)),
         ]
     );

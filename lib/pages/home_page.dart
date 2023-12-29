@@ -260,7 +260,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   Widget userInfo(BuildContext context, User user) {
     List<Text> address = user.schoolContact.address.map((String line) {
-      return Text(line, textScaleFactor: 1.2);
+      return Text(line, textScaler: TextScaler.linear(1.2));
     }).toList();
     AuthModel auth = Provider.of<AuthModel>(context, listen: false);
     return ListView(
@@ -294,7 +294,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               child: SvgPicture.asset('assets/images/Musicscool - Logo - Okergeel beeldmerk.svg',
                                   color: Theme.of(context).colorScheme.secondary)),
                           Text(''),
-                          Text(appName, textScaleFactor: 1.75),
+                          Text(appName, textScaler: TextScaler.linear(1.75)),
                           Text(''),
                           ...address,
                           // Text('Penselstrøget 56', textScaleFactor: 1.2),

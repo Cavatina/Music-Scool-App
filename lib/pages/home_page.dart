@@ -195,9 +195,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             centerTitle: true,
             bottom: TabBar(
                 controller: _tabController,
-                labelStyle: TextStyle(fontSize: 9),
-                labelPadding: EdgeInsets.symmetric(horizontal: 10.0),
+                labelStyle: TextStyle(fontSize: 10),
+                labelPadding: EdgeInsets.symmetric(horizontal: 2.0),
                 indicatorColor: Theme.of(context).colorScheme.primary,
+                labelColor: Theme.of(context).colorScheme.onPrimary,
+                unselectedLabelColor: Theme.of(context).colorScheme.onPrimary,
                 tabs: [
                   Tab(text: S.of(context).info, icon: Icon(CupertinoIcons.info_circle_fill)), //Icons.info)),
                   Tab(text: S.of(context).homework, icon: Icon(CupertinoIcons.music_albums_fill)), //doc_on_doc_fill)),//Icons.book)),

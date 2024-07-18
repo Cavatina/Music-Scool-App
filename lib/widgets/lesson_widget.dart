@@ -171,7 +171,7 @@ class _LessonWidgetState extends State<LessonWidget> {
               padding: EdgeInsets.symmetric(horizontal: 20),
               alignment: AlignmentDirectional.centerEnd,
               child: TextButton.icon(
-                style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent)),
+                style: ButtonStyle(backgroundColor: WidgetStateProperty.all<Color>(Colors.transparent)),
                   onPressed: null,
                   icon: Text(S.of(context).cancel),
                   label: Icon(Icons.delete, color: Colors.white))

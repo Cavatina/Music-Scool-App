@@ -16,7 +16,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 import 'package:timezone/timezone.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
-import 'package:flutter_native_timezone/flutter_native_timezone.dart';
+import 'package:flutter_timezone/flutter_timezone.dart';
 
 class IntlService {
   late Location currentLocation;
@@ -25,7 +25,7 @@ class IntlService {
     // which is incompatible with this function:
     //    await initializeDateFormatting();
     tz.initializeTimeZones();
-    String currentTimeZone = await FlutterNativeTimezone.getLocalTimezone();
+    String currentTimeZone = await FlutterTimezone.getLocalTimezone();
     currentLocation = getLocation(currentTimeZone);
     return this;
   }

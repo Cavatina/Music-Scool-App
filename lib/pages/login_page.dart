@@ -103,7 +103,7 @@ class _LoginFormState extends State<LoginForm> {
               child: SvgPicture.asset('assets/images/Musicscool - Logo - Okergeel beeldmerk.svg',
                   color: Theme.of(context).colorScheme.secondary)),
           Text(''),
-          Text(appName, textScaleFactor: 1.75),
+          Text(appName, textScaler: TextScaler.linear(1.75)),
           Text(''),
           userPwSection(),
           buttonSection(context),

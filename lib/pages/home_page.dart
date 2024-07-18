@@ -195,8 +195,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             centerTitle: true,
             bottom: TabBar(
                 controller: _tabController,
-                labelStyle: TextStyle(fontSize: 7),
+                labelStyle: TextStyle(fontSize: 10),
+                labelPadding: EdgeInsets.symmetric(horizontal: 2.0),
                 indicatorColor: Theme.of(context).colorScheme.primary,
+                labelColor: Theme.of(context).colorScheme.onPrimary,
+                unselectedLabelColor: Theme.of(context).colorScheme.onPrimary,
                 tabs: [
                   Tab(text: S.of(context).info, icon: Icon(CupertinoIcons.info_circle_fill)), //Icons.info)),
                   Tab(text: S.of(context).homework, icon: Icon(CupertinoIcons.music_albums_fill)), //doc_on_doc_fill)),//Icons.book)),
@@ -260,7 +263,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   Widget userInfo(BuildContext context, User user) {
     List<Text> address = user.schoolContact.address.map((String line) {
-      return Text(line, textScaleFactor: 1.2);
+      return Text(line, textScaler: TextScaler.linear(1.2));
     }).toList();
     AuthModel auth = Provider.of<AuthModel>(context, listen: false);
     return ListView(
@@ -294,7 +297,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               child: SvgPicture.asset('assets/images/Musicscool - Logo - Okergeel beeldmerk.svg',
                                   color: Theme.of(context).colorScheme.secondary)),
                           Text(''),
-                          Text(appName, textScaleFactor: 1.75),
+                          Text(appName, textScaler: TextScaler.linear(1.75)),
                           Text(''),
                           ...address,
                           // Text('Penselstrøget 56', textScaleFactor: 1.2),

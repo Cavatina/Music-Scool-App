@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:infinite_scroll_pagination/src/ui/default_indicators/first_page_exception_indicator.dart';
+import 'package:infinite_scroll_pagination/src/widgets/helpers/default_status_indicators/first_page_exception_indicator.dart';
 import 'package:musicscool/models/lesson.dart';
 import 'package:musicscool/generated/l10n.dart';
 import 'package:musicscool/services/api.dart' show AuthenticationFailed;

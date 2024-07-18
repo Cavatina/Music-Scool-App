@@ -3,16 +3,17 @@ description: Mobile app for Music'scool students.
 
 publish_to: 'none' # Do not publish to pub.dev
 
-version: 1.2.3
+version: 1.2.4
 
 environment:
   sdk: ">=2.15.0 <3.0.0"
 
 dependencies:
-  package_info_plus: ^3.0.2
-  infinite_scroll_pagination: ^3.2.0
+  package_info_plus: ^5.0.1
+  sliver_tools: ^0.2.12
+  infinite_scroll_pagination: ^4.0.0
   json_annotation: ^4.0.1
-  intl: ^0.17.0
+  intl: ^0.19.0
   table_calendar: ^3.0.5
   dio: ^4.0.4
   dio_http_cache_lts: ^0.4.1
@@ -24,14 +25,14 @@ dependencies:
   permission_handler: ^10.1.0
   flutter_local_notifications: ^12.0.2
   timezone: ^0.9.0
-  flutter_native_timezone: ^2.0.0
+  flutter_timezone: ^2.1.0
   flutter_secure_storage: ^6.0.0
   flutter_svg: ^1.1.5
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  google_fonts: ^3.0.1
+  google_fonts: ^4.0.4
   cupertino_icons: ^1.0.4
   firebase_core: 2.7.1
   firebase_crashlytics: ^3.0.7
@@ -46,6 +47,7 @@ dev_dependencies:
     sdk: flutter
 
 # The following section is specific to Flutter.
+  http: any
 flutter:
   generate: true
   uses-material-design: true

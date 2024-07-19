@@ -250,7 +250,7 @@ class _LoginFormState extends State<LoginForm> {
                   ).catchError((_) => showUnexpectedError(context));
                 }
               },
-              style: ElevatedButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.secondary),
+              style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.secondary),
               child: Text(S.of(context).signIn, style: TextStyle(color: Colors.black)),
             ),
           ),

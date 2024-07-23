@@ -63,11 +63,11 @@ class _CountdownTimerState extends State<CountdownTimer>
         child: Column(
           children: <Widget> [
             Text(value,
-              style: TextStyle(fontSize: width*0.55, fontWeight: FontWeight.w900, height: 1.3),
+              style: TextStyle(fontSize: width*0.55, fontWeight: FontWeight.w900, height: 1.2),
               overflow: TextOverflow.clip
             ),
             Text(header,
-              style: TextStyle(fontSize: width*0.15, height: 0.6),
+              style: TextStyle(fontSize: width*0.15, height: 0.4),
               overflow: TextOverflow.clip
             )
           ]

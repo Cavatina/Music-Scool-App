@@ -9,7 +9,6 @@ import 'package:musicscool/models/time_slot.dart';
 import 'package:musicscool/models/user.dart';
 import 'package:musicscool/models/voucher.dart';
 import 'package:musicscool/service_locator.dart';
-import 'package:musicscool/services/api.dart';
 import 'package:musicscool/viewmodels/auth.dart';
 import 'package:musicscool/widgets/available_date_picker.dart';
 import 'package:musicscool/widgets/duration_select.dart';
@@ -61,7 +60,8 @@ class _RequestLessonState extends State<RequestLesson> {
   Widget vouchersDropdown(BuildContext context, Voucher? selected, List<Voucher>? vouchers) {
     return DropdownButton<Voucher>(
       hint: Text(S.of(context).voucher),
-      style: TextStyle(fontSize: 12),
+      style: TextStyle(fontSize: 14),
+      dropdownColor: Theme.of(context).colorScheme.onSecondary,
       isExpanded: true,
       value: selected,
       items: vouchers?.map((voucher) {
@@ -86,7 +86,8 @@ class _RequestLessonState extends State<RequestLesson> {
 
   Widget instrumentsDropdown(BuildContext context, Instrument? selected, List<Instrument>? instruments, bool enabled) {
     return DropdownButton<Instrument>(
-      style: TextStyle(fontSize: 12),
+      style: TextStyle(fontSize: 14),
+      dropdownColor: Theme.of(context).colorScheme.onSecondary,
       hint: Text(S.of(context).instrument),
       isExpanded: true,
       value: selected,
@@ -230,9 +231,7 @@ Widget voucherView(BuildContext context, VoucherRequested onSuccess) {
               }
             }
             else if (snapshot.hasError) {
-              if (!(snapshot.error is AuthenticationFailed)) {
-                showUnexpectedError(context);
-              }
+              showUnexpectedError(context);
               return Container();
             }
             else {

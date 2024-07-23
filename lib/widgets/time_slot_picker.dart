@@ -63,7 +63,8 @@ class _TimeSlotPickerState extends State<TimeSlotPicker> {
 
     return DropdownButton<TimeSlot>(
       hint: Text(S.of(context).time),
-      style: TextStyle(fontSize: 12),
+      style: TextStyle(fontSize: 14),
+      dropdownColor: Theme.of(context).colorScheme.onSecondary,
       isExpanded: true,
       value: widget.slot,
       items: slots.map((slot) {

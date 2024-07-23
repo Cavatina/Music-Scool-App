@@ -61,7 +61,8 @@ class _AvailableDatePickerState extends State<AvailableDatePicker> {
 
     return DropdownButton<AvailableDates>(
       hint: Text(S.of(context).date),
-      style: TextStyle(fontSize: 12),
+      style: TextStyle(fontSize: 14, overflow: TextOverflow.ellipsis),
+      dropdownColor: Theme.of(context).colorScheme.onSecondary,
       isExpanded: true,
       value: widget.date,
       items: dates.map((date) {

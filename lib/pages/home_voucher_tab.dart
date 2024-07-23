@@ -9,7 +9,6 @@ import 'package:musicscool/models/time_slot.dart';
 import 'package:musicscool/models/user.dart';
 import 'package:musicscool/models/voucher.dart';
 import 'package:musicscool/service_locator.dart';
-import 'package:musicscool/services/api.dart';
 import 'package:musicscool/viewmodels/auth.dart';
 import 'package:musicscool/widgets/available_date_picker.dart';
 import 'package:musicscool/widgets/duration_select.dart';
@@ -232,9 +231,7 @@ Widget voucherView(BuildContext context, VoucherRequested onSuccess) {
               }
             }
             else if (snapshot.hasError) {
-              if (!(snapshot.error is AuthenticationFailed)) {
-                showUnexpectedError(context);
-              }
+              showUnexpectedError(context);
               return Container();
             }
             else {

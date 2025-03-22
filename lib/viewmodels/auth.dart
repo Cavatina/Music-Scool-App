@@ -17,9 +17,7 @@ import 'package:musicscool/strings.dart' show apiUrl;
 import 'package:musicscool/widgets/duration_select.dart';
 import 'dart:async';
 import 'dart:io';
-import 'package:path_provider/path_provider.dart';
 import 'package:dio_http_cache_lts/dio_http_cache_lts.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class AuthModel extends ChangeNotifier {
   final Api api;
@@ -232,23 +230,6 @@ class AuthModel extends ChangeNotifier {
     await api.createLessonRequest(
       voucher: voucher, date: date, instrument: instrument, time: time, duration: duration);
     return cacheClearUpcoming();
-  }
-
-  Future<String> homeworkPath({required String url, required String name}) async {
-    List<String> urlParts = url.split('/');
-    String dir;
-    if (Platform.isAndroid && await Permission.storage.status.isGranted) {
-      dir = (await getExternalStorageDirectories(type: StorageDirectory.documents))![0].path;
-      print('ExternalStorageDirectory:${dir}');
-    }
-    else {
-      dir = (await getTemporaryDirectory()).path;
-      print('TemporaryDirectory:${dir}');
-    }
-    String filePath = '$dir/${urlParts.last}/$name';
-    File file = File(filePath);
-    if (await file.exists()) return file.path;
-    return '';
   }
 
   Future<String> downloadHomework({required String url, required String name,

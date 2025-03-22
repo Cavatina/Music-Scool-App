@@ -45,7 +45,7 @@ class _HomeworkDownloadIconState extends State<HomeworkDownloadIcon> {
   @override
   void initState() {
     super.initState();
-    locator<AuthModel>().homeworkPath(
+    locator<AuthModel>().api.homeworkPath(
       url: widget.url,
       name: widget.fileName).then((String path) {
         print(path);

@@ -132,6 +132,11 @@ class ApiTestService implements Api {
   }
 
   @override
+  Future<String> homeworkPath({required String url, required String name}) async {
+    return '';
+  }
+
+  @override
   Future<String> downloadHomework({required String url, required String filename,
                                    required void Function(int, int) onReceiveProgress}) async {
     return '';

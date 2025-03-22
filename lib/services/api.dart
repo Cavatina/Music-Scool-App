@@ -48,6 +48,7 @@ abstract class Api {
   Future<LessonCancelInfo> cancelLessonInfo({required int id});
   Future<Lesson?> cancelLesson({required int id});
 
+  Future<String> homeworkPath({required String url, required String name});
   Future<String> downloadHomework({required String url, required String filename, required void Function(int, int) onReceiveProgress});
 
   Future<List<Voucher>> getVouchers();

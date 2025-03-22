@@ -31,7 +31,6 @@ import 'package:musicscool/models/lesson.dart';
 import 'package:musicscool/widgets/duration_select.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:musicscool/strings.dart' show apiUrl;
-import 'package:permission_handler/permission_handler.dart';
 
 
 ApiError httpStatusError(int? statusCode) {
@@ -270,17 +269,24 @@ class ApiService implements Api {
   }
 
   @override
+  Future<String> homeworkPath({required String url, required String name}) async {
+    List<String> urlParts = url.split('/');
+    String dir = (await getApplicationCacheDirectory()).path;
+    print('ApplicationCacheDirectory:${dir}');
+
+    String filePath = '$dir/${urlParts.last}/$name';
+    File file = File(filePath);
+    if (await file.exists()) return file.path;
+    return '';
+  }
+
+  @override
   Future<String> downloadHomework({required String url, required String filename,
                                    required void Function(int, int) onReceiveProgress}) async {
     List<String> urlParts = url.split('/');
-    String dir;
-    if (Platform.isAndroid && await Permission.storage.request().isGranted) {
-      dir = (await getExternalStorageDirectories(type: StorageDirectory.documents))![0].path;
-    }
-    else {
-      dir = (await getTemporaryDirectory()).path;
-    }
-    print('ExternalStorageDirectory:${dir}');
+    String dir = (await getApplicationCacheDirectory()).path;
+    print('ApplicationCacheDirectory:${dir}');
+
     String filePath = '$dir/${urlParts.last}/$filename';
     File file = File(filePath);
     if (await file.exists()) return file.path;

@@ -226,12 +226,12 @@ class ApiTestService implements Api {
 
   @override
   Future<void> registerDevice({required String deviceToken, required String locale}) async {
-    throw Exception('Not implemented');
+    return;
   }
 
   @override
   Future<void> removeDevice({required String deviceToken}) async {
-    throw Exception('Not implemented');
+    return;
   }
 
   late List<Lesson> _allLessons;

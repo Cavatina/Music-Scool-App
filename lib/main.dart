@@ -53,9 +53,7 @@ Future<void> main() async {
 
   setupServiceLocator();
 
-  runZonedGuarded<void>(() {
-    runApp(MusicScoolApp());
-  }, FirebaseCrashlytics.instance.recordError);
+  runApp(MusicScoolApp());
 }
 
 class MusicScoolApp extends StatelessWidget {

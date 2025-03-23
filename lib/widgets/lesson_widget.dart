@@ -142,10 +142,10 @@ class _LessonWidgetState extends State<LessonWidget> {
                         lesson = l;
                       });
                     }
-                    Navigator.of(dialogContext).pop(true);
+                    Navigator.of(context).pop(true);
                   }).catchError((e) {
                     showUnexpectedError(context);
-                    Navigator.of(dialogContext).pop(true);
+                    Navigator.of(context).pop(true);
                   });
                 }
             )

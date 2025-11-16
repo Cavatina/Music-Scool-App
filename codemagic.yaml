@@ -59,6 +59,7 @@ workflows:
       - cd . && flutter pub global run intl_utils:generate
       - cd . && flutter analyze
       - cd . && flutter test
+      - cd . && flutter build appbundle --build-number=$PROJECT_BUILD_NUMBER
       - find . -name "Podfile" -execdir pod install \;
       - keychain initialize
       - app-store-connect fetch-signing-files "$(xcode-project detect-bundle-id)"

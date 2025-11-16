@@ -32,8 +32,9 @@ import 'package:musicscool/strings.dart' show privacyPolicyUrl, appName;
 import 'package:musicscool/pages/home_voucher_tab.dart';
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
   @override
-  _HomePageState createState() => _HomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
@@ -78,7 +79,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 }
               }
               else if (snapshot.hasError) {
-                if (!(snapshot.error is AuthenticationFailed)) {
+                if (snapshot.error is! AuthenticationFailed) {
                   showUnexpectedError(context);
                 }
                 return Container();
@@ -159,7 +160,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             if (snapshot.hasData) {
               return userInfo(context, snapshot.data!);
             }
-            else if (snapshot.hasError && !(snapshot.error is AuthenticationFailed)) {
+            else if (snapshot.hasError && snapshot.error is! AuthenticationFailed) {
               showUnexpectedError(context);
               return InkWell(
                 child: ListTile(
@@ -347,7 +348,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         _notificationsEnabled = value;
                       });
                       if (value == true) {
-                        auth.enableNotifications().catchError((_) => showUnexpectedError(context));
+                        auth.enableNotifications().catchError((_) => {
+                            if (context.mounted) showUnexpectedError(context)
+                          });
                       }
                       else {
                         auth.disableNotifications();

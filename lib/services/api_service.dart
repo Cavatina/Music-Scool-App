@@ -15,6 +15,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
 import 'dart:async';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_http_cache_lts/dio_http_cache_lts.dart';
 import 'package:intl/intl.dart';
@@ -73,22 +74,26 @@ class ApiService implements Api {
         _token = response.data['data']['token'];
         return _token;
       }
-      else if (response.data.containsKey('message')) {
-        print(response.data);
+      else if (response.data.containsKey('message') && kDebugMode) {
+        debugPrint(response.data);
       }
       throw httpStatusError(response.statusCode);
     }
     catch (e) {
       if (e is DioError) {
-        print(e.requestOptions);
-        print(e.message);
+        if (kDebugMode) {
+          debugPrint(e.requestOptions.toString());
+          debugPrint(e.message);
+          if (e.response != null) debugPrint(e.response?.data);
+        }
         if (e.response != null) {
-          print(e.response?.data);
           throw httpStatusError(e.response?.statusCode);
         }
       }
       else {
-        print('login error:${e}');
+        if (kDebugMode) {
+          debugPrint('login error:${e}');
+        }
       }
       throw ServerError();
     }
@@ -105,7 +110,7 @@ class ApiService implements Api {
       );
     }
     catch (e) {
-      print(e);
+      if (kDebugMode) debugPrint(e.toString());
       throw ServerError();
     }
     return;
@@ -130,14 +135,18 @@ class ApiService implements Api {
           ),
         )
       );
-      if (null != response.headers.value(DIO_CACHE_HEADER_KEY_DATA_SOURCE)) {
-        print('/profile: Using cache');
-      }
-      else {
-        print('/profile: Loaded fresh.');
+      if (kDebugMode) {
+        if (null != response.headers.value(DIO_CACHE_HEADER_KEY_DATA_SOURCE)) {
+          debugPrint('/profile: Using cache');
+        }
+        else {
+          debugPrint('/profile: Loaded fresh.');
+        }
+        if (!response.data.containsKey('data')) {
+          debugPrint(response.data);
+        }
       }
       if (!response.data.containsKey('data')) {
-        print(response.data);
         throw httpStatusError(response.statusCode);
       }
       return User.fromJson(response.data['data']);
@@ -186,22 +195,24 @@ class ApiService implements Api {
         options: options,
         queryParameters: params,
       );
-      if (null != response.headers.value(DIO_CACHE_HEADER_KEY_DATA_SOURCE)) {
-        print('${path}: Using cache');
-      }
-      else {
-        print('${path}: Loaded fresh.');
+      if (kDebugMode) {
+        if (null != response.headers.value(DIO_CACHE_HEADER_KEY_DATA_SOURCE)) {
+          debugPrint('${path}: Using cache');
+        }
+        else {
+          debugPrint('${path}: Loaded fresh.');
+        }
       }
       return response.data;
     }
     catch (e) {
       if (e is DioError) {
         if (e.response != null) {
-          print(e.response?.data);
+          if (kDebugMode) debugPrint(e.response?.data);
           throw httpStatusError(e.response?.statusCode);
         }
         else {
-          print(e.message);
+          if (kDebugMode) debugPrint(e.message);
         }
       }
       throw ServerError();
@@ -254,15 +265,15 @@ class ApiService implements Api {
     catch (e) {
       if (e is DioError) {
         if (e.response != null) {
-          print(e.response!.data);
+          if (kDebugMode) debugPrint(e.response!.data);
           throw httpStatusError(e.response?.statusCode);
         }
         else {
-          print(e.message);
+          if (kDebugMode) debugPrint(e.message);
         }
       }
       else {
-        print(e);
+        if (kDebugMode) debugPrint(e.toString());
       }
       throw ServerError();
     }
@@ -272,7 +283,7 @@ class ApiService implements Api {
   Future<String> homeworkPath({required String url, required String name}) async {
     List<String> urlParts = url.split('/');
     String dir = (await getApplicationCacheDirectory()).path;
-    print('ApplicationCacheDirectory:${dir}');
+    if (kDebugMode) debugPrint('ApplicationCacheDirectory:${dir}');
 
     String filePath = '$dir/${urlParts.last}/$name';
     File file = File(filePath);
@@ -285,7 +296,7 @@ class ApiService implements Api {
                                    required void Function(int, int) onReceiveProgress}) async {
     List<String> urlParts = url.split('/');
     String dir = (await getApplicationCacheDirectory()).path;
-    print('ApplicationCacheDirectory:${dir}');
+    if (kDebugMode) debugPrint('ApplicationCacheDirectory:${dir}');
 
     String filePath = '$dir/${urlParts.last}/$filename';
     File file = File(filePath);
@@ -300,17 +311,19 @@ class ApiService implements Api {
           }
         )
       );
-      print('Downloaded homework from ${url} into ${filePath}');
+      if (kDebugMode) debugPrint('Downloaded homework from ${url} into ${filePath}');
       return filePath;
     }
     catch (e) {
-      print(e);
-      if (e is DioError) {
-        print (e.requestOptions.responseType);
-        if (e.response != null) {
-          print (e.response!.statusCode);
+      if (kDebugMode) {
+        debugPrint(e.toString());
+        if (e is DioError) {
+          debugPrint (e.requestOptions.responseType.toString());
+          if (e.response != null) {
+            debugPrint (e.response!.statusCode.toString());
+          }
+          debugPrint (e.message);
         }
-        print (e.message);
       }
       throw ServerError();
     }
@@ -357,29 +370,29 @@ class ApiService implements Api {
         '&instrument_id=${instrument.id}'
         '&duration=${duration.minutes}'
         '&time=${time.time}';
-      print(query);
-      Response response = await _dio.post(query,
+      await _dio.post(query,
         options: Options(
           headers: <String, String> {
             HttpHeaders.authorizationHeader: 'Bearer ${_token}'
           }
         )
       );
-      print(response.data);
     }
     catch (e) {
       if (e is DioError) {
         if (e.response != null) {
-          print(e.response!.data);
-          print(e.response?.statusCode);
+          if (kDebugMode) {
+            debugPrint(e.response!.data);
+            debugPrint(e.response?.statusCode.toString());
+          }
           throw httpStatusError(e.response?.statusCode);
         }
         else {
-          print(e.message);
+          if (kDebugMode) debugPrint(e.message);
         }
       }
       else {
-        print(e);
+        if (kDebugMode) debugPrint(e.toString());
       }
       throw ServerError();
     }
@@ -402,7 +415,7 @@ class ApiService implements Api {
       );
     }
     catch (e) {
-      print('registerDevice failed:${e}');
+      if (kDebugMode) debugPrint('registerDevice failed:${e}');
     }
   }
 
@@ -422,7 +435,7 @@ class ApiService implements Api {
       );
     }
     catch (e) {
-      print('removeDevice failed:${e}');
+      if (kDebugMode) debugPrint('removeDevice failed:${e}');
     }
   }
 

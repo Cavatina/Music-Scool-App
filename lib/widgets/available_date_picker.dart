@@ -26,7 +26,8 @@ import 'duration_select.dart';
 typedef AvailableDateSelect = void Function(AvailableDates? selected);
 
 class AvailableDatePicker extends StatefulWidget {
-  AvailableDatePicker({
+  const AvailableDatePicker({
+    super.key,
     required this.date,
     required this.instrument,
     required this.duration,
@@ -39,19 +40,18 @@ class AvailableDatePicker extends StatefulWidget {
   final AvailableDateSelect onSelect;
 
   @override
-  _AvailableDatePickerState createState() => _AvailableDatePickerState(instrument: instrument);
+  State<AvailableDatePicker> createState() => _AvailableDatePickerState();
 }
 
 class _AvailableDatePickerState extends State<AvailableDatePicker> {
-  _AvailableDatePickerState({required this.instrument});
+  _AvailableDatePickerState();
 
-  final Instrument instrument;
-  Future<List<AvailableDates>>? future_dates;
+  Future<List<AvailableDates>>? futureDates;
 
   @override
   void initState() {
     super.initState();
-    future_dates = locator<AuthModel>().api.getAvailableDates(instrument: instrument);
+    futureDates = locator<AuthModel>().api.getAvailableDates(instrument: widget.instrument);
   }
 
   Widget availableDates(BuildContext context, List<AvailableDates> dates) {
@@ -80,7 +80,7 @@ class _AvailableDatePickerState extends State<AvailableDatePicker> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<AvailableDates>>(
-        future: future_dates,
+        future: futureDates,
         builder: (context, AsyncSnapshot<List<AvailableDates>> snapshot) {
           if (snapshot.hasData) {
             return availableDates(context, snapshot.data!);

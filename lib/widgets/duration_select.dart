@@ -2,42 +2,48 @@ import 'package:flutter/material.dart';
 import 'package:musicscool/generated/l10n.dart';
 
 enum LessonDuration {
-  HalfHour,
-  Hour
+  halfHour,
+  hour
 }
 
 extension LessonDurationMinutes on LessonDuration {
   int get minutes {
     switch (this) {
-      case LessonDuration.HalfHour: return 30;
-      case LessonDuration.Hour: return 60;
+      case LessonDuration.halfHour: return 30;
+      case LessonDuration.hour: return 60;
     }
   }
 }
 
 extension LessonDurationText on LessonDuration {
-  String text(context) {
-    return '${minutes.toString()} ' + S.of(context).minutes;
+  String text(BuildContext context) {
+    return '${minutes.toString()} ${S.of(context).minutes}';
   }
 }
 
-final LessonDuration defaultDuration = LessonDuration.HalfHour;
+final LessonDuration defaultDuration = LessonDuration.halfHour;
 
 typedef LessonDurationSelect = void Function(LessonDuration selected);
 
 class DurationSelect extends StatefulWidget {
-  DurationSelect({required this.selected, required this.onSelect});
+  const DurationSelect({super.key, required this.selected, required this.onSelect});
 
   final LessonDuration selected;
   final LessonDurationSelect onSelect;
 
   @override
-  _DurationSelectState createState() => _DurationSelectState(selected: selected);
+  State<DurationSelect> createState() => _DurationSelectState();
 }
 
 class _DurationSelectState extends State<DurationSelect> {
-  _DurationSelectState({required this.selected});
-  LessonDuration selected;
+  _DurationSelectState();
+  late LessonDuration selected;
+
+  @override
+  void initState() {
+    super.initState();
+    selected = widget.selected;
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -38,11 +38,11 @@ class AuthModel extends ChangeNotifier {
     pkgInfo = await PackageInfo.fromPlatform();
     String? value = await token;
     if (value.isNotEmpty == true) {
-      print('reading token from storage:${value}');
+      if (kDebugMode) debugPrint('reading token from storage:${value}');
       isLoggedIn = true;
       api.token = _token;
     } else {
-      print('token empty!');
+      if (kDebugMode) debugPrint('token empty!');
     }
     value = await readStorage('notificationsEnabled');
     if (value != null && value == 'false') _notificationsEnabled = false;
@@ -58,7 +58,7 @@ class AuthModel extends ChangeNotifier {
     api.dio.interceptors.add(InterceptorsWrapper(
       onError: (DioError e, handler) {
         if (e.requestOptions.method == 'GET' && <int>[401, 403].contains(e.response?.statusCode)) {
-          print('status:${e.response!.statusCode}: logout!');
+          if (kDebugMode) debugPrint('status:${e.response!.statusCode}: logout!');
           clearLoginToken();
         }
         return handler.next(e);
@@ -103,17 +103,15 @@ class AuthModel extends ChangeNotifier {
 
   Future<void> enableNotifications() async {
     _notificationsEnabled = true;
-    print('Notifications enabled');
     var deviceToken = locator<RemoteNotifications>().token;
     if (deviceToken != null) {
       await api.registerDevice(deviceToken: deviceToken, locale: Platform.localeName);
-      print('registerDevice:${deviceToken}, locale:${Platform.localeName}');
+      if (kDebugMode) debugPrint('registerDevice:${deviceToken}, locale:${Platform.localeName}');
     }
     await storage.write(key: 'notificationsEnabled', value: 'true');
   }
   Future<void> disableNotifications() async {
     _notificationsEnabled = false;
-    print('Notifications disabled');
     var deviceToken = locator<RemoteNotifications>().token;
     if (deviceToken != null) {
       await api.removeDevice(deviceToken: deviceToken);
@@ -129,7 +127,7 @@ class AuthModel extends ChangeNotifier {
       var deviceToken = locator<RemoteNotifications>().token;
       if (deviceToken != null) {
         await api.registerDevice(deviceToken: deviceToken, locale: Platform.localeName);
-        print('registerDevice:${deviceToken}, locale:${Platform.localeName}');
+        if (kDebugMode) debugPrint('registerDevice:${deviceToken}, locale:${Platform.localeName}');
       }
   }
 

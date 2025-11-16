@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+// ignore: implementation_imports
 import 'package:infinite_scroll_pagination/src/widgets/helpers/default_status_indicators/first_page_exception_indicator.dart';
 import 'package:musicscool/models/lesson.dart';
 import 'package:musicscool/generated/l10n.dart';
@@ -15,7 +17,7 @@ class LessonListView extends StatefulWidget {
   final LessonListGetter itemGetter;
   final LessonListRefresh itemRefresh;
 
-  LessonListView({required this.itemBuilder, required this.itemGetter,
+  const LessonListView({super.key, required this.itemBuilder, required this.itemGetter,
                   required this.itemRefresh});
 
   @override
@@ -50,8 +52,10 @@ class LessonListViewState extends State<LessonListView> {
       // AuthModel will trigger a global refresh back to LoginPage.
     }
     catch (error, stacktrace) {
-      print(error.toString());
-      print(stacktrace);
+      if (kDebugMode) {
+        debugPrint(error.toString());
+        debugPrint(stacktrace.toString());
+      }
       if (mounted && _pagingController != null) {
         _pagingController!.error = S.current.unexpectedErrorMessage;
       }

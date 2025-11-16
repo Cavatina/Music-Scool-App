@@ -9,12 +9,12 @@ import 'countdown_timer_widget.dart';
 
 class StudentCountdown extends StatefulWidget
 {
-  const StudentCountdown({required this.user});
+  const StudentCountdown({super.key, required this.user});
 
   final User user;
 
   @override
-  _StudentCountdownState createState() => _StudentCountdownState();
+  State<StudentCountdown> createState() => _StudentCountdownState();
 }
 
 class _StudentCountdownState extends State<StudentCountdown>
@@ -65,7 +65,7 @@ class _StudentCountdownState extends State<StudentCountdown>
     );
   }
 
-  Widget buildLessonIsNow(context) {
+  Widget buildLessonIsNow(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget> [
@@ -83,7 +83,7 @@ class _StudentCountdownState extends State<StudentCountdown>
     );
   }
 
-  Widget buildCountdown(context) {
+  Widget buildCountdown(BuildContext context) {
     var devSize = MediaQuery.of(context).size;
     double boxWidth = min(devSize.width / 5.5, 100.0);
     return Column(

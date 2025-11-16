@@ -25,7 +25,8 @@ import 'duration_select.dart';
 typedef TimeSlotSelect = void Function(TimeSlot? selected);
 
 class TimeSlotPicker extends StatefulWidget {
-  TimeSlotPicker({
+  const TimeSlotPicker({
+    super.key,
     required this.slot,
     required this.date,
     required this.duration,
@@ -38,18 +39,18 @@ class TimeSlotPicker extends StatefulWidget {
   final TimeSlotSelect onSelect;
 
   @override
-  _TimeSlotPickerState createState() => _TimeSlotPickerState();
+  State<TimeSlotPicker> createState() => _TimeSlotPickerState();
 }
 
 class _TimeSlotPickerState extends State<TimeSlotPicker> {
   _TimeSlotPickerState();
 
-  Future<List<TimeSlot>>? future_slots;
+  Future<List<TimeSlot>>? futureSlots;
 
   @override
   void initState() {
     super.initState();
-    future_slots = locator<AuthModel>().api.getTimeSlots(
+    futureSlots = locator<AuthModel>().api.getTimeSlots(
       teacher: widget.date.teacher,
       date: widget.date.date,
       duration: widget.duration
@@ -70,7 +71,7 @@ class _TimeSlotPickerState extends State<TimeSlotPicker> {
       items: slots.map((slot) {
         return DropdownMenuItem<TimeSlot>(
           value: slot,
-          child: Text('${slot.time}'),
+          child: Text(slot.time),
         );
         }).toList(),
       onChanged: (newVal) {
@@ -82,7 +83,7 @@ class _TimeSlotPickerState extends State<TimeSlotPicker> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<TimeSlot>>(
-        future: future_slots,
+        future: futureSlots,
         builder: (context, AsyncSnapshot<List<TimeSlot>> snapshot) {
           if (snapshot.hasData) {
             return timeSlots(context, snapshot.data!);

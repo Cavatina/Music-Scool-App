@@ -29,6 +29,7 @@ import 'package:musicscool/service_locator.dart';
 
 
 class LoginPage extends StatelessWidget {
+  const LoginPage({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,8 +58,9 @@ class LoginPage extends StatelessWidget {
 }
 
 class LoginForm extends StatefulWidget {
+  const LoginForm({super.key});
   @override
-  _LoginFormState createState() => _LoginFormState();
+  State<LoginForm> createState() => _LoginFormState();
 }
 
 enum _FormType { signIn, resetPassword }
@@ -156,7 +158,7 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   Container resetPasswordButtons(BuildContext context) {
-    final AuthModel _auth = Provider.of<AuthModel>(context, listen: true);
+    final AuthModel auth = Provider.of<AuthModel>(context, listen: true);
     double buttonWidth = max(150, MediaQuery.of(context).size.width / 2.2);
     return Container(
 //      width: MediaQuery.of(context).size.width,
@@ -180,13 +182,15 @@ class _LoginFormState extends State<LoginForm> {
             width: buttonWidth,
             child: ElevatedButton(
               onPressed: () {
-                _auth.resetPassword(username: emailController.text).then((String email) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                auth.resetPassword(username: emailController.text).then((String email) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text(S.of(context).passwordResetRequestSent(email)),
                       duration: Duration(seconds: 5)
-                  ));
+                    ));
+                  }
                 }).catchError((_) {
-                  showUnexpectedError(context);
+                  if (context.mounted) showUnexpectedError(context);
                 });
                 setState(() {
                   formType = _FormType.signIn;
@@ -202,7 +206,7 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   Container signInButtons(BuildContext context) {
-    final AuthModel _auth = Provider.of<AuthModel>(context, listen: true);
+    final AuthModel auth = Provider.of<AuthModel>(context, listen: true);
     double buttonWidth = max(150, MediaQuery.of(context).size.width / 2.2);
     return Container(
 //      width: MediaQuery.of(context).size.width,
@@ -239,15 +243,18 @@ class _LoginFormState extends State<LoginForm> {
                   )); // snapshot.error;
                 }
                 else {
-                  _auth.login(
+                  auth.login(
                       username: emailController.text,
                       password: passwordController.text).catchError((e) {
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text(S.of(context).loginFailed),
-                        duration: Duration(seconds: 2)
-                    )); // snapshot.error;
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(S.of(context).loginFailed),
+                              duration: Duration(seconds: 2)
+                          )); // snapshot.error;
+                        }
                   }, test: (e) => e is AuthenticationFailed,
-                  ).catchError((_) => showUnexpectedError(context));
+                  ).catchError((_) {
+                    if (context.mounted) showUnexpectedError(context);});
                 }
               },
               style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.secondary),

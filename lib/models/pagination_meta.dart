@@ -19,6 +19,7 @@ part 'pagination_meta.g.dart';
 
 @JsonSerializable()
 class PaginationMeta {
+   // ignore: non_constant_identifier_names
   final int? current_page;
   final int? from;
   final String? path;

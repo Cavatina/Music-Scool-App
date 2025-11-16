@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -9,13 +10,13 @@ Future<dynamic> _backgroundMessageHandler(RemoteMessage message) async {
   if (message.data.isNotEmpty == true) {
     // Handle data message
     final dynamic data = message.data;
-    print('background data: $data');
+    if (kDebugMode) debugPrint('background data: $data');
   }
 
   if (message.notification != null) {
     // Handle notification message
     final dynamic notification = message.notification;
-    print('background notification: $notification');
+    if (kDebugMode) debugPrint('background notification: $notification');
   }
 
   // Or do other work.
@@ -62,16 +63,15 @@ class RemoteNotifications {
     catch (e) {
       await FirebaseCrashlytics.instance.recordError(e, null);
     }
-    print('token: $_token');
+    if (kDebugMode) debugPrint('token: $_token');
     tokenStream.listen((String token) {
-      print('FCM token refresh: ${token}');
+      if (kDebugMode) debugPrint('FCM token refresh: ${token}');
       _token = token;
     });
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
-      print('onMessage');
       if (notification != null && android != null) {
         _flutterLocalNotificationsPlugin.show(
             notification.hashCode,
@@ -92,7 +92,6 @@ class RemoteNotifications {
   }
 
   String? get token {
-    print('token: $_token');
     return _token;
   }
 }

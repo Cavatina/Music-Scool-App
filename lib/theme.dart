@@ -59,7 +59,7 @@ ThemeData theme()
       backgroundColor: colorScheme.secondary,
     ),
     visualDensity: VisualDensity.adaptivePlatformDensity,
-    cardTheme: CardTheme(color: Color.fromRGBO(21, 21, 21, 0.3))
+    cardTheme: CardThemeData(color: Color.fromRGBO(21, 21, 21, 0.3))
   );
   return theme.copyWith(
       textTheme: GoogleFonts.robotoTextTheme(theme.textTheme),

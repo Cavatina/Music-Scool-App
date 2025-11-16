@@ -15,6 +15,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:musicscool/locale_strings.dart';
@@ -28,16 +29,22 @@ import 'lesson_list_view.dart';
 
 class LessonWidget extends StatefulWidget {
   final Lesson lesson;
-  LessonWidget({required this.lesson});
+  const LessonWidget({super.key, required this.lesson});
 
   @override
-  _LessonWidgetState createState() => _LessonWidgetState(lesson: lesson);
+  State<LessonWidget> createState() => _LessonWidgetState();
 }
 
 class _LessonWidgetState extends State<LessonWidget> {
-  _LessonWidgetState({required this.lesson});
+  _LessonWidgetState();
 
-  Lesson lesson;
+  late Lesson lesson;
+
+  @override
+  void initState() {
+    super.initState();
+    lesson = widget.lesson;
+  }
 
   Widget header(BuildContext context, {required List<Widget> children}) {
     String subtitle;
@@ -53,7 +60,7 @@ class _LessonWidgetState extends State<LessonWidget> {
       subtitle = '';
     }
     if (lesson.requested == true) {
-      subtitle = '(' + S.of(context).requested + ') ' + subtitle;
+      subtitle = '(${S.of(context).requested}) ${subtitle}';
     }
     if (children.isNotEmpty) {
       return ExpansionTile(
@@ -86,12 +93,14 @@ class _LessonWidgetState extends State<LessonWidget> {
     AuthModel auth = Provider.of<AuthModel>(context, listen: false);
     if (lesson.requested == true) {
         await auth.cancelLesson(id: lesson.id).then((_) {
-          LessonListViewState? list = context.findAncestorStateOfType<LessonListViewState>();
-          if (list != null) {
-            list.removeLesson(lesson.id);
+          if (context.mounted) {
+            LessonListViewState? list = context.findAncestorStateOfType<LessonListViewState>();
+            if (list != null) {
+              list.removeLesson(lesson.id);
+            }
           }
         }).catchError((e) {
-          showUnexpectedError(context);
+          if (context.mounted) showUnexpectedError(context);
         });
         return true;
     }
@@ -100,12 +109,13 @@ class _LessonWidgetState extends State<LessonWidget> {
       cancelInfo = await auth.cancelLessonInfo(id: lesson.id);
     }
     catch (e) {
-      showUnexpectedError(context);
-      print(e);
+      if (context.mounted) showUnexpectedError(context);
+      if (kDebugMode) debugPrint(e.toString());
       return false;
     }
+    if (!context.mounted) return false;
     String textContent;
-    print(jsonEncode(cancelInfo.toJson()));
+    if (kDebugMode) debugPrint(jsonEncode(cancelInfo.toJson()));
     if (cancelInfo.canGetReplacement) {
       textContent = S.of(context).cancelLessonRefundable(
           cancelInfo.countCancelled+1,  // Total: include this cancellation.
@@ -142,10 +152,12 @@ class _LessonWidgetState extends State<LessonWidget> {
                         lesson = l;
                       });
                     }
-                    Navigator.of(context).pop(true);
+                    if (context.mounted) Navigator.of(context).pop(true);
                   }).catchError((e) {
-                    showUnexpectedError(context);
-                    Navigator.of(context).pop(true);
+                    if (context.mounted) {
+                      showUnexpectedError(context);
+                      Navigator.of(context).pop(true);
+                    }
                   });
                 }
             )

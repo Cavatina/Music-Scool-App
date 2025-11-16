@@ -4,13 +4,13 @@ import 'package:musicscool/generated/l10n.dart';
 
 class CountdownTimer extends StatefulWidget
 {
-  const CountdownTimer({required this.to, required this.boxWidth});
+  const CountdownTimer({super.key, required this.to, required this.boxWidth});
 
   final DateTime to;
   final double boxWidth;
 
   @override
-  _CountdownTimerState createState() => _CountdownTimerState();
+  State<CountdownTimer> createState() => _CountdownTimerState();
 }
 
 class DurationStrings

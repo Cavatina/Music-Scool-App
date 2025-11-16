@@ -14,6 +14,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
 import 'dart:math';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:musicscool/locale_strings.dart';
@@ -31,10 +32,10 @@ class HomeworkDownloadIcon extends StatefulWidget {
   final String url;
   final String fileName;
 
-  HomeworkDownloadIcon({required this.url, required this.fileName});
+  const HomeworkDownloadIcon({super.key, required this.url, required this.fileName});
 
   @override
-  _HomeworkDownloadIconState createState() => _HomeworkDownloadIconState();
+  State<HomeworkDownloadIcon> createState() => _HomeworkDownloadIconState();
 }
 
 class _HomeworkDownloadIconState extends State<HomeworkDownloadIcon> {
@@ -48,7 +49,7 @@ class _HomeworkDownloadIconState extends State<HomeworkDownloadIcon> {
     locator<AuthModel>().api.homeworkPath(
       url: widget.url,
       name: widget.fileName).then((String path) {
-        print(path);
+        if (kDebugMode) debugPrint(path);
         setState(() {
           filePath = path;
         });
@@ -71,14 +72,14 @@ class _HomeworkDownloadIconState extends State<HomeworkDownloadIcon> {
         filePath = path;
         downloading = false;
       });
-      print('Opening:"${path}"');
+      if (kDebugMode) debugPrint('Opening:"${path}"');
       OpenFilex.open(path);
     }).catchError((e) {
-      print('downloadAndLaunch(${url}) failed: ${e}');
+      if (kDebugMode) debugPrint('downloadAndLaunch(${url}) failed: ${e}');
       setState((){
         downloading = false;
       });
-      showUnexpectedError(context);
+      if (context.mounted) showUnexpectedError(context);
     });
   }
 
@@ -98,7 +99,7 @@ class _HomeworkDownloadIconState extends State<HomeworkDownloadIcon> {
       return OutlinedButton.icon(
       label: Text(S.of(context).open),
       onPressed: () {
-        print('Opening existing:"${filePath}"');
+        if (kDebugMode) debugPrint('Opening existing:"${filePath}"');
         OpenFilex.open(filePath);
       },
       icon: Icon(CupertinoIcons.music_albums_fill)
@@ -118,17 +119,22 @@ class HomeworkWidget extends StatefulWidget {
   final Lesson lesson;
   final bool expanded;
 
-  HomeworkWidget({required this.lesson, required this.expanded});
+  const HomeworkWidget({super.key, required this.lesson, required this.expanded});
 
   @override
-  _HomeworkWidgetState createState() => _HomeworkWidgetState(expanded: expanded);
+  State<HomeworkWidget> createState() => _HomeworkWidgetState();
 }
 
 class _HomeworkWidgetState extends State<HomeworkWidget> {
-  bool expanded;
+  late bool expanded;
 
-  _HomeworkWidgetState({required this.expanded});
+  _HomeworkWidgetState();
 
+  @override
+  void initState() {
+    super.initState();
+    expanded = widget.expanded;
+  }
   Widget homeworkIcons(BuildContext context, Homework homework) {
     List<Widget> icons = <Widget>[];
     var devSize = MediaQuery.of(context).size;
@@ -195,26 +201,23 @@ class _HomeworkWidgetState extends State<HomeworkWidget> {
   List<Widget> body(BuildContext context) {
     List<Widget> out = <Widget>[];
     if (widget.lesson.homework != null) {
-//      out.add(ListTile(subtitle: Text('Homework')/*, tileColor: Color.fromRGBO(64, 64, 64, 0.5)*/));
-      widget.lesson.homework!.forEach((Homework homework) =>
-          out.add(
-              Container(
-                color: Color.fromRGBO(64, 64, 64, 0.3),
-//                margin: EdgeInsets.symmetric(vertical: 16.0),
-                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(homework.message ?? ''),
-                      Padding(padding: EdgeInsets.symmetric(vertical: 8.0)),
-                      homeworkIcons(context, homework),
-//                    Padding(padding: EdgeInsets.symmetric(vertical: 8.0)),
-                    ]
-                ),
-              )
-          )
-      );
+      for (Homework homework in widget.lesson.homework!) {
+        out.add(
+            Container(
+              color: Color.fromRGBO(64, 64, 64, 0.3),
+              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(homework.message ?? ''),
+                    Padding(padding: EdgeInsets.symmetric(vertical: 8.0)),
+                    homeworkIcons(context, homework),
+                  ]
+              ),
+            )
+        );
+      }
     }
     return out;
   }

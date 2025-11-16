@@ -64,7 +64,6 @@ class LocalNotifications {
               androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
               uiLocalNotificationDateInterpretation:
               UILocalNotificationDateInterpretation.absoluteTime);
-      print('Scheduled notification at ${startOfDay}');
     }
     if (oneHourBefore.isAfter(now)) {
       await _flutterLocalNotificationsPlugin.zonedSchedule(
@@ -80,7 +79,6 @@ class LocalNotifications {
               androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
               uiLocalNotificationDateInterpretation:
               UILocalNotificationDateInterpretation.absoluteTime);
-      print('Scheduled reminder notification at ${oneHourBefore}');
     }
   }
 
@@ -94,6 +92,5 @@ class LocalNotifications {
 
   Future<void> cancelNotifications() async {
     await _flutterLocalNotificationsPlugin.cancelAll();
-    print('Cancelled all notifications');
   }
 }

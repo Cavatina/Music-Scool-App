@@ -19,13 +19,13 @@ import 'package:musicscool/generated/l10n.dart';
 typedef VoucherRequested = void Function();
 
 class RequestLesson extends StatefulWidget {
-  const RequestLesson({required this.user, required this.onSuccess});
+  const RequestLesson({super.key, required this.user, required this.onSuccess});
 
   final User user;
   final VoucherRequested onSuccess;
 
   @override
-  _RequestLessonState createState() => _RequestLessonState();
+  State<RequestLesson> createState() => _RequestLessonState();
 }
 
 class _RequestLessonState extends State<RequestLesson> {
@@ -34,7 +34,7 @@ class _RequestLessonState extends State<RequestLesson> {
   List<Voucher>? _vouchers;
   Voucher? voucher;
   AvailableDates? date;
-  LessonDuration duration = LessonDuration.HalfHour;
+  LessonDuration duration = LessonDuration.halfHour;
   TimeSlot? slot;
 
   @override
@@ -191,17 +191,21 @@ class _RequestLessonState extends State<RequestLesson> {
                 voucher: voucher!, date: date!, instrument: instrument!,
                 time: slot!, duration: duration)
                 .then((_) {
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content: Text(S.of(context).voucherRequestSuccess),
                         duration: Duration(seconds: 2)
                     ));
+                    }
                     widget.onSuccess();
                 })
                 .catchError((e) {
+                  if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content: Text(S.of(context).voucherRequestFailed),
                         duration: Duration(seconds: 4)
                     ));
+                  }
                 });
             },
             child: Text(S.of(context).requestLesson)

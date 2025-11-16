@@ -22,6 +22,7 @@ import 'login_page.dart';
 import 'home_page.dart';
 
 class RootPage extends StatelessWidget {
+  const RootPage({super.key});
   Widget _waitingPage() {
     return Scaffold(
       body: Container(

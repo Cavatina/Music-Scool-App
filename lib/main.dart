@@ -57,7 +57,7 @@ Future<void> main() async {
 }
 
 class MusicScoolApp extends StatelessWidget {
-  MusicScoolApp();
+  const MusicScoolApp({super.key});
 
   @override
   Widget build(BuildContext context) {

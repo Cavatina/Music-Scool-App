@@ -100,7 +100,7 @@ class _HomeworkDownloadIconState extends State<HomeworkDownloadIcon> {
       label: Text(S.of(context).open),
       onPressed: () {
         if (kDebugMode) debugPrint('Opening existing:"${filePath}"');
-        OpenFilex.open(filePath);
+        OpenFilex.open(filePath!);
       },
       icon: Icon(CupertinoIcons.music_albums_fill)
     );

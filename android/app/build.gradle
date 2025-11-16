@@ -35,7 +35,8 @@ if (flutterVersionName == null) {
 }
 
 android {
-    compileSdkVersion 35
+    namespace "dk.musicscool.musicscool"
+    compileSdk 36
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -48,7 +49,7 @@ android {
     defaultConfig {
         applicationId "dk.musicscool.musicscool"
         minSdkVersion flutter.minSdkVersion
-        targetSdkVersion 35
+        targetSdk 36
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
@@ -71,8 +72,17 @@ android {
 
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+        coreLibraryDesugaringEnabled true
+    }
 }
 
 flutter {
     source '../..'
+}
+
+dependencies {
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
 }

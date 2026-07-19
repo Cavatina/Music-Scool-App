@@ -74,10 +74,10 @@ class RemoteNotifications {
       AndroidNotification? android = message.notification?.android;
       if (notification != null && android != null) {
         _flutterLocalNotificationsPlugin.show(
-            notification.hashCode,
-            notification.title,
-            notification.body,
-            NotificationDetails(
+            id: notification.hashCode,
+            title: notification.title,
+            body: notification.body,
+            notificationDetails: NotificationDetails(
               android: AndroidNotificationDetails(
                 channel.id,
                 channel.name,

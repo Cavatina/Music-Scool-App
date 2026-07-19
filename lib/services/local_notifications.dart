@@ -28,10 +28,10 @@ class LocalNotifications {
     final initDarwin = DarwinInitializationSettings(
         requestAlertPermission: true,
         requestBadgePermission: true,
-        requestSoundPermission: true,
-        onDidReceiveLocalNotification: null);
+        requestSoundPermission: true
+    );
     await _flutterLocalNotificationsPlugin.initialize(
-        InitializationSettings(
+        settings: InitializationSettings(
             android: initAndroid,
             iOS: initDarwin,
             macOS: initDarwin)
@@ -52,33 +52,31 @@ class LocalNotifications {
     String localHourMinute = DateFormat.Hm().format(localTime);
     if (oneHourBefore.isAfter(startOfDay)) {
       await _flutterLocalNotificationsPlugin.zonedSchedule(
-          lesson.id,
-          S.current.notificationDayReminderTitle,
-          S.current.notificationDayReminderBody(localHourMinute),
-          startOfDay,
-          const NotificationDetails(
+          id: lesson.id,
+          scheduledDate: startOfDay,
+          notificationDetails: const NotificationDetails(
               android: AndroidNotificationDetails(
                   'dk.musicscool.test2-lesson-day-reminder',
                   'lesson reminder',
                   channelDescription: "Music'scool lesson reminder (morning)")),
-              androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-              uiLocalNotificationDateInterpretation:
-              UILocalNotificationDateInterpretation.absoluteTime);
+          androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+          title: S.current.notificationDayReminderTitle,
+          body: S.current.notificationDayReminderBody(localHourMinute),
+      );
     }
     if (oneHourBefore.isAfter(now)) {
       await _flutterLocalNotificationsPlugin.zonedSchedule(
-          -lesson.id,
-          S.current.notificationHourReminderTitle,
-          S.current.notificationHourReminderBody(localHourMinute),
-          oneHourBefore,
-          const NotificationDetails(
+          id: -lesson.id,
+          scheduledDate: oneHourBefore,
+          notificationDetails: const NotificationDetails(
               android: AndroidNotificationDetails(
                   'dk.musicscool.test2-lesson-hour-reminder',
                   'lesson reminder',
                   channelDescription: "Music'scool lesson reminder (morning)")),
-              androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-              uiLocalNotificationDateInterpretation:
-              UILocalNotificationDateInterpretation.absoluteTime);
+          androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+          title: S.current.notificationHourReminderTitle,
+          body: S.current.notificationHourReminderBody(localHourMinute),
+      );
     }
   }
 

@@ -25,8 +25,12 @@ class IntlService {
     // which is incompatible with this function:
     //    await initializeDateFormatting();
     tz.initializeTimeZones();
-    String currentTimeZone = (await FlutterTimezone.getLocalTimezone()).identifier;
-    currentLocation = getLocation(currentTimeZone);
+    try {
+      String currentTimeZone = (await FlutterTimezone.getLocalTimezone()).identifier;
+      currentLocation = getLocation(currentTimeZone);
+    } catch (_) {
+      currentLocation = UTC;
+    }
     return this;
   }
 

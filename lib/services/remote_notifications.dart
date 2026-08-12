@@ -5,7 +5,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-Future<dynamic> _backgroundMessageHandler(RemoteMessage message) async {
+@pragma('vm:entry-point')
+Future<void> _backgroundMessageHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
   if (message.data.isNotEmpty == true) {
     // Handle data message
@@ -47,7 +48,12 @@ class RemoteNotifications {
       provisional: false,
       sound: true,
     );
-    FirebaseMessaging.onBackgroundMessage(_backgroundMessageHandler);
+    // Android debug launches the background FlutterEngine with --start-paused.
+    // That can freeze the UI thread (and any later plugin calls) until a debugger
+    // resumes the isolate. Skip it in debug; system/foreground notifications still work.
+    if (!kDebugMode) {
+      FirebaseMessaging.onBackgroundMessage(_backgroundMessageHandler);
+    }
     await _flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin>()

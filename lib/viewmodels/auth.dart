@@ -67,7 +67,9 @@ class AuthModel extends ChangeNotifier {
     api.dio.interceptors.add(_cache.interceptor);
 
     // Temporary, cancel any local notifications scheduled by previous versions.
-    await cancelNotifications();
+    try {
+      await cancelNotifications();
+    } catch (_) {}
     notifyListeners();
 
     if (isLoggedIn && notificationsEnabled) await registerDevice();

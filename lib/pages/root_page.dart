@@ -21,8 +21,16 @@ import 'package:musicscool/service_locator.dart';
 import 'login_page.dart';
 import 'home_page.dart';
 
-class RootPage extends StatelessWidget {
+class RootPage extends StatefulWidget {
   const RootPage({super.key});
+
+  @override
+  State<RootPage> createState() => _RootPageState();
+}
+
+class _RootPageState extends State<RootPage> {
+  late final Future<void> _ready = locator.allReady();
+
   Widget _waitingPage() {
     return Scaffold(
       body: Container(
@@ -32,17 +40,28 @@ class RootPage extends StatelessWidget {
     );
   }
 
+  Widget _errorPage(Object error) {
+    return Scaffold(
+      body: Container(
+        alignment: Alignment.center,
+        padding: const EdgeInsets.all(24),
+        child: Text('Failed to start: $error'),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: locator.allReady(),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.hasData) {
-            return provider(context);
-          }
-          else {
+    return FutureBuilder<void>(
+        future: _ready,
+        builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+          if (snapshot.connectionState != ConnectionState.done) {
             return _waitingPage();
           }
+          if (snapshot.hasError) {
+            return _errorPage(snapshot.error!);
+          }
+          return provider(context);
         });
   }
 

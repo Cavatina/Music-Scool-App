@@ -15,6 +15,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:intl/intl.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart';
 
@@ -87,5 +88,9 @@ class IntlService {
       return when.toLocal();
     }
     return TZDateTime.from(when, currentLocation);
+  }
+
+  String formatCalendarDate(DateTime when) {
+    return DateFormat('yyyy-MM-dd').format(localDateTime(when));
   }
 }

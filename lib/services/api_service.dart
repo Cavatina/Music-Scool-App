@@ -18,7 +18,6 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_http_cache_lts/dio_http_cache_lts.dart';
-import 'package:intl/intl.dart';
 import 'package:musicscool/models/available_dates.dart';
 import 'package:musicscool/models/instrument.dart';
 import 'package:musicscool/models/lesson_cancel_info.dart';
@@ -26,7 +25,9 @@ import 'package:musicscool/models/lesson_response.dart';
 import 'package:musicscool/models/teacher.dart';
 import 'package:musicscool/models/time_slot.dart';
 import 'package:musicscool/models/voucher.dart';
+import 'package:musicscool/service_locator.dart';
 import 'package:musicscool/services/api.dart';
+import 'package:musicscool/services/intl_service.dart';
 import 'package:musicscool/models/user.dart';
 import 'package:musicscool/models/lesson.dart';
 import 'package:musicscool/widgets/duration_select.dart';
@@ -176,7 +177,9 @@ class ApiService implements Api {
     if (instrument != null) params['instrument_id'] = instrument.id.toString();
     if (teacher != null) params['teacher_id'] = teacher.id.toString();
     if (duration != null) params['duration'] = duration.minutes.toString();
-    if (date != null) params['date'] = date.toIso8601String().substring(0, 10);
+    if (date != null) {
+      params['date'] = locator<IntlService>().formatCalendarDate(date);
+    }
 
     Options options = Options(
       headers: <String, String> {
@@ -360,7 +363,7 @@ class ApiService implements Api {
     required LessonDuration duration}) async
   {
     try {
-      String formattedDate = DateFormat('yyyy-MM-dd').format(date.date);
+      String formattedDate = locator<IntlService>().formatCalendarDate(date.date);
       String query =
         '/student/lessons/create'
         '?date=${formattedDate}'

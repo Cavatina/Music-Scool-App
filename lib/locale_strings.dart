@@ -15,7 +15,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
-import 'package:timezone/timezone.dart';
 import 'package:musicscool/service_locator.dart';
 import 'package:musicscool/services/intl_service.dart';
 
@@ -49,17 +48,17 @@ String instrumentText(BuildContext context, String instrumentKey) {
 }
 
 String formattedDateShort(BuildContext context, DateTime time) {
-    TZDateTime local = locator<IntlService>().localDateTime(time);
+    DateTime local = locator<IntlService>().localDateTime(time);
     return DateFormat.yMMMd().format(local);
 }
 
 String formattedDate(BuildContext context, DateTime time) {
-    TZDateTime local = locator<IntlService>().localDateTime(time);
+    DateTime local = locator<IntlService>().localDateTime(time);
     return DateFormat.yMMMEd().format(local);
 }
 
 String formattedDateTime(BuildContext context, DateTime time) {
-    TZDateTime local = locator<IntlService>().localDateTime(time);
+    DateTime local = locator<IntlService>().localDateTime(time);
     return S.of(context).dateAtTime(DateFormat.yMMMEd().format(local),
       DateFormat.jm().format(local));
 }

@@ -27,6 +27,7 @@ import 'package:musicscool/models/time_slot.dart';
 import 'package:musicscool/models/voucher.dart';
 import 'package:musicscool/service_locator.dart';
 import 'package:musicscool/services/api.dart';
+import 'package:musicscool/services/crashlytics_service.dart';
 import 'package:musicscool/services/intl_service.dart';
 import 'package:musicscool/models/user.dart';
 import 'package:musicscool/models/lesson.dart';
@@ -53,6 +54,12 @@ class ApiService implements Api {
     _dio.options.connectTimeout = 5000;
     _dio.options.receiveTimeout = 10000;
     _dio.options.headers[HttpHeaders.acceptHeader] = 'application/json';
+    _dio.interceptors.add(InterceptorsWrapper(
+      onError: (DioError error, handler) {
+        recordApiError(error);
+        return handler.next(error);
+      },
+    ));
   }
 
   @override
@@ -124,8 +131,9 @@ class ApiService implements Api {
 
   @override
   Future<User> get user async {
+    Response response;
     try {
-      Response response = await _dio.get(
+      response = await _dio.get(
         '/profile',
         options: buildCacheOptions(Duration(seconds: 30),
           maxStale: Duration(days:30),
@@ -150,11 +158,14 @@ class ApiService implements Api {
       if (!response.data.containsKey('data')) {
         throw httpStatusError(response.statusCode);
       }
-      return User.fromJson(response.data['data']);
+    }
+    on ApiError {
+      rethrow;
     }
     catch (_) {
       throw ServerError();
     }
+    return parseApiJson('user', response.data['data'], () => User.fromJson(response.data['data']));
   }
 
   Future<Map<String, dynamic>> jsonGet(
@@ -224,33 +235,53 @@ class ApiService implements Api {
 
   @override
   Future<List<Lesson>> getUpcomingLessons({int page = 0, int perPage = 20, bool withCancelled = true}) async {
-    LessonResponse response = LessonResponse.fromJson(await jsonGet('/student/lessons/upcoming',
-        page: page, perPage: perPage, withCancelled: withCancelled, useCache: true));
+    final Map<String, dynamic> json = await jsonGet('/student/lessons/upcoming',
+        page: page, perPage: perPage, withCancelled: withCancelled, useCache: true);
+    final LessonResponse response = parseApiJson(
+      'getUpcomingLessons',
+      json,
+      () => LessonResponse.fromJson(json),
+    );
     return response.data;
   }
 
   @override
   Future<List<Lesson>> getHomeworkLessons({int page = 0, int perPage = 20}) async {
-    LessonResponse response = LessonResponse.fromJson(await jsonGet('/student/lessons/past',
-        page: page, perPage: perPage, withHomework: true, useCache: true));
+    final Map<String, dynamic> json = await jsonGet('/student/lessons/past',
+        page: page, perPage: perPage, withHomework: true, useCache: true);
+    final LessonResponse response = parseApiJson(
+      'getHomeworkLessons',
+      json,
+      () => LessonResponse.fromJson(json),
+    );
     return response.data;
   }
 
   @override
   Future<List<Voucher>> getVouchers() async {
-    List<dynamic> js = (await jsonGet('/student/vouchers'))['data'];
-    return js.map<Voucher>((jsObj) => Voucher.fromJson(jsObj)).toList();
+    final List<dynamic> js = (await jsonGet('/student/vouchers'))['data'];
+    return parseApiJson(
+      'getVouchers',
+      js,
+      () => js.map<Voucher>((jsObj) => Voucher.fromJson(jsObj)).toList(),
+    );
   }
 
   @override
   Future<LessonCancelInfo> cancelLessonInfo({required int id}) async {
-    return LessonCancelInfo.fromJson((await jsonGet('/student/lessons/${id}/cancel'))['data']);
+    final dynamic data = (await jsonGet('/student/lessons/${id}/cancel'))['data'];
+    return parseApiJson(
+      'cancelLessonInfo',
+      data,
+      () => LessonCancelInfo.fromJson(data),
+    );
   }
 
   @override
   Future<Lesson?> cancelLesson({required int id}) async {
+    Response response;
     try {
-      Response response = await _dio.post(
+      response = await _dio.post(
         '/student/lessons/${id}/cancel',
         options: Options(
           headers: <String, String> {
@@ -258,12 +289,6 @@ class ApiService implements Api {
           }
         )
       );
-      try {
-        return Lesson.fromJson(response.data['data']);
-      }
-      on TypeError catch (_) {
-        return null;
-      }
     }
     catch (e) {
       if (e is DioError) {
@@ -279,6 +304,20 @@ class ApiService implements Api {
         if (kDebugMode) debugPrint(e.toString());
       }
       throw ServerError();
+    }
+    return _parseCancelLessonResponse(response.data['data']);
+  }
+
+  Lesson? _parseCancelLessonResponse(dynamic data) {
+    try {
+      return parseApiJson(
+        'cancelLesson',
+        data,
+        () => Lesson.fromJson(data),
+      );
+    } on TypeError catch (error, stack) {
+      recordParseError(error, stack, context: 'cancelLesson', data: data);
+      return null;
     }
   }
 
@@ -334,24 +373,36 @@ class ApiService implements Api {
 
   @override
   Future<List<Instrument>> getInstruments() async {
-    List<dynamic> js = (await jsonGet('/instruments'))['data'];
-    return js.map<Instrument>((jsObj) => Instrument.fromJson(jsObj)).toList();
+    final List<dynamic> js = (await jsonGet('/instruments'))['data'];
+    return parseApiJson(
+      'getInstruments',
+      js,
+      () => js.map<Instrument>((jsObj) => Instrument.fromJson(jsObj)).toList(),
+    );
   }
 
   @override
   Future<List<AvailableDates>> getAvailableDates({required Instrument instrument}) async {
-    List<dynamic> js = (await jsonGet('/lessons/days', instrument: instrument))['data'];
-    return js.map<AvailableDates>((jsObj) => AvailableDates.fromJson(jsObj)).toList();
+    final List<dynamic> js = (await jsonGet('/lessons/days', instrument: instrument))['data'];
+    return parseApiJson(
+      'getAvailableDates',
+      js,
+      () => js.map<AvailableDates>((jsObj) => AvailableDates.fromJson(jsObj)).toList(),
+    );
   }
 
   @override
   Future<List<TimeSlot>> getTimeSlots({required Teacher teacher, required DateTime date, required LessonDuration duration}) async {
-    List<dynamic> js = (await jsonGet(
+    final List<dynamic> js = (await jsonGet(
       '/lessons/time-slots',
       teacher: teacher,
       date: date,
       duration: duration))['data'];
-    return js.map<TimeSlot>((jsObj) => TimeSlot.fromJson(jsObj)).toList();
+    return parseApiJson(
+      'getTimeSlots',
+      js,
+      () => js.map<TimeSlot>((jsObj) => TimeSlot.fromJson(jsObj)).toList(),
+    );
   }
 
   @override
